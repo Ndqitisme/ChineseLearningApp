@@ -15,7 +15,7 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
     let menu = Menu::with_items(app, &[&open, &toggle, &next, &pause, &resume, &sep, &quit])?;
 
     let mut tray = TrayIconBuilder::with_id("main")
-        .tooltip("Tiểu Mai — học tiếng Trung")
+        .tooltip("TieuMai - Chinese Learning")
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {

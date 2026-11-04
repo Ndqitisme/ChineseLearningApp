@@ -1,4 +1,5 @@
 <script lang="ts">
+  import BackButton from '../components/BackButton.svelte';
   import { dataset, topicById, wordById } from '../../lib/data.ts';
   import type { Word } from '../../lib/types.ts';
   import WordRow from '../components/WordRow.svelte';
@@ -22,12 +23,13 @@
 
 <div class="page">
   {#if info}
-    <a href="#/topics" class="muted back">← Chủ đề</a>
+    <BackButton to="/topics" label="Chủ đề" />
     <h1>{info.title} {#if info.zh}<span class="han zh">{info.zh}</span>{/if}</h1>
     <div class="row actions">
       <a class="btn primary" href="#/quiz/meaning/{info.deck}">🧠 Đoán nghĩa</a>
       <a class="btn" href="#/write/{info.deck}">✍️ Viết theo nét</a>
       <a class="btn" href="#/tones/{info.deck}">🎵 Thanh điệu</a>
+      <a class="btn" href="#/build/order/{info.deck}">🧩 Ghép câu</a>
       <span class="spacer"></span>
       <input type="search" placeholder="Lọc trong {list.length} từ…" bind:value={filter} />
     </div>
@@ -40,7 +42,6 @@
 </div>
 
 <style>
-  .back { text-decoration: none; font-weight: 700; }
   .zh { color: var(--text-2); font-size: 20px; margin-left: 6px; }
   .actions { margin: 14px 0 16px; flex-wrap: wrap; }
   .actions a { text-decoration: none; }

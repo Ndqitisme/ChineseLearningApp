@@ -13,6 +13,9 @@ node_modules/
 # Downloaded sources, render frames, reports, local Python venv
 /.cache/
 
+# Editable character scene, private photo references and local review artifacts
+/output/character/
+
 # Environment / secrets
 .env
 .env.*
@@ -29,3 +32,6 @@ vite.config.ts.timestamp-*
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Character reference images (not for a public repo)
+/references/

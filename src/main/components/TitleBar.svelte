@@ -4,7 +4,7 @@
 </script>
 
 <header class="titlebar" data-tauri-drag-region>
-  <span class="title" data-tauri-drag-region><img class="logo" src="/logo/icon.png" alt="" /><span class="han">小梅</span> Tiểu Mai · học tiếng Trung</span>
+  <span class="title" data-tauri-drag-region><img class="logo" src="/logo/icon.png" alt="" /><span class="han">小梅</span> TieuMai - Chinese Learning</span>
   <div class="controls">
     <button onclick={() => win.minimize()} aria-label="Thu nhỏ">—</button>
     <button onclick={() => win.toggleMaximize()} aria-label="Phóng to">▢</button>

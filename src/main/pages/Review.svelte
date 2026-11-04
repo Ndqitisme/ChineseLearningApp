@@ -40,11 +40,11 @@
     if (!flipped && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); flipped = true; }
     else if (flipped && ['1', '2', '3', '4'].includes(e.key)) grade(Number(e.key) as Grade);
   }
-  const BUTTONS: { g: Grade; label: string; cls: string }[] = [
-    { g: Rating.Again, label: 'Quên', cls: 'again' },
-    { g: Rating.Hard, label: 'Khó', cls: 'hard' },
-    { g: Rating.Good, label: 'Nhớ', cls: 'good' },
-    { g: Rating.Easy, label: 'Dễ', cls: 'easy' },
+  const BUTTONS: { g: Grade; label: string; help: string; cls: string }[] = [
+    { g: Rating.Again, label: 'Quên', help: 'Không nhớ ra nghĩa hoặc cách đọc', cls: 'again' },
+    { g: Rating.Hard, label: 'Khó', help: 'Nhớ ra nhưng phải nghĩ lâu hoặc còn sai một phần', cls: 'hard' },
+    { g: Rating.Good, label: 'Nhớ', help: 'Nhớ ra đúng sau một chút', cls: 'good' },
+    { g: Rating.Easy, label: 'Dễ', help: 'Nhớ ngay, rất chắc chắn', cls: 'easy' },
   ];
 </script>
 
@@ -52,25 +52,35 @@
 
 <div class="page">
   <h1>🔁 Ôn tập</h1>
-  <p class="lead">Còn {queue.length} thẻ · đã xong {done} · Space để lật, 1–4 để chấm</p>
+  <p class="lead">Còn {queue.length} thẻ · đã xong {done} · phím Space để lật thẻ, phím 1–4 để chấm mức nhớ</p>
   {#if word}
-    <button class="card flash" onclick={() => (flipped = true)} data-hover-pinyin={flipped ? 'on' : 'off'}>
-      <div class="hz han">{word.hanzi}</div>
+    <!-- A div, not a button: Chromium's caret hit-testing skips text inside buttons, so hover
+         pinyin could never work on the example sentence. -->
+    <div
+      class="card flash"
+      role="button"
+      tabindex="0"
+      onclick={() => (flipped = true)}
+      onkeydown={(e) => { if (e.key === 'Enter') flipped = true; }}
+      data-hover-pinyin={flipped ? 'on' : 'off'}
+    >
+      <div class="hz han" data-has-pinyin={flipped ? '' : undefined}>{word.hanzi}</div>
       {#if flipped}
-        <div class="back" data-has-pinyin>
+        <div class="back">
           <div class="py"><Pinyin text={word.pinyin} syllables={word.syllables} /></div>
           <div class="vi">{word.vi}</div>
           {#if word.hanviet}<div class="muted">Hán Việt: {word.hanviet}</div>{/if}
           {#if word.ex}<div class="ex"><span class="han">{word.ex.zh}</span><br /><span class="muted">{word.ex.vi}</span></div>{/if}
         </div>
       {:else}
-        <div class="muted hint">Nhớ nghĩa và cách đọc, rồi bấm để lật thẻ</div>
+        <div class="muted hint">Nhớ lại nghĩa và cách đọc trong đầu, rồi bấm vào thẻ (hoặc Space) để xem đáp án</div>
       {/if}
-    </button>
+    </div>
     {#if flipped && intervals}
+      <p class="grade-help">Bạn nhớ từ này đến đâu? Chọn một mức, Tiểu Mai sẽ hẹn lần ôn tiếp theo: càng nhớ chắc thì càng lâu mới phải ôn lại.</p>
       <div class="grades">
         {#each BUTTONS as b, i (b.g)}
-          <button class="btn {b.cls}" onclick={() => grade(b.g)}><span>{i + 1} · {b.label}</span><small>{intervals[b.g]}</small></button>
+          <button class="btn {b.cls}" onclick={() => grade(b.g)} title="{b.help} · ôn lại sau {intervals[b.g]}"><span>{i + 1} · {b.label}</span><small>ôn lại sau {intervals[b.g]}</small></button>
         {/each}
         {#if speechAvailable()}<button class="btn" onclick={() => speak(word.hanzi).catch(() => {})}>🔊</button>{/if}
       </div>
@@ -94,8 +104,9 @@
   .vi { font-size: 22px; font-weight: 900; }
   .ex { margin-top: 8px; font-size: 15px; }
   .ex .han { font-size: 20px; }
-  .grades { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
-  .grades .btn { flex-direction: column; min-width: 96px; gap: 0; }
+  .grade-help { text-align: center; margin: 16px 0 0; color: var(--text-2); font-size: 14px; }
+  .grades { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+  .grades .btn { flex-direction: column; min-width: 120px; gap: 0; }
   .grades small { font-weight: 600; opacity: .75; font-size: 11.5px; }
   .again { border-color: var(--bad); color: var(--bad); }
   .hard { border-color: var(--tone2); color: var(--tone2); }

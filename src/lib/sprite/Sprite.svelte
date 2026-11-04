@@ -1,5 +1,6 @@
 <script lang="ts" module>
   import { LOOPING, type AnimationName, type Skin } from './skins.ts';
+  import { restTransitions } from './transitions.ts';
 
   /**
    * Drives frame changes with setTimeout only while an animation runs. Between animations
@@ -10,15 +11,20 @@
     current = $state<AnimationName>('idle');
     skin: Skin | null = null;
     #timer: ReturnType<typeof setTimeout> | undefined;
+    #returns = new Map<number, import('./skins.ts').FrameStep[]>();
 
     setSkin(skin: Skin) {
       this.skin = skin;
+      this.#returns = restTransitions(skin);
+      this.frame = skin.animations.idle?.[0]?.[0] ?? 0;
       this.play(this.current === 'sleep' ? 'sleep' : 'idle');
     }
 
     play(name: AnimationName) {
       clearTimeout(this.#timer);
-      const steps = this.skin?.animations[name] ?? this.skin?.animations.idle;
+      const animation = this.skin?.animations[name] ?? this.skin?.animations.idle;
+      const recovery = this.#returns.get(this.frame) ?? [];
+      const steps = animation ? [...recovery, ...animation] : undefined;
       this.current = name;
       if (!steps?.length) { this.frame = 0; return; }
       const loop = LOOPING.has(name);

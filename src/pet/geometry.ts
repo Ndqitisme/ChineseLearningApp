@@ -5,9 +5,12 @@ export interface Rect { x: number; y: number; w: number; h: number }
 export interface Anchor { h: 'left' | 'right' }
 export interface Size { w: number; h: number }
 
+/** Room above the sprite for an ordinary bubble; taller bubbles grow it (see Pet.svelte). */
+export const BASE_BUBBLE_ROOM = 250;
+
 /** Window size in CSS px: the sprite plus room for the bubble, which is always above her head. */
-export function windowSize(sprite: Size): Size {
-  return { w: Math.round(Math.max(300, 270 + sprite.w * 0.45)), h: Math.round(sprite.h + 250) };
+export function windowSize(sprite: Size, room = BASE_BUBBLE_ROOM): Size {
+  return { w: Math.round(Math.max(300, 270 + sprite.w * 0.45)), h: Math.round(sprite.h + room) };
 }
 
 /** Where the sprite sits inside the window (CSS px). */

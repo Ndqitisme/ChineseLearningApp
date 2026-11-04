@@ -8,12 +8,15 @@
   import { theme } from '../../lib/theme/apply.svelte.ts';
   import { THEMES, type ThemeId } from '../../lib/theme/themes.ts';
 
+  /** Section to scroll to, e.g. "voice" when opened from the bubble's speaker button. */
+  let { section }: { section?: string } = $props();
   let autostart = $state(false);
   let voices = $state<VoiceInfo[]>([]);
   let speechMsg = $state('');
   let packMsg = $state('');
 
   onMount(async () => {
+    if (section) document.getElementById(section)?.scrollIntoView({ block: 'start' });
     autostart = await autostartEnabled().catch(() => false);
     await whenVoicesReady();
     voices = chineseSystemVoices();
@@ -98,6 +101,7 @@
   <h2 class="section-title">Trợ lý Tiểu Mai</h2>
   <div class="card stack">
     <label class="row"><input type="checkbox" checked={settings.petEnabled} onchange={(e) => set({ petEnabled: e.currentTarget.checked })} /> Hiện trợ lý trên màn hình</label>
+    <label class="row"><input type="checkbox" checked={!settings.petCharacter} onchange={(e) => set({ petCharacter: !e.currentTarget.checked })} /> Ẩn nhân vật Tiểu Mai, chỉ giữ bảng từ vựng (gọn màn hình hơn; kéo bảng bằng dòng chủ đề phía trên)</label>
     <div class="row">
       <span class="lbl">Kích thước</span>
       {#each [2, 3, 4] as s (s)}<button class="chip" class:on={settings.petScale === s} onclick={() => set({ petScale: s })}>{['Nhỏ', 'Vừa', 'Lớn'][s - 2]}</button>{/each}
@@ -121,7 +125,7 @@
     <p class="muted small">Chọn chủ đề và cấp HSK để Tiểu Mai nhắc ở trang <a href="#/topics">Chủ đề</a> (nút 🔔).</p>
   </div>
 
-  <h2 class="section-title">Giọng đọc (tuỳ chọn)</h2>
+  <h2 class="section-title" id="voice">Giọng đọc (tuỳ chọn)</h2>
   <div class="card stack">
     <p class="muted small">App không kèm sẵn giọng đọc để nhẹ. Bạn có thể dùng giọng của hệ điều hành, một API giọng đọc (online hoặc server chạy trên máy), hoặc một gói giọng tải về.</p>
     <div class="row wrap">

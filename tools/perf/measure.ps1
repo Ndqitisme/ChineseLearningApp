@@ -1,22 +1,23 @@
 <#
 .SYNOPSIS
-  Samples CPU and memory of the running app: tieumai.exe plus every msedgewebview2.exe that
-  WebView2 started for it (they carry --webview-exe-name=tieumai.exe on the command line).
+  Samples CPU and memory of the running app ("TieuMai - Chinese Learning.exe") plus every
+  msedgewebview2.exe that WebView2 started for it (they carry --webview-exe-name=<app exe>).
 .EXAMPLE
   powershell -File tools/perf/measure.ps1 -Seconds 600 -Csv .cache/perf.csv
 #>
-param([int]$Seconds = 60, [string]$Csv = "")
+param([int]$Seconds = 60, [string]$Csv = "", [string]$AppName = "TieuMai - Chinese Learning")
 
 $cores = [Environment]::ProcessorCount
+$webviewArg = '--webview-exe-name="?' + [regex]::Escape("$AppName.exe")
 function Get-AppProcesses {
-  $ids = @(Get-Process tieumai -ErrorAction SilentlyContinue | ForEach-Object Id)
+  $ids = @(Get-Process -Name $AppName -ErrorAction SilentlyContinue | ForEach-Object Id)
   $wv = Get-CimInstance Win32_Process -Filter "Name='msedgewebview2.exe'" |
-    Where-Object { $_.CommandLine -match '--webview-exe-name=tieumai\.exe' } | ForEach-Object ProcessId
+    Where-Object { $_.CommandLine -match $webviewArg } | ForEach-Object ProcessId
   @($ids + $wv) | ForEach-Object { Get-Process -Id $_ -ErrorAction SilentlyContinue }
 }
 
 $procs = Get-AppProcesses
-if (-not $procs) { Write-Error "tieumai.exe is not running"; exit 1 }
+if (-not $procs) { Write-Error "$AppName is not running"; exit 1 }
 $prevCpu = @{}; foreach ($p in $procs) { $prevCpu[$p.Id] = $p.TotalProcessorTime.TotalMilliseconds }
 $rows = @()
 $sw = [Diagnostics.Stopwatch]::StartNew()

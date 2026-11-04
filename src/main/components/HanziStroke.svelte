@@ -16,16 +16,31 @@
   interface Props {
     char: string;
     size?: number;
-    mode?: 'animate' | 'quiz' | 'static';
+    /** animate: play once on mount; sequence: show only the outline until play(); quiz: the learner draws. */
+    mode?: 'animate' | 'sequence' | 'quiz' | 'static';
     showOutline?: boolean;
+    /** quiz: play the stroke-order demo first, then let the learner draw. */
+    demoFirst?: boolean;
     oncomplete?: (mistakes: number) => void;
     onmistake?: () => void;
   }
-  let { char, size = 160, mode = 'animate', showOutline = true, oncomplete, onmistake }: Props = $props();
+  let { char, size = 160, mode = 'animate', showOutline = true, demoFirst = false, oncomplete, onmistake }: Props = $props();
   let el: HTMLDivElement;
   let writer: HanziWriter | undefined;
+  let alive = true;
+  let nextStroke = 0;
+  let demoing = false;
 
   const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function startQuiz() {
+    nextStroke = 0;
+    writer?.quiz({
+      onMistake: () => onmistake?.(),
+      onCorrectStroke: (s: { strokeNum: number }) => (nextStroke = s.strokeNum + 1),
+      onComplete: (s: { totalMistakes: number }) => oncomplete?.(s.totalMistakes),
+    });
+  }
 
   onMount(() => {
     writer = HanziWriter.create(el, char, {
@@ -33,6 +48,7 @@
       height: size,
       padding: 6,
       showOutline,
+      showCharacter: mode !== 'sequence',
       strokeColor: css('--text'),
       outlineColor: css('--border'),
       radicalColor: css('--primary'),
@@ -45,16 +61,33 @@
     });
     if (mode === 'animate') writer.animateCharacter();
     if (mode === 'quiz') {
-      writer.quiz({
-        onMistake: () => onmistake?.(),
-        onComplete: (s: { totalMistakes: number }) => oncomplete?.(s.totalMistakes),
-      });
+      if (demoFirst) demo();
+      else startQuiz();
     }
-    return () => { writer?.cancelQuiz?.(); el.replaceChildren(); };
+    return () => { alive = false; writer?.cancelQuiz?.(); el.replaceChildren(); };
   });
 
+  /** Plays the stroke order; resolves when the last stroke is drawn. */
+  export function play(): Promise<void> {
+    return new Promise((resolve) => (writer ? writer.animateCharacter({ onComplete: () => resolve() }) : resolve()));
+  }
   export function replay() { writer?.animateCharacter(); }
-  export function hint() { writer?.highlightStroke?.(0); }
+
+  /** Quiz mode: show how the character is written, then start (again) from the first stroke. */
+  export async function demo() {
+    if (!writer || demoing) return;
+    demoing = true;
+    writer.cancelQuiz();
+    await play();
+    await new Promise((r) => setTimeout(r, 700));
+    if (!alive) return;
+    await writer.hideCharacter({ duration: 300 });
+    demoing = false;
+    if (alive) startQuiz();
+  }
+
+  /** Quiz mode: flash the stroke the learner should draw next. */
+  export function hint() { if (!demoing) writer?.highlightStroke(nextStroke); }
 </script>
 
 <div

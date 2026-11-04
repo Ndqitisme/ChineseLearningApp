@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.png" alt="Tiểu Mai" width="200" /></p>
 
-# Tiểu Mai (小梅)
+# TieuMai - Chinese Learning (Tiểu Mai 小梅)
 
 Ứng dụng desktop mã nguồn mở giúp người Việt làm quen với từ vựng tiếng Trung thông dụng trong đời sống, ăn uống và công việc mà không cần mở app ra học.
 
@@ -14,7 +14,8 @@ Một trợ lý 3D đứng ở cạnh màn hình. Bong bóng bên cạnh cô lu�
 - **Từ vựng:** 2.486 từ, gồm HSK 3.0 cấp 1–3 và 22 chủ đề (682 từ, 648 câu ví dụ).
 - **Luyện tập:**
   - Đoán nghĩa.
-  - Viết chữ theo thứ tự nét.
+  - Viết chữ theo thứ tự nét, có hoạt hình mẫu và gợi ý nét.
+  - Ghép câu: sắp xếp các từ thành câu có nghĩa, hoặc ghép câu trả lời cho một câu hỏi. Điểm (thang 100) tính theo số từ đúng thứ tự so với câu chuẩn.
   - Luyện thanh điệu: thu âm, đo cao độ và so với đường thanh chuẩn.
   - Ôn tập theo lịch FSRS, sổ tay từ.
   - Tra cứu theo chữ Hán, pinyin (có hoặc không dấu), nghĩa tiếng Việt hoặc Hán Việt.
@@ -97,6 +98,7 @@ Mọi chỉnh sửa nội dung nằm trong `data/`:
 | `hanviet/word-verdicts.tsv` | Từ nào được hiện dòng Hán Việt |
 | `gloss-overrides.tsv` | Sửa nghĩa |
 | `hsk-pinyin-overrides.tsv` | Sửa pinyin |
+| `sentences/qa.json` | Câu hỏi và câu trả lời cho bài Ghép câu; dấu cách trong câu trả lời là ranh giới giữa các thẻ từ, `alt` là các cách sắp khác cũng đúng |
 
 Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật trong tiếng Việt và cùng nghĩa (学生 học sinh, 电话 điện thoại). Từ phiên âm (咖啡) và kiểu ghép âm từng chữ (没关系) không hiện. `pnpm data:build` báo lỗi khi một từ thiếu pinyin, thiếu nghĩa hoặc chưa được duyệt Hán Việt.
 
@@ -105,10 +107,13 @@ Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật trong tiếng
 Nhân vật được dựng bằng MakeHuman (extension MPFB2 trong Blender), đặt tư thế bằng script, render sẵn thành sprite sheet (`public/skins/assistant/`). Lúc chạy, app chỉ đổi khung ảnh và không có engine 3D. Cách render lại:
 
 1. Cài Blender 4.5 LTS và extension MPFB. Cài các gói tài sản `makehuman_system_assets`, `shirts02`, `skirts02` và `glasses01`.
-2. Chạy `pnpm skin:render` (cần lệnh `blender` trong PATH). Một số chế độ khác:
-   - `blender -b --python tools/skins/makehuman/build.py -- frames rest think_05`: chỉ render vài khung để xem thử.
-   - `-- check`: kiểm tay có chạm đúng điểm đích không, có xuyên vào thân hay quần áo không.
-3. Chạy `pnpm skin:pack` (cần Python có `pillow`).
+2. Chạy `pnpm skin:check` để kiểm toàn bộ tư thế: điểm đích tay, giới hạn gập cổ tay, tay xuyên thân/quần áo và chân xuyên váy. Báo cáo nằm ở `.cache/render3d/reference-v3/validation.json`.
+3. Chạy `pnpm skin:render`, rồi `pnpm skin:pack`. Packer yêu cầu báo cáo kiểm tra đạt và cùng phiên bản mã với ảnh render. Script tự tìm Blender portable trong `.cache/sources/mh/`, Blender trong PATH hoặc biến `BLENDER_EXE`; Python/Pillow có thể dùng môi trường `.cache/venv/`.
+4. `pnpm skin:save` lưu mô hình, texture đóng gói và timeline có đánh dấu từng động tác vào `output/character/tieumai-reference.blend`.
+
+Lệnh kiểm nhanh: `python tools/skins/run.py frames rest wave_8 think_10`; `python tools/skins/run.py check rest hair_06 happy_09`. Kiểm nhanh không thay thế báo cáo toàn bộ. Tạo trang xem thử cục bộ: `.cache/venv/Scripts/python tools/skins/review.py`, rồi mở `output/character/review.html`.
+
+Trang phục bản tham chiếu gồm áo trắng ngắn, nơ đen, váy ôm kẻ xám và kính gọng bạc; hình học/vật liệu ở `tools/skins/makehuman/reference_style.py`. Đây là mô hình dựng theo đặc điểm ảnh, chưa phải bản sao chân dung chính xác. Ảnh cá nhân và file Blender chỉ lưu cục bộ trong thư mục output bị loại khỏi Git.
 
 ## Giấy phép
 
@@ -118,6 +123,6 @@ Nhân vật được dựng bằng MakeHuman (extension MPFB2 trong Blender), đ
 | Dữ liệu từ vựng (`data/`, dữ liệu sinh ra) | CC BY-SA 4.0 |
 | Dữ liệu nét chữ | Arphic Public License |
 | Font | SIL OFL 1.1 |
-| Nhân vật | Tài sản MakeHuman CC0; áo (Elvaerwyn) và chân váy (MTKnife) theo CC-BY |
+| Nhân vật | Tài sản MakeHuman CC0; áo (Elvaerwyn) theo CC-BY; váy kẻ, nơ và kính dựng mới theo MIT |
 
 Chi tiết và ghi công: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), và trang **Giới thiệu** trong app.

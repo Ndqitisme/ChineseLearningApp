@@ -1,4 +1,5 @@
 <script lang="ts">
+  import BackButton from '../components/BackButton.svelte';
   import { PitchDetector } from 'pitchy';
   import { parseMarked, type Tone } from '../../lib/pinyin.ts';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
@@ -81,7 +82,7 @@
 </script>
 
 <div class="page">
-  <a href="#/practice" class="muted back">← Luyện tập</a>
+  <BackButton to="/practice" label="Luyện tập" />
   <h1>🎵 Thanh điệu</h1>
   <p class="lead">{deck.title} · chọn thanh cho từng âm tiết, rồi thử đọc to để so đường cao độ.</p>
 
@@ -149,7 +150,6 @@
 </div>
 
 <style>
-  .back { text-decoration: none; font-weight: 700; }
   .drill { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
   .hz { font-size: 64px; line-height: 1.1; }
   .vi { font-weight: 900; font-size: 19px; }

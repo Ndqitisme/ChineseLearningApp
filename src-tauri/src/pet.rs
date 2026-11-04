@@ -43,7 +43,7 @@ pub fn pet_set_hit_rects(state: State<'_, HitState>, rects: Vec<Rect>) {
 
 pub fn create_pet_window(app: &AppHandle) -> tauri::Result<()> {
     let pet = WebviewWindowBuilder::new(app, PET_LABEL, WebviewUrl::App("pet.html".into()))
-        .title("Tiểu Mai")
+        .title("TieuMai - Chinese Learning")
         .inner_size(340.0, 330.0)
         .transparent(true)
         .no_redirection_bitmap(true)

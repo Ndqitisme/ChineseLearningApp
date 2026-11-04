@@ -1,4 +1,6 @@
 <script lang="ts">
+  import BackButton from '../components/BackButton.svelte';
+  import { onMount, tick } from 'svelte';
   import { topicById, wordById } from '../../lib/data.ts';
   import { requestExposurePatch } from '../../lib/exposure.ts';
   import { isHan } from '../../lib/pinyin.ts';
@@ -14,6 +16,23 @@
   const card = $derived(word ? progress.srs[word.id] : undefined);
   let speakError = $state('');
   let strokeKey = $state(0);
+  let strokeEls = $state<HanziStroke[]>([]);
+  let strokeRun = 0;
+
+  /** One character at a time, left to right: animating all of them at once is hard to follow. */
+  async function playStrokes() {
+    const run = ++strokeRun;
+    await tick();
+    for (const el of strokeEls) {
+      if (run !== strokeRun) return;
+      await el?.play();
+    }
+  }
+  function replayStrokes() {
+    strokeKey++;
+    playStrokes();
+  }
+  onMount(playStrokes);
 
   async function say(slot: 'female' | 'male', text: string) {
     speakError = '';
@@ -28,12 +47,12 @@
 
 <div class="page">
   {#if word}
-    <button class="btn ghost back" onclick={() => history.back()}>← Quay lại</button>
+    <BackButton to="/search" useHistory />
     <div class="hero card">
       <div class="strokes">
         {#key strokeKey}
           {#each [...word.hanzi].filter(isHan) as ch, i (i)}
-            <HanziStroke char={ch} size={[...word.hanzi].length > 2 ? 120 : 170} />
+            <HanziStroke bind:this={strokeEls[i]} char={ch} size={[...word.hanzi].length > 2 ? 120 : 170} mode="sequence" />
           {/each}
         {/key}
       </div>
@@ -49,7 +68,7 @@
           {/each}
         </div>
         <div class="row btns">
-          <button class="btn" onclick={() => strokeKey++}>✍️ Xem lại nét</button>
+          <button class="btn" onclick={replayStrokes}>✍️ Xem lại nét</button>
           {#if speechAvailable()}
             <button class="btn" onclick={() => say('female', word.hanzi)}>🔊 Giọng nữ</button>
             <button class="btn" onclick={() => say('male', word.hanzi)}>🔊 Giọng nam</button>
@@ -95,7 +114,6 @@
 </div>
 
 <style>
-  .back { padding-left: 0; color: var(--text-2); }
   .hero { display: flex; gap: 28px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
   .strokes { display: flex; gap: 10px; flex-wrap: wrap; }
   .info { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 6px; }

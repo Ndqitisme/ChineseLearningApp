@@ -2,13 +2,28 @@
   // Shows pinyin for any Chinese character under the pointer, unless the surrounding area
   // already displays pinyin ([data-has-pinyin]) or hides it on purpose ([data-hover-pinyin="off"]).
   import { onMount } from 'svelte';
-  import { MAX_WORD_LEN, wordByHanzi } from '../../lib/data.ts';
-  import { isHan, toSyllables, type Syllable } from '../../lib/pinyin.ts';
-  import Pinyin from '../../lib/ui/Pinyin.svelte';
+  import { MAX_WORD_LEN, wordByHanzi } from '../data.ts';
+  import { isHan, toSyllables, type Syllable } from '../pinyin.ts';
+  import Pinyin from './Pinyin.svelte';
 
-  interface Tip { x: number; y: number; text: string; pinyin: string; syllables: Syllable[]; hanviet?: string; vi?: string }
+  /** x is the hovered character's centre; top/bottom its edges (viewport px). */
+  interface Tip { x: number; top: number; bottom: number; text: string; pinyin: string; syllables: Syllable[]; hanviet?: string; vi?: string }
   let tip = $state<Tip | null>(null);
+  let tipEl = $state<HTMLDivElement>();
+  let pos = $state({ left: 0, top: 0 });
+
+  // Above the character when it fits, otherwise below; always kept inside the window.
+  $effect(() => {
+    if (!tip || !tipEl) return;
+    const gap = 8, margin = 4;
+    const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    const above = tip.top - gap - h;
+    const top = above >= margin ? above : Math.min(tip.bottom + gap, innerHeight - h - margin);
+    const left = Math.min(Math.max(tip.x - w / 2, margin), innerWidth - w - margin);
+    pos = { left, top };
+  });
   let pinyinPro: typeof import('pinyin-pro').pinyin | undefined;
+  let pinyinProLoading = false;
   const contextCache = new Map<string, string[]>();
 
   function caretAt(x: number, y: number): { node: Text; offset: number } | null {
@@ -40,10 +55,15 @@
     for (let len = Math.min(MAX_WORD_LEN, text.length); len >= 1; len--) {
       for (let start = Math.max(0, i - len + 1); start <= i && start + len <= text.length; start++) {
         const w = wordByHanzi.get(text.slice(start, start + len));
-        if (w) return { x: 0, y: 0, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables, hanviet: w.hanviet, vi: w.vi };
+        if (w) return { x: 0, top: 0, bottom: 0, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables, hanviet: w.hanviet, vi: w.vi };
       }
     }
-    if (!pinyinPro) return null;
+    // pinyin-pro (~300 KB) is only for characters outside the dictionary: load it on first need,
+    // so the assistant window doesn't pay for it until someone hovers such a character.
+    if (!pinyinPro) {
+      if (!pinyinProLoading) { pinyinProLoading = true; import('pinyin-pro').then((m) => (pinyinPro = m.pinyin)); }
+      return null;
+    }
     let readings = contextCache.get(text);
     if (!readings) {
       readings = pinyinPro(text, { type: 'array', nonZh: 'consecutive' });
@@ -53,7 +73,7 @@
     const hanBefore = [...text.slice(0, i)].filter(isHan).length;
     const nonHanRunsBefore = text.slice(0, i).split(/\p{Script=Han}+/u).filter(Boolean).length;
     const py = readings[hanBefore + nonHanRunsBefore];
-    return py ? { x: 0, y: 0, text: text[i], pinyin: py, syllables: toSyllables([py]) } : null;
+    return py ? { x: 0, top: 0, bottom: 0, text: text[i], pinyin: py, syllables: toSyllables([py]) } : null;
   }
 
   let frame = 0;
@@ -73,12 +93,11 @@
       range.setStart(caret.node, i);
       range.setEnd(caret.node, i + 1);
       const r = range.getBoundingClientRect();
-      tip = { ...found, x: r.left + r.width / 2, y: r.top };
+      tip = { ...found, x: r.left + r.width / 2, top: r.top, bottom: r.bottom };
     });
   }
 
   onMount(() => {
-    import('pinyin-pro').then((m) => (pinyinPro = m.pinyin));
     document.addEventListener('pointermove', onMove, { passive: true });
     const hide = () => (tip = null);
     document.addEventListener('scroll', hide, true);
@@ -90,7 +109,7 @@
 </script>
 
 {#if tip}
-  <div class="tip" style:left="{tip.x}px" style:top="{tip.y}px" data-has-pinyin>
+  <div class="tip" bind:this={tipEl} style:left="{pos.left}px" style:top="{pos.top}px" data-has-pinyin>
     <div class="py"><Pinyin text={tip.pinyin} syllables={tip.syllables} /></div>
     {#if tip.hanviet}<div class="hv">{tip.text} · {tip.hanviet}</div>{/if}
     {#if tip.vi}<div class="vi">{tip.vi}</div>{/if}
@@ -100,7 +119,6 @@
 <style>
   .tip {
     position: fixed;
-    transform: translate(-50%, calc(-100% - 8px));
     pointer-events: none;
     z-index: 1000;
     background: var(--surface);

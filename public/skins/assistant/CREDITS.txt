@@ -4,15 +4,13 @@ and rendered to 2D frames with Blender. Output of MakeHuman itself is CC0.
 Assets used (MakeHuman community asset packs, https://static.makehumancommunity.org/assets/assetpacks.html):
 - Shirt "elvs_male_shirt_untucked_bd1" by Elvaerwyn, CC-BY,
   https://static.makehumancommunity.org/assets/assetpacks/shirts02.html
-  Modified: sleeves shortened, recoloured as denim, bust smoothed.
-- Skirt "mtknife_pleated_mini_skirt" by MTKnife, CC-BY,
-  https://static.makehumancommunity.org/assets/assetpacks/skirts02.html
-  Modified: recoloured charcoal grey.
-- Glasses "toigo_round_glasses_leopard" by MargaretToigo, CC0,
-  https://static.makehumancommunity.org/assets/assetpacks/glasses01.html
-  Modified: metal frame material, clear lenses, scaled down 10%.
-- Hair ponytail01, shoes04 (socks removed), eyebrow010, eyelashes02, high-poly eyes,
-  teeth_base, tongue01, skin young_asian_female, expression targets: MakeHuman system
+  Modified: short sleeves, asymmetric cropped hem, white woven cotton, bust smoothed.
+- Fitted tartan skirt, bow, pearl brooch, silver wire spectacles and see-through bangs
+  (hair cards): original procedural geometry in
+  tools/skins/makehuman/reference_style.py, MIT (project LICENSE).
+- Hair ponytail01 (tinted light brown), shoes04 (socks removed), eyebrow001 (tinted),
+  eyelashes02, high-poly eyes (brown iris, darkened), teeth_base, tongue01,
+  skin young_caucasian_female (warmed, lips tinted), expression targets: MakeHuman system
   assets, CC0.
 
 Licences are as listed in the MakeHuman asset pack metadata (shirts02, skirts02, glasses01,

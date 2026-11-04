@@ -42,7 +42,7 @@ pub fn show_main(app: &tauri::AppHandle, route: Option<&str>) -> tauri::Result<(
         None => "index.html".to_string(),
     };
     WebviewWindowBuilder::new(app, MAIN_LABEL, WebviewUrl::App(url.into()))
-        .title("Tiểu Mai")
+        .title("TieuMai - Chinese Learning")
         .inner_size(1120.0, 760.0)
         .min_inner_size(860.0, 600.0)
         .decorations(false)
@@ -95,7 +95,7 @@ pub fn run() {
             Ok(())
         })
         .build(tauri::generate_context!())
-        .expect("error while building Tiểu Mai");
+        .expect("error while building TieuMai - Chinese Learning");
 
     app.run(|_app, event| {
         // Closing every window must not quit: the app lives in the tray.

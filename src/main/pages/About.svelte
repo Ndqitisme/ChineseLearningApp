@@ -4,8 +4,7 @@
 
   const SOURCES = [
     { name: 'MakeHuman / MPFB2', what: 'Dựng nhân vật trợ lý 3D (tóc, giày, kính, da, biểu cảm), render sẵn thành ảnh', license: 'CC0', url: 'https://static.makehumancommunity.org/assets/assetpacks.html' },
-    { name: 'Áo sơ mi “elvs_male_shirt_untucked_bd1” — Elvaerwyn', what: 'Áo của nhân vật (cắt tay ngắn, đổi màu jean)', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/shirts02.html' },
-    { name: 'Chân váy “mtknife_pleated_mini_skirt” — MTKnife', what: 'Chân váy của nhân vật (đổi màu xám)', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/skirts02.html' },
+    { name: 'Áo sơ mi “elvs_male_shirt_untucked_bd1” — Elvaerwyn', what: 'Áo của nhân vật (tay ngắn, cắt lửng, vải cotton trắng)', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/shirts02.html' },
     { name: 'CVDICT', what: 'Nghĩa tiếng Việt', license: 'CC BY-SA 4.0', url: 'https://github.com/ph0ngp/CVDICT' },
     { name: 'CC-CEDICT', what: 'Nền của CVDICT, đối chiếu pinyin', license: 'CC BY-SA 4.0', url: 'https://cc-cedict.org/wiki/' },
     { name: 'complete-hsk-vocabulary', what: 'Danh sách từ HSK 3.0', license: 'MIT', url: 'https://github.com/drkameleon/complete-hsk-vocabulary' },

@@ -1,5 +1,7 @@
 <script lang="ts">
+  import BackButton from '../components/BackButton.svelte';
   import { isHan } from '../../lib/pinyin.ts';
+  import { settings, updateSettings } from '../../lib/settings.svelte.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
   import HanziStroke from '../components/HanziStroke.svelte';
@@ -16,6 +18,9 @@
   let showOutline = $state(true);
   let result = $state<number | null>(null);
   let totalMistakes = $state(0);
+  /** The demo plays automatically only the first time a character comes up, not on "Viết lại". */
+  let firstTry = $state(true);
+  let board = $state<HanziStroke>();
 
   const word = $derived(queue[wi]);
   const chars = $derived(word ? [...word.hanzi].filter(isHan) : []);
@@ -28,15 +33,16 @@
     result = null;
     if (ci + 1 < chars.length) ci++;
     else { wi++; ci = 0; }
+    firstTry = true;
     attempt++;
   }
-  function retry() { result = null; attempt++; }
+  function retry() { result = null; firstTry = false; attempt++; }
 </script>
 
 <div class="page">
-  <a href="#/practice" class="muted back">← Luyện tập</a>
+  <BackButton to="/practice" label="Luyện tập" />
   <h1>✍️ Viết theo nét</h1>
-  <p class="lead">{deck.title} · vẽ từng nét bằng chuột theo đúng thứ tự. Sai 3 lần thì có gợi ý.</p>
+  <p class="lead">{deck.title} · xem mẫu thứ tự nét, rồi tự vẽ lại bằng chuột. Bí thì bấm “Gợi ý nét”; sai 3 lần cũng tự có gợi ý.</p>
 
   {#if word}
     <div class="layout">
@@ -48,11 +54,18 @@
         <Pinyin text={word.pinyin} syllables={word.syllables} />
         <div class="vi">{word.vi}</div>
         <label class="row small"><input type="checkbox" bind:checked={showOutline} onchange={() => attempt++} /> Hiện chữ mờ để tô theo</label>
+        <label class="row small"><input type="checkbox" checked={settings.writeDemo} onchange={(e) => updateSettings({ writeDemo: e.currentTarget.checked })} /> Tự xem mẫu khi sang chữ mới</label>
       </div>
       <div class="board">
         {#key `${wi}-${ci}-${attempt}`}
-          <HanziStroke char={chars[ci]} size={300} mode="quiz" {showOutline} oncomplete={complete} />
+          <HanziStroke bind:this={board} char={chars[ci]} size={300} mode="quiz" {showOutline} demoFirst={settings.writeDemo && firstTry} oncomplete={complete} />
         {/key}
+        {#if result === null}
+          <div class="row tools">
+            <button class="btn" onclick={() => board?.demo()}>▶ Xem mẫu</button>
+            <button class="btn" onclick={() => board?.hint()}>💡 Gợi ý nét</button>
+          </div>
+        {/if}
         {#if result !== null}
           <div class="result card">
             <b class={result === 0 ? 'good' : result < 3 ? '' : 'bad'}>{result === 0 ? 'Hoàn hảo! 🎉' : `Xong, sai ${result} nét`}</b>
@@ -76,7 +89,6 @@
 </div>
 
 <style>
-  .back { text-decoration: none; font-weight: 700; }
   .layout { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
   .target { display: flex; flex-direction: column; gap: 6px; min-width: 240px; font-size: 18px; }
   .word { font-size: 56px; letter-spacing: 4px; }
@@ -86,6 +98,7 @@
   .vi { font-weight: 900; font-size: 20px; }
   .small { font-size: 13px; margin-top: 8px; }
   .board { display: flex; flex-direction: column; gap: 12px; }
+  .tools { gap: 8px; }
   .result { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .done { text-align: center; padding: 30px; }
   .done .big { font-size: 48px; }

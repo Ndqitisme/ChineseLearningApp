@@ -7,7 +7,7 @@ import { pinyin as pinyinPro } from 'pinyin-pro';
 import {
   isHan, joinWord, numericToMarked, parseMarked, splitSyllables, toSyllables,
 } from '../../src/lib/pinyin.ts';
-import type { Dataset, Example, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
+import type { Dataset, Example, QA, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
 import { fullGloss, parseCedict, referenceOf, shortGloss, type CedictEntry } from './cedict.ts';
 import { CACHE_DIR } from './sources.ts';
 
@@ -235,6 +235,22 @@ function checkExample(ex: Example, ctx: string) {
   });
 }
 
+// ---------------------------------------------------------------- sentence-building questions
+// Answers are written with spaces between words ("我 叫 小梅。"): those are the tiles to arrange.
+const topicIds = new Set(topics.map((t) => t.id));
+const qaSource = JSON.parse(readFileSync('data/sentences/qa.json', 'utf8')) as Omit<QA, 'id'>[];
+const qa: QA[] = qaSource.map((x, i) => {
+  const id = `qa-${String(i + 1).padStart(3, '0')}`;
+  for (const k of ['topic', 'q', 'qVi', 'a', 'aPy', 'aVi'] as const) if (!x[k]?.trim()) errors.push(`${id}: missing ${k}`);
+  if (!topicIds.has(x.topic)) errors.push(`${id}: unknown topic ${x.topic}`);
+  for (const answer of [x.a, ...(x.alt ?? [])]) {
+    const tiles = answer.split(/[\s，。？！、,.?!]+/).filter(Boolean).length;
+    if (tiles < 3 || tiles > 9) errors.push(`${id}: answer "${answer}" needs 3–9 words, has ${tiles}`);
+  }
+  checkExample({ zh: x.a.replace(/ /g, ''), py: x.aPy, vi: x.aVi }, id);
+  return { id, ...x };
+});
+
 // ---------------------------------------------------------------- strokes
 const strokeChars = new Set<string>();
 for (const w of words.values()) for (const c of w.hanzi) if (isHan(c)) strokeChars.add(c);
@@ -270,12 +286,13 @@ for (const w of words.values()) {
   for (const c of w.hanzi + (w.ex?.zh ?? '')) charset.add(c);
 }
 for (const t of topics) for (const c of t.titleZh) charset.add(c);
+for (const x of qa) for (const c of x.q + x.a) charset.add(c);
 
 mkdirSync(REPORT_DIR, { recursive: true });
 for (const [name, lines] of Object.entries(reports)) writeFileSync(join(REPORT_DIR, `${name}.tsv`), lines.join('\n') + '\n');
 writeFileSync('.cache/charset.txt', [...charset].filter(isHan).join(''));
 
-const dataset: Dataset = { words: [...words.values()], topics, hsk: hskLevels };
+const dataset: Dataset = { words: [...words.values()], topics, hsk: hskLevels, qa };
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(join(OUT_DIR, 'dataset.json'), JSON.stringify(dataset));
 

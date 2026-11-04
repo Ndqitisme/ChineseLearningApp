@@ -9,6 +9,7 @@
     { href: '#/quiz/hanzi', icon: '🔤', title: 'Chọn mặt chữ', desc: 'Đọc nghĩa tiếng Việt, tìm đúng chữ Hán.' },
     { href: '#/quiz/listen', icon: '👂', title: 'Nghe chọn chữ', desc: speechAvailable() ? 'Nghe phát âm, chọn chữ đúng.' : 'Cần cài giọng đọc trong Cài đặt.', off: !speechAvailable() },
     { href: '#/write', icon: '✍️', title: 'Viết theo nét', desc: 'Vẽ từng nét đúng thứ tự, có gợi ý khi sai.' },
+    { href: '#/build/order', icon: '🧩', title: 'Ghép câu', desc: 'Sắp xếp từ thành câu đúng, hoặc ghép câu trả lời cho câu hỏi. Chấm điểm theo câu chuẩn.' },
     { href: '#/tones', icon: '🎵', title: 'Thanh điệu', desc: 'Chọn thanh cho từng âm, ghi âm và so đường cao độ.' },
     { href: '#/review', icon: '🔁', title: `Ôn tập (${due})`, desc: 'Thẻ ghi nhớ, lịch ôn tự động theo FSRS.' },
   ]);

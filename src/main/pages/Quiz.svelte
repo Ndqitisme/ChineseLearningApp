@@ -1,4 +1,5 @@
 <script lang="ts">
+  import BackButton from '../components/BackButton.svelte';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
   import { speak } from '../../lib/speech/index.ts';
   import { gradeFromAnswer, review } from '../../lib/srs.ts';
@@ -61,7 +62,7 @@
 <svelte:window onkeydown={onKey} />
 
 <div class="page">
-  <a href="#/practice" class="muted back">← Luyện tập</a>
+  <BackButton to="/practice" label="Luyện tập" />
   <h1>{mode === 'meaning' ? '🧠 Đoán nghĩa' : mode === 'hanzi' ? '🔤 Chọn mặt chữ' : '👂 Nghe chọn chữ'}</h1>
   <p class="lead">{deck.title} · bấm phím 1–4 để chọn, Enter để qua câu</p>
 
@@ -116,7 +117,6 @@
 </div>
 
 <style>
-  .back { text-decoration: none; font-weight: 700; }
   .progress { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
   .progress i { display: block; height: 100%; background: var(--primary); transition: width .3s; }
   .question { text-align: center; padding: 26px; position: relative; }

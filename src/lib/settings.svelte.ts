@@ -23,6 +23,8 @@ export interface Settings {
   tokenOverrides: Record<string, string>;
   customCss: string;
   petEnabled: boolean;
+  /** false = keep only the word bubble on screen, without the character. */
+  petCharacter: boolean;
   petScale: number;
   /** How long each word stays in the bubble before the next one replaces it. */
   wordSec: number;
@@ -38,14 +40,19 @@ export interface Settings {
   hsk: number[];
   speech: SpeechSettings;
   onboarded: boolean;
+  /** Writing practice plays the stroke-order demo before each new character. */
+  writeDemo: boolean;
+  /** Bumped when a default changes in a way existing installs should follow (see initSettings). */
+  settingsVersion: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: 'sakura',
+  theme: 'ocean',
   mode: 'system',
   tokenOverrides: {},
   customCss: '',
   petEnabled: true,
+  petCharacter: true,
   petScale: 3,
   wordSec: 18,
   guessFirst: true,
@@ -64,6 +71,8 @@ export const DEFAULT_SETTINGS: Settings = {
     packDir: '',
   },
   onboarded: false,
+  writeDemo: true,
+  settingsVersion: 2,
 };
 
 export const settings: Settings = $state(structuredClone(DEFAULT_SETTINGS));
@@ -78,7 +87,12 @@ function merge(saved: Partial<Settings> | undefined) {
 
 export async function initSettings() {
   store = await load('settings.json', { autoSave: 300, defaults: {} });
-  merge(await store.get<Partial<Settings>>('settings'));
+  const saved = await store.get<Partial<Settings>>('settings');
+  merge(saved);
+  // v2 made "Biển xanh" the default theme: installs still on the old default (sakura) move over once.
+  if (saved && (saved.settingsVersion ?? 1) < 2) {
+    await updateSettings({ settingsVersion: 2, ...(saved.theme === 'sakura' ? { theme: 'ocean' as const } : {}) });
+  }
   await store.onKeyChange<Settings>('settings', (v) => merge(v));
 }
 

@@ -11,10 +11,17 @@
     anchor: Anchor;
     starred: boolean;
     canSpeak: boolean;
+    /** false when the character is hidden: no tail pointing at her head. */
+    tail: boolean;
+    /** The topic line doubles as a drag handle when there is no character to grab. */
+    draggable: boolean;
     showHanviet: boolean;
     showExample: boolean;
     onopen: () => void;
     onspeak: () => void;
+    onsetupvoice: () => void;
+    onhandledown: (e: PointerEvent) => void;
+    onhandlemove: (e: PointerEvent) => void;
     onknown: () => void;
     onstar: () => void;
     onreveal: () => void;
@@ -28,6 +35,7 @@
 <div
   class="bubble"
   class:right={p.anchor.h === 'right'}
+  class:notail={!p.tail}
   role="dialog"
   aria-label="Từ mới"
   tabindex="-1"
@@ -35,12 +43,29 @@
   onpointerleave={() => p.onhover(false)}
 >
   <div class="content" class:out={p.swapping}>
-  <div class="meta">
+  <div
+    class="meta"
+    class:handle={p.draggable}
+    role="presentation"
+    title={p.draggable ? 'Kéo để di chuyển' : undefined}
+    onpointerdown={p.draggable ? p.onhandledown : undefined}
+    onpointermove={p.draggable ? p.onhandlemove : undefined}
+  >
     {#if topic}<span>{topic.icon} {topic.title}</span>{/if}
     {#if p.word.hsk}<span class="hsk">HSK {p.word.hsk}</span>{/if}
   </div>
 
-  <button class="hanzi han {size}" onclick={p.onopen} title="Mở trong app">{p.word.hanzi}</button>
+  <!-- Pinyin is shown under the word once revealed; before that, hovering must not give it away. -->
+  <div class="head" data-has-pinyin={p.revealed ? '' : undefined} data-hover-pinyin={p.revealed ? undefined : 'off'}>
+    <button class="hanzi han {size}" onclick={p.onopen} title="Mở trong app">{p.word.hanzi}</button>
+    <button
+      class="speak"
+      class:off={!p.canSpeak}
+      onclick={p.canSpeak ? p.onspeak : p.onsetupvoice}
+      title={p.canSpeak ? 'Nghe phát âm' : 'Chưa cài giọng đọc — bấm để cài'}
+      aria-label="Nghe phát âm"
+    >🔊</button>
+  </div>
 
   {#if p.revealed}
     <div class="reveal">
@@ -56,7 +81,6 @@
   {/if}
 
   <div class="actions">
-    {#if p.canSpeak}<button onclick={p.onspeak} title="Nghe phát âm">🔊</button>{/if}
     <button onclick={p.onknown} title="Mình biết từ này rồi">✓ Biết rồi</button>
     <button class:on={p.starred} onclick={p.onstar} title="Lưu vào sổ tay">{p.starred ? '★' : '☆'}</button>
   </div>
@@ -93,6 +117,7 @@
     border-bottom-right-radius: 4px;
   }
   .bubble.right::after { left: auto; right: 26px; }
+  .bubble.notail::after { display: none; }
   @keyframes pop {
     from { transform: scale(0.6); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
@@ -123,6 +148,21 @@
     border-radius: 10px;
   }
   .hanzi.long { font-size: 34px; }
+  .head { display: flex; align-items: center; justify-content: center; gap: 2px; }
+  .speak {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface-2);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .speak:hover { background: var(--accent); }
+  .speak.off { opacity: .45; filter: grayscale(1); }
+  .meta.handle { cursor: grab; }
   .hanzi:hover { background: var(--surface-2); }
   .reveal { animation: fade 0.25s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(3px); } }

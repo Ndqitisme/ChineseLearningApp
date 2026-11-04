@@ -34,9 +34,13 @@ export interface Topic {
   words: string[];
 }
 
+/** A question whose answer is rebuilt from word tiles. In `a` / `alt`, spaces mark the tiles ("我 叫 小梅。"). */
+export interface QA { id: string; topic: string; q: string; qVi: string; a: string; alt?: string[]; aPy: string; aVi: string }
+
 export interface Dataset {
   words: Word[];
   topics: Topic[];
   /** Word ids per HSK level, ordered by frequency. */
   hsk: Record<'1' | '2' | '3', string[]>;
+  qa: QA[];
 }

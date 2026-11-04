@@ -15,7 +15,8 @@
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
-  import { defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
+  import { BASE_BUBBLE_ROOM, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
+  import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
 
   const win = getCurrentWindow();
   const player = new SpritePlayer();
@@ -37,10 +38,20 @@
 
   let skin = $state<Skin | null>(null);
   const spriteScale = $derived(skin ? displayScale(skin, settings.petScale) : 1);
-  const spriteCss = $derived(skin ? { w: Math.round(skin.frameW * spriteScale), h: Math.round(skin.frameH * spriteScale) } : { w: 150, h: 300 });
+  // With the character hidden, the window holds only the bubble. The "sprite" then becomes a
+  // zero-height strip along the window bottom, so placement and snapping keep working unchanged.
+  const BUBBLE_ONLY_W = 290;
+  /** Grows when a bubble (long meaning, example sentence) needs more height than the default. */
+  let bubbleRoom = $state(BASE_BUBBLE_ROOM);
+  const spriteCss = $derived(
+    !settings.petCharacter ? { w: BUBBLE_ONLY_W, h: 0 }
+    : skin ? { w: Math.round(skin.frameW * spriteScale), h: Math.round(skin.frameH * spriteScale) }
+    : { w: 150, h: 300 },
+  );
   // Side-facing art is mirrored so she always looks toward the middle of the screen.
   const mirror = $derived(!!skin && ((skin.facing === 'left' && anchor.h === 'left') || (skin.facing === 'right' && anchor.h === 'right')));
-  const winCss = $derived(windowSize(spriteCss));
+  const winCss = $derived(settings.petCharacter ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
+  const slotInset = $derived(settings.petCharacter ? { side: spriteCss.w * 0.3, bottom: spriteCss.h + 6 } : { side: 4, bottom: 4 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
   const pool = $derived(studyPool(settings.topics, settings.hsk));
   const starred = $derived(bubble ? !!progress.exposure[bubble.word.id]?.s : false);
@@ -107,8 +118,20 @@
     await ipc.setHitRects(rects);
   }
   $effect(() => {
-    void [ready, skin, mirror, sleeping, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed];
+    void [ready, skin, mirror, sleeping, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
     reportHitRects();
+  });
+  $effect(() => {
+    // Fit the window to the bubble: a tall one was cut off at the top. Grow at once, shrink only
+    // after a clear drop so the window doesn't resize on every word.
+    const el = bubbleEl;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      const needed = Math.ceil(el.offsetHeight) + 34; // gap under it, tail, shadow
+      if (needed > bubbleRoom || needed < bubbleRoom - 60) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   });
   $effect(() => {
     // A bubble removed under the cursor never gets pointerleave; don't let the flag stick.
@@ -228,12 +251,13 @@
   let down: { x: number; y: number } | null = null;
   let lastWave = 0;
 
-  function onSpriteDown(e: PointerEvent) {
+  // Drag starts from the character, or from the bubble's topic line when the character is hidden.
+  function onDragDown(e: PointerEvent) {
     if (e.button !== 0) return;
     down = { x: e.screenX, y: e.screenY };
     menuOpen = false;
   }
-  function onSpriteMove(e: PointerEvent) {
+  function onDragMove(e: PointerEvent) {
     if (!down || !(e.buttons & 1)) return;
     if (Math.hypot(e.screenX - down.x, e.screenY - down.y) < 4) return;
     down = null;
@@ -248,6 +272,9 @@
   function onSpriteUp() {
     if (!down) return;
     down = null;
+    resume();
+  }
+  function resume() {
     if (sleeping) { progress.pausedUntil = 0; saveProgress('pausedUntil'); wake(); }
     nextNow();
   }
@@ -281,6 +308,10 @@
     menuOpen = false;
     await updateSettings({ petEnabled: false });
   }
+  async function toggleCharacter() {
+    menuOpen = false;
+    await updateSettings({ petCharacter: !settings.petCharacter });
+  }
 
   // ------------------------------------------------------------------ lifecycle
   let shown = false;
@@ -299,14 +330,23 @@
     }
   });
 
-  let lastScale = 0;
+  /** Resize for a new size setting or character on/off, keeping the bottom corner on her side put. */
+  async function resizeKeepingCorner() {
+    const pos = await win.outerPosition();
+    const size = await win.outerSize();
+    const scale = await win.scaleFactor();
+    await win.setSize(new LogicalSize(winCss.w, winCss.h));
+    const w = Math.round(winCss.w * scale), h = Math.round(winCss.h * scale);
+    const x = anchor.h === 'right' ? pos.x + size.width - w : pos.x;
+    await win.setPosition(new PhysicalPosition(x, pos.y + size.height - h));
+    await settle();
+  }
+  let lastWin = '';
   $effect(() => {
-    // Resize when the sprite size setting changes, keeping the sprite where it was.
-    const scale = settings.petScale;
-    if (!ready || scale === lastScale) return;
-    const first = lastScale === 0;
-    lastScale = scale;
-    if (!first) win.setSize(new LogicalSize(winCss.w, winCss.h)).then(settle);
+    const key = `${winCss.w}x${winCss.h}`;
+    if (!ready || key === lastWin) return;
+    lastWin = key;
+    resizeKeepingCorner();
   });
 
   onMount(() => {
@@ -317,7 +357,7 @@
       player.setSkin(loaded);
       applyTheme();
       await restorePlacement();
-      lastScale = settings.petScale;
+      lastWin = `${winCss.w}x${winCss.h}`;
       ready = true;
       idleLoop();
     })();
@@ -357,14 +397,17 @@
 </script>
 
 <div class="stage" style:width="{winCss.w}px" style:height="{winCss.h}px">
-  {#if bubble}
+  {#if bubble || (sleeping && !settings.petCharacter)}
     <div
       class="bubble-slot"
       bind:this={bubbleEl}
-      style:left={anchor.h === 'left' ? `${spriteCss.w * 0.3}px` : null}
-      style:right={anchor.h === 'right' ? `${spriteCss.w * 0.3}px` : null}
-      style:bottom="{spriteCss.h + 6}px"
+      role="presentation"
+      style:left={anchor.h === 'left' ? `${slotInset.side}px` : null}
+      style:right={anchor.h === 'right' ? `${slotInset.side}px` : null}
+      style:bottom="{slotInset.bottom}px"
+      oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
     >
+      {#if bubble}
       <Bubble
         word={bubble.word}
         revealed={bubble.revealed}
@@ -372,15 +415,23 @@
         {anchor}
         {starred}
         canSpeak={speechAvailable()}
+        tail={settings.petCharacter}
+        draggable={!settings.petCharacter}
         showHanviet={settings.showHanviet}
         showExample={settings.showExample}
         onopen={() => ipc.openMain(`/word/${encodeURIComponent(bubble!.word.id)}`)}
         onspeak={() => bubble && speak(bubble.word.hanzi).catch(() => {})}
+        onsetupvoice={() => ipc.openMain('/settings/voice')}
+        onhandledown={onDragDown}
+        onhandlemove={onDragMove}
         onknown={() => { if (bubble) patchExposure(bubble.word.id, { known: true }); nextNow(); player.play('happy'); }}
         onstar={() => bubble && patchExposure(bubble.word.id, { starred: !starred })}
         onreveal={reveal}
         onhover={(inside) => (hoveringBubble = inside)}
       />
+      {:else}
+        <button class="nap" onclick={resume}>💤 Tiểu Mai đang nghỉ · bấm để tiếp tục</button>
+      {/if}
     </div>
   {/if}
 
@@ -391,9 +442,9 @@
       onanimationend={reportHitRects}
       role="menu"
       tabindex="-1"
-      style:left={anchor.h === 'left' ? `${spriteCss.w * 0.7}px` : null}
-      style:right={anchor.h === 'right' ? `${spriteCss.w * 0.7}px` : null}
-      style:bottom="{spriteCss.h * 0.45}px"
+      style:left={anchor.h === 'left' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
+      style:right={anchor.h === 'right' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
+      style:bottom="{settings.petCharacter ? spriteCss.h * 0.45 : 6}px"
     >
       <button role="menuitem" onclick={() => { menuOpen = false; nextNow(); }}>✨ Từ tiếp theo</button>
       {#if progress.pausedUntil > Date.now()}
@@ -402,10 +453,12 @@
         <button role="menuitem" onclick={() => pauseFor(30)}>💤 Nghỉ 30 phút</button>
       {/if}
       <button role="menuitem" onclick={() => { menuOpen = false; ipc.openMain(); }}>📖 Mở Tiểu Mai</button>
-      <button role="menuitem" onclick={hidePet}>🙈 Ẩn trợ lý</button>
+      <button role="menuitem" onclick={toggleCharacter}>{settings.petCharacter ? '🙈 Ẩn Tiểu Mai, giữ bảng từ' : '🙋 Hiện lại Tiểu Mai'}</button>
+      <button role="menuitem" onclick={hidePet}>🚫 Ẩn trợ lý</button>
     </div>
   {/if}
 
+  {#if settings.petCharacter}
   <div
     class="sprite-slot"
     class:sleeping
@@ -415,8 +468,8 @@
     role="button"
     tabindex="-1"
     aria-label="Tiểu Mai — bấm để xem từ mới, kéo để di chuyển, chuột phải để mở menu"
-    onpointerdown={onSpriteDown}
-    onpointermove={onSpriteMove}
+    onpointerdown={onDragDown}
+    onpointermove={onDragMove}
     onpointerup={onSpriteUp}
     onpointerenter={onSpriteEnter}
     oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
@@ -424,7 +477,13 @@
     {#if ready && skin}<Sprite {skin} scale={spriteScale} {player} {mirror} />{/if}
     {#if sleeping}<span class="zzz" aria-hidden="true">z<small>z</small></span>{/if}
   </div>
+  {/if}
 </div>
+
+<HoverPinyin />
+
+<!-- A press on the bubble's drag handle that never became a drag must not linger. -->
+<svelte:window onpointerup={() => (down = null)} />
 
 <style>
   :global(html), :global(body) {
@@ -442,6 +501,17 @@
   }
   .bubble-slot {
     position: absolute;
+  }
+  .nap {
+    border: 2px solid var(--bubble-border);
+    border-radius: 99px;
+    background: var(--bubble-bg);
+    color: var(--bubble-text);
+    box-shadow: var(--shadow);
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
   }
   .menu {
     position: absolute;

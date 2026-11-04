@@ -9,7 +9,7 @@
   import { loadSkin, type Skin } from '../lib/sprite/skins.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import { isDue } from '../lib/srs.ts';
-  import HoverPinyin from './components/HoverPinyin.svelte';
+  import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
   import TitleBar from './components/TitleBar.svelte';
   import { go, route } from './router.svelte.ts';
   import About from './pages/About.svelte';
@@ -25,6 +25,7 @@
   import Topics from './pages/Topics.svelte';
   import WordPage from './pages/Word.svelte';
   import Write from './pages/Write.svelte';
+  import Build from './pages/Build.svelte';
   import './app.css';
 
   let ready = $state(false);
@@ -43,7 +44,7 @@
     { path: '/settings', name: 'settings', icon: '⚙️', label: 'Cài đặt' },
     { path: '/about', name: 'about', icon: '💌', label: 'Giới thiệu' },
   ];
-  const ACTIVE: Record<string, string> = { topic: 'topics', hsk: 'topics', word: 'search', quiz: 'practice', write: 'practice', tones: 'practice' };
+  const ACTIVE: Record<string, string> = { topic: 'topics', hsk: 'topics', word: 'search', quiz: 'practice', write: 'practice', tones: 'practice', build: 'practice' };
   const active = $derived(ACTIVE[route.name] ?? route.name);
 
   onMount(() => {
@@ -91,10 +92,11 @@
           {:else if route.name === 'quiz'}<Quiz params={route.params} />
           {:else if route.name === 'review'}<Review />
           {:else if route.name === 'write'}<Write params={route.params} />
+          {:else if route.name === 'build'}<Build params={route.params} />
           {:else if route.name === 'tones'}<Tones params={route.params} />
           {:else if route.name === 'search'}<Search query={route.params[0] ?? ''} />
           {:else if route.name === 'notebook'}<Notebook />
-          {:else if route.name === 'settings'}<Settings />
+          {:else if route.name === 'settings'}<Settings section={route.params[0]} />
           {:else if route.name === 'about'}<About />
           {:else}<Home />{/if}
         {/key}

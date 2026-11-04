@@ -1,9 +1,9 @@
 """Builds the assistant with MakeHuman (MPFB2 in Blender) and renders it into sprite frames.
 
-The character is assembled from CC0 / CC-BY MakeHuman community assets (credits in
-tools/skins/pack.py): young Asian woman, fair skin, brown ponytail, round glasses, denim
-short-sleeve shirt, charcoal pleated mini skirt. Calm hand-keyed animations play at real speed
-and are rendered to transparent PNGs + meta.json for tools/skins/pack.py.
+The reference variant uses reshaped MakeHuman anatomy and hair, a cropped white blouse,
+black bow, original fitted tartan skirt and thin silver spectacles (credits in pack.py).
+Anatomical hand orientation, capped wrist swing and eased pose paths are rendered into
+transparent PNGs. The editable Blender timeline is available through the `save` mode.
 
 Run (Blender 4.5 with MPFB and its asset packs installed, see README):
   blender -b --python tools/skins/makehuman/build.py -- probe            # rest pose still
@@ -13,9 +13,13 @@ Run (Blender 4.5 with MPFB and its asset packs installed, see README):
   blender -b --python tools/skins/makehuman/build.py -- full             # all frames + meta.json
 """
 import json
+import hashlib
 import math
 import pathlib
 import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from reference_style import apply as apply_reference_style
 
 import bpy
 import bmesh
@@ -28,7 +32,7 @@ from bl_ext.user_default.mpfb.services.targetservice import TargetService
 from bl_ext.user_default.mpfb.services.locationservice import LocationService
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-OUT = ROOT / ".cache" / "render3d" / "frames"
+OUT = ROOT / ".cache" / "render3d" / "reference-v4" / "frames"
 MODE = sys.argv[sys.argv.index("--") + 1] if "--" in sys.argv else "probe"
 W, H = 460, 840
 
@@ -47,7 +51,7 @@ def srgb(r, g, b):
 
 # ---------------------------------------------------------------- character
 PHENOTYPE = {
-    "gender": 0.0, "age": 0.46, "muscle": 0.45, "weight": 0.40, "proportions": 0.9,
+    "gender": 0.0, "age": 0.43, "muscle": 0.30, "weight": 0.40, "proportions": 0.9,
     "height": 0.45, "cupsize": 0.55, "firmness": 0.7,
     "race": {"asian": 1.0, "caucasian": 0.0, "african": 0.0},
 }
@@ -57,26 +61,41 @@ PHENOTYPE = {
 BODY_TARGETS = [
     ("measure-hips-circ-decr", 0.3), ("buttocks-volume-decr", 0.25), ("hip-scale-horiz-decr", 0.15),
     ("measure-waist-circ-decr", 0.3), ("stomach-tone-incr", 0.3),
-    ("measure-thigh-circ-decr", 0.25), ("measure-calf-circ-decr", 0.15),
+    ("stomach-pregnant-decr", 0.40),
+    ("measure-thigh-circ-decr", 0.35), ("measure-calf-circ-decr", 0.22),
     ("upperlegs-height-incr", 0.3), ("lowerlegs-height-incr", 0.25),
     ("torso-vshape-incr", 0.1), ("neck-scale-vert-incr", 0.1), ("neck-scale-horiz-decr", 0.1),
     ("l-hand-scale-decr", 0.25), ("r-hand-scale-decr", 0.25),
     ("l-foot-scale-decr", 0.2), ("r-foot-scale-decr", 0.2),
 ]
-# Larger eyes, narrower nose, fuller lips, softer cheeks and a slightly tapered chin.
+# Face matched to the supplied (AI-generated) beauty reference with MakeHuman targets only:
+# soft round-oval face, small chin, full cheeks, large slightly downturned eyes, straight soft
+# brows, small narrow nose, full lips with a slight smile.
 FACE_SHAPE = [
-    ("l-eye-scale-incr", 0.45), ("r-eye-scale-incr", 0.45),
-    ("l-eye-height2-incr", 0.4), ("r-eye-height2-incr", 0.4),
-    ("l-eye-corner2-up", 0.15), ("r-eye-corner2-up", 0.15),
-    ("nose-width1-decr", 0.25), ("nose-width2-decr", 0.25), ("nose-width3-decr", 0.25),
-    ("nose-scale-horiz-decr", 0.2), ("nose-trans-forward", 0.1), ("nose-point-width-decr", 0.2),
-    ("mouth-upperlip-volume-incr", 0.35), ("mouth-lowerlip-volume-incr", 0.35),
-    ("mouth-cupidsbow-incr", 0.3), ("mouth-scale-horiz-decr", 0.1), ("mouth-angles-up", 0.1),
-    ("chin-width-decr", 0.3), ("chin-triangle", 0.3), ("chin-height-decr", 0.1),
-    ("l-cheek-bones-incr", 0.2), ("r-cheek-bones-incr", 0.2),
-    ("l-cheek-volume-decr", 0.3), ("r-cheek-volume-decr", 0.3),
-    ("head-oval", 0.3),
+    ("l-eye-scale-incr", 0.9), ("r-eye-scale-incr", 0.9),
+    ("l-eye-height2-incr", 0.1), ("r-eye-height2-incr", 0.1),
+    ("l-eye-corner2-down", 0.15), ("r-eye-corner2-down", 0.15),
+    ("l-eye-corner1-down", 0.1), ("r-eye-corner1-down", 0.1),
+    ("l-eye-eyefold-up", 0.3), ("r-eye-eyefold-up", 0.3),
+    ("l-eye-trans-down", 0.1), ("r-eye-trans-down", 0.1),
+    ("l-eye-trans-in", 0.15), ("r-eye-trans-in", 0.15),
+    ("eyebrows-angle-down", 0.25), ("eyebrows-trans-up", 0.1),
+    ("nose-width1-decr", 0.45), ("nose-width2-decr", 0.4), ("nose-width3-decr", 0.35),
+    ("nose-scale-horiz-decr", 0.35), ("nose-scale-vert-decr", 0.4), ("nose-scale-depth-decr", 0.15),
+    ("nose-point-width-decr", 0.3), ("nose-nostrils-width-decr", 0.3), ("nose-hump-decr", 0.2),
+    ("mouth-cupidsbow-incr", 0.2), ("mouth-scale-horiz-decr", 0.2), ("mouth-scale-vert-decr", 0.15),
+    ("mouth-scale-depth-decr", 0.5), ("mouth-trans-backward", 0.25), ("mouth-angles-up", 0.2),
+    ("mouth-lowerlip-volume-decr", 0.3), ("mouth-upperlip-volume-decr", 0.21),
+    ("chin-width-decr", 0.6), ("chin-height-decr", 0.5), ("chin-prominent-decr", 0.2), ("chin-jaw-drop-decr", 0.3),
+    ("chin-triangle", 0.2), ("chin-bones-decr", 0.3),
+    ("l-cheek-volume-incr", 0.35), ("r-cheek-volume-incr", 0.35),
+    ("l-cheek-trans-down", 0.2), ("r-cheek-trans-down", 0.2),
+    ("l-cheek-inner-incr", 0.25), ("r-cheek-inner-incr", 0.25),
+    ("head-oval", 0.4), ("head-round", 0.1), ("head-age-decr", 0.3), ("forehead-scale-vert-incr", 0.2),
+    ("head-scale-vert-decr", 0.15), ("head-scale-horiz-decr", 0.65),
 ]
+HAIR = "ponytail01"
+SKIN = "young_caucasian_female"
 
 
 def build_human():
@@ -86,11 +105,11 @@ def build_human():
         "phenotype": PHENOTYPE,
         "rig": "default",
         "eyes": "high-poly/high-poly.mhclo",
-        "eyebrows": "eyebrow010/eyebrow010.mhclo",
+        "eyebrows": "eyebrow001/eyebrow001.mhclo",
         "eyelashes": "eyelashes02/eyelashes02.mhclo",
         "teeth": "teeth_base/teeth_base.mhclo",
         "tongue": "tongue01/tongue01.mhclo",
-        "hair": "ponytail01/ponytail01.mhclo",
+        "hair": HAIR + "/" + HAIR + ".mhclo",
         "proxy": "",
         "targets": [{"target": name, "value": value} for name, value in BODY_TARGETS + FACE_SHAPE],
         "clothes": [
@@ -99,7 +118,7 @@ def build_human():
             "toigo_round_glasses_leopard/toigo_round_glasses_leopard.mhclo",
             "shoes04/shoes04.mhclo",
         ],
-        "skin_mhmat": "young_asian_female/young_asian_female.mhmat",
+        "skin_mhmat": SKIN + "/" + SKIN + ".mhmat",
         "skin_material_type": "ENHANCED_SSS",
         "eyes_material_type": "MAKESKIN",
         "skin_material_settings": {},
@@ -138,6 +157,17 @@ def shorten_sleeves(shirt, basemesh):
     bm.verts.ensure_lookup_table()
     doomed = [bm.verts[v.index] for v in shirt.data.vertices if arm_weight(shirt, v) > 0.5]
     bmesh.ops.delete(bm, geom=doomed, context="VERTS")
+    # Project each cut cuff onto its own cross-section; weight thresholds otherwise leave
+    # a sawtooth boundary that is especially visible from behind.
+    rig=basemesh.parent
+    for side,sign in (("L",1),("R",-1)):
+        shoulder=rig.data.bones['upperarm01.'+side].head_local
+        axis=(rig.data.bones['upperarm02.'+side].tail_local-shoulder).normalized()
+        rim=[v for v in bm.verts if v.is_boundary and v.co.x*sign>.13 and v.co.z>1.045]
+        if rim:
+            distance=sum((v.co-shoulder).dot(axis) for v in rim)/len(rim)
+            for v in rim:
+                v.co+=axis*(distance-(v.co-shoulder).dot(axis))
     bm.to_mesh(shirt.data)
     bm.free()
     shown = [v.index for v in basemesh.data.vertices if arm_weight(basemesh, v) > 0.2]
@@ -226,7 +256,7 @@ def glasses_material(glasses):
     bsdf = bsdf_of(frame)
     for name in ("Base Color", "Alpha"):
         unlink(frame.node_tree, bsdf.inputs[name])
-    bsdf.inputs["Base Color"].default_value = srgb(150, 118, 70)
+    bsdf.inputs["Base Color"].default_value = srgb(205, 212, 220)
     bsdf.inputs["Metallic"].default_value = 1.0
     bsdf.inputs["Roughness"].default_value = 0.3
     bsdf.inputs["Alpha"].default_value = 1.0
@@ -279,12 +309,11 @@ def smaller_glasses(glasses, factor=0.9):
 
 def restyle(basemesh):
     shorten_sleeves(find("shirt"), basemesh)
-    denim(find("shirt").active_material)
-    flat(find("skirt").active_material, srgb(66, 68, 75), 0.75)
     glasses_material(find("glasses"))
-    smaller_glasses(find("glasses"))
+    smaller_glasses(find("glasses"), 1.0)
     bare_ankles(find("shoes"), basemesh)
     soften_bust(find("shirt"))
+    apply_reference_style(basemesh, basemesh.parent, find, HAIR)
 
 
 def soften_bust(shirt, radius=0.1):
@@ -350,11 +379,70 @@ def reach(rig, side, target, pole):
     h = math.sqrt(max(upper * upper - x * x, 0.0))
     p = Vector(pole) - dn * Vector(pole).dot(dn)
     elbow = shoulder + dn * x + p.normalized() * h
+    wrist = shoulder + dn * dist
     for bone in ("upperarm01", "upperarm02"):
         aim(rig, bone + s, elbow - head_of(rig, bone + s))
-    wrist = shoulder + dn * dist
     for bone in ("lowerarm01", "lowerarm02"):
         aim(rig, bone + s, wrist - head_of(rig, bone + s))
+
+
+def hand_axes(rig, side):
+    """Anatomical hand axes, independent of the arbitrary wrist bone's rest roll."""
+    wrist = head_of(rig, f"wrist.{side}")
+    index = head_of(rig, f"finger2-1.{side}")
+    middle = head_of(rig, f"finger3-1.{side}")
+    pinky = head_of(rig, f"finger5-1.{side}")
+    forward = (middle - wrist).normalized()
+    normal = forward.cross(index - pinky).normalized()
+    if side == "R":
+        normal.negate()
+    return forward, normal
+
+
+def twist(rig, side, degrees):
+    """Roll the forearm (and so the hand) about its own axis, half at each forearm bone."""
+    s = f".{side}"
+    axis = tail_of(rig, "lowerarm02" + s) - head_of(rig, "lowerarm01" + s)
+    for bone in ("lowerarm01", "lowerarm02"):
+        rotate(rig, bone + s, axis, degrees / 2)
+
+
+def arm(rig, side, target, pole, palm, flex=0.0, dev=0.0):
+    """Place the wrist with two-bone IK, roll the forearm so the palm faces `palm`, and keep
+    the hand straight on the forearm except for explicit bends: `flex` (+ = extension, the
+    fingers lift towards the back of the hand) and `dev` (+ = towards the thumb), in degrees.
+
+    v3 aimed the hand at a direction and clamped the swing, which could still fold the wrist
+    sideways; at rest MakeHuman's hand already continues the forearm (6 degrees off), so
+    leaving the wrist bone alone and bending it only on purpose is what keeps wrists whole."""
+    reach(rig, side, target, pole)
+    wrist = rig.pose.bones[f"wrist.{side}"]
+    wrist.matrix_basis = Matrix.Identity(4)
+    update()
+    forearm = (tail_of(rig, f"lowerarm02.{side}") - head_of(rig, f"lowerarm01.{side}")).normalized()
+    _, current = hand_axes(rig, side)
+    a = current - forearm * current.dot(forearm)
+    b = Vector(palm) - forearm * Vector(palm).dot(forearm)
+    if a.length > 1e-6 and b.length > 1e-6:
+        a.normalize(); b.normalize()
+        twist(rig, side, math.degrees(math.atan2(forearm.dot(a.cross(b)), a.dot(b))))
+    # Wrist local Z runs across the knuckles towards the thumb on both sides; local X is the
+    # palm normal on the left and the back of the hand on the right, so extension flips sign.
+    wrist.rotation_mode = "XYZ"
+    wrist.rotation_euler = (math.radians(dev), 0, math.radians(flex if side == "L" else -flex))
+    update()
+
+
+def curl_fingers(rig, side, curls):
+    """Per-finger curl in degrees (1 = thumb ... 5 = little finger), +X on each joint closes it."""
+    for finger, curl in curls.items():
+        for joint in range(1, 4):
+            if finger == 1 and joint == 1:
+                continue
+            pb = rig.pose.bones[f"finger{finger}-{joint}.{side}"]
+            pb.rotation_mode = "XYZ"
+            pb.rotation_euler = (math.radians(curl), 0, 0)
+    update()
 
 
 def reset_pose(rig):
@@ -370,6 +458,13 @@ def head_turn(rig, yaw=0.0, pitch=0.0, roll=0.0):
         rotate(rig, bone, (0, 0, 1), yaw * share)
         rotate(rig, bone, (1, 0, 0), pitch * share)
         rotate(rig, bone, (0, 1, 0), roll * share)
+
+
+def gaze(rig, pitch=0.0, yaw=0.0):
+    """Eyes turned in degrees (pitch + = up, yaw + = her left) on top of the head turn."""
+    for eye in ("eye.L", "eye.R"):
+        rotate(rig, eye, (1, 0, 0), -pitch)
+        rotate(rig, eye, (0, 0, 1), yaw)
 
 
 def stance(rig):
@@ -392,29 +487,33 @@ def breathe(rig, amount):
     rotate(rig, "clavicle.R", (0, 1, 0), 2.5 * amount)
 
 
-def twist(rig, side, degrees):
-    """Roll the forearm (and so the hand) about its own axis, half at each forearm bone."""
-    s = f".{side}"
-    axis = tail_of(rig, "lowerarm02" + s) - head_of(rig, "lowerarm01" + s)
-    for bone in ("lowerarm01", "lowerarm02"):
-        rotate(rig, bone + s, axis, degrees / 2)
+def kick(rig, degrees):
+    """Left lower leg swung back from the knee (the leg a lifted person lets dangle)."""
+    rotate(rig, "lowerleg01.L", (1, 0, 0), degrees)
+    rotate(rig, "foot.L", (1, 0, 0), degrees * 0.4)
 
 
-# Arm states are (wrist target, elbow pole, hand direction, forearm roll) in world space, so they
-# can be blended. In the app the sprite is mirrored to face the screen centre, which puts her
-# right arm at the screen edge: that arm only ever hangs, every gesture is made with the left.
+# Arm states are (wrist target, elbow pole, palm direction, extension, deviation) in world
+# space, so they blend. In the app the sprite is mirrored to face the screen centre, which puts
+# her right arm at the screen edge: that arm hangs (or folds across the waist / meets the other
+# hand in front of the chest, both inside the resting silhouette); every gesture is made with
+# the left. Coordinates are metres in the rest skeleton (shoulder 1.19 m, upper arm 0.21 m,
+# forearm 0.20 m). The poses are the v2 set (commit bc1e63e) rebuilt on this solver.
+RELAXED = {1: 10, 2: 18, 3: 24, 4: 30, 5: 36}
+HIP_GRIP = {1: 15, 2: 30, 3: 36, 4: 42, 5: 48}   # fingers wrapped a little over the hip bone
+
+
 def hip_state(rig):
-    """Far (left) hand resting on the hip: heel of the hand on the hip bone, fingers over the front."""
+    """Rest: left hand on the hip, heel of the hand on the hip bone, fingers over the front,
+    elbow out and back so the forearm already runs along the hip."""
     hip = head_of(rig, "upperleg01.L")
-    return hip + Vector((0.11, -0.035, 0.12)), Vector((1, 0.4, 0)), Vector((-0.4, -0.8, -0.45)), 25.0
+    return hip + Vector((0.115, -0.06, 0.13)), Vector((0.8, 0.8, 0.4)), Vector((-0.9, 0.3, -0.3)), 15, -10
 
 
 def hang_state(rig):
-    """Near (right) arm hanging with a soft elbow tucked back and the hand a little in front of the
-    skirt's side, where the pleats are narrower, so it stays inside the body's silhouette.
-    (Shoulder to wrist is only ~0.39 m on this rig, so targets stay within that.)"""
+    """Rest: right arm hanging relaxed close to the body, palm towards the thigh."""
     shoulder = head_of(rig, "upperarm01.R")
-    return shoulder + Vector((-0.02, -0.115, -0.36)), Vector((-0.2, 1, 0)), Vector((-0.05, -0.35, -1)), 0.0
+    return shoulder + Vector((-0.025, -0.115, -0.36)), Vector((-0.2, 1, 0)), Vector((1, -0.25, 0)), 0, 0
 
 
 def chin(rig):
@@ -422,60 +521,59 @@ def chin(rig):
 
 
 def think_state(rig):
-    """Left hand to the chin, knuckles under the jaw, elbow forward and down clear of the chest."""
+    """Left hand under the chin, knuckles against the jaw, elbow forward and down."""
     c = chin(rig)
-    wrist = c + Vector((0.04, -0.09, -0.085))
-    return wrist, Vector((0.4, -1, -0.3)), c - wrist + Vector((0, 0, 0.02)), 0.0
+    return c + Vector((0.045, -0.095, -0.09)), Vector((0.4, -1, -0.3)), Vector((-0.6, 0.35, -0.7)), -12, 0
+
+
+def waist_state(rig):
+    """Right forearm folded across the waist under the thinking arm (its elbow is out of this
+    arm's reach, so the hand stops at the far side of the waist)."""
+    hip = head_of(rig, "upperleg01.L")
+    return hip + Vector((-0.02, -0.15, 0.25)), Vector((-0.35, -0.75, -0.5)), Vector((0, 0.9, 0.4)), 0, 0
 
 
 def hair_state(rig):
     """Fingers tucking hair behind the left ear, elbow forward and down."""
     ear = head_of(rig, "eye.L") + Vector((0.05, 0.085, 0.0))
-    wrist = ear + Vector((0.08, -0.055, -0.14))
-    return wrist, Vector((0.6, -0.5, -0.6)), ear + Vector((0.02, 0, 0.05)) - wrist, 0.0
+    return ear + Vector((0.10, -0.075, -0.135)), Vector((0.6, -0.5, -0.6)), Vector((-1, 0.2, 0.2)), -5, 6
 
 
 def wave_state(rig, sway=0.0):
+    """Hand up beside the head, palm to the camera; the wave is a wrist swing."""
     shoulder = head_of(rig, "upperarm01.L")
-    return (shoulder + Vector((0.18 - sway * 0.015, -0.05, 0.13)), Vector((0.8, 0.2, -1)),
-            Vector((0.1 - sway * 0.4, -0.15, 1)), 0.0)
+    return shoulder + Vector((0.17, -0.06, 0.145)), Vector((1, 0.2, -0.6)), Vector((0.05, -1, 0.1)), 10, sway
 
 
 def offer_state(rig):
-    """Talking gesture: forearm forward, palm up."""
+    """Talking gesture: forearm forward, open palm turned up."""
     hip = head_of(rig, "upperleg01.L")
-    return hip + Vector((0.08, -0.2, 0.13)), Vector((0.5, 0.6, -0.5)), Vector((0.15, -1, 0.15)), 0.0
+    return hip + Vector((0.09, -0.21, 0.14)), Vector((0.6, 0.2, -0.6)), Vector((0.1, -0.3, 1)), 6, 0
 
 
 def clasp_state(side):
-    """Hands meeting in front of the chest, elbows kept down by the ribs."""
+    """Hands meeting in front of the chest, palms facing each other, elbows down by the ribs."""
     sx = 1 if side == "L" else -1
 
     def state(rig):
         mid = (head_of(rig, "upperarm01.L") + head_of(rig, "upperarm01.R")) / 2
-        return mid + Vector((sx * 0.08, -0.2, -0.17)), Vector((sx * 0.3, 0.3, -1)), Vector((-sx * 0.35, -0.3, 0.9)), 0.0
+        return mid + Vector((sx * 0.085, -0.235, -0.17)), Vector((sx * 0.3, 0.3, -1)), Vector((-sx, 0.15, 0.1)), 0, -8
     return state
 
 
 def lifted_state(rig):
-    """Left hand brought up to the collarbone ("oh!"), elbow down by the ribs."""
+    """Lifted while dragged: the left hand jumps up to the collarbone, fingers spread."""
     shoulder = head_of(rig, "upperarm01.L")
-    return shoulder + Vector((-0.03, -0.17, -0.08)), Vector((0.6, 0, -1)), Vector((-0.6, 0.0, 0.8)), 0.0
+    return shoulder + Vector((-0.03, -0.18, -0.09)), Vector((0.6, 0, -1)), Vector((-0.6, 0.3, 0.7)), 10, 0
 
 
 def flinch_state(rig):
     """Right arm stays down, the hand just drifting forward, fingers spread."""
-    target, pole, _, roll = hang_state(rig)
-    return target + Vector((0, -0.02, 0)), pole, Vector((-0.1, -0.45, -1)), roll
+    target, pole, palm, flex, dev = hang_state(rig)
+    return target + Vector((0, -0.025, 0)), pole, Vector((0.9, -0.45, 0)), 8, 0
 
 
-def kick(rig, degrees):
-    """Left lower leg swung back from the knee (the leg a lifted person lets dangle)."""
-    rotate(rig, "lowerleg01.L", (1, 0, 0), degrees)
-    rotate(rig, "foot.L", (1, 0, 0), degrees * 0.4)
-
-
-def towards(goal, t, lift=(0, 0, 0), side="R"):
+def towards(goal, t, lift=(0, 0, 0), side="L"):
     """Arm state a fraction t of the way from rest to `goal`. `lift` bows the wrist's path
     (largest half-way) so the hand travels around the body instead of through it."""
     rest = hang_state if side == "R" else hip_state
@@ -484,24 +582,34 @@ def towards(goal, t, lift=(0, 0, 0), side="R"):
         a, b = rest(rig), goal(rig)
         bow = Vector(lift) * (4 * t * (1 - t))
         return (a[0].lerp(b[0], t) + bow, a[1].lerp(b[1], t), a[2].normalized().lerp(b[2].normalized(), t),
-                a[3] + (b[3] - a[3]) * t)
+                a[3] + (b[3] - a[3]) * t, a[4] + (b[4] - a[4]) * t)
     return state
 
 
+def blend(a, b, t):
+    """Finger curls a fraction t of the way from a to b."""
+    return {f: a[f] + (b[f] - a[f]) * t for f in a}
+
+
 # ---------------------------------------------------------------- face
-FACE_UNITS = ("mouth-corner-puller", "mouth-open")
-LIDS = ("orbicularis03.L", "orbicularis03.R")  # upper eyelids; -26 degrees closes the eye
+FACE_UNITS = ("mouth-corner-puller", "mouth-open", "eyebrows-left-up", "eyebrows-right-up", "mouth-pursing")
+LIDS = {"L": "orbicularis03.L", "R": "orbicularis03.R"}  # upper eyelids; -26 degrees closes the eye
+# The summed head-shape targets leave the base lips slightly parted and pushed forward; a
+# negative mouth-open closes them and a negative pursing flattens them. Pose values add to these.
+LIPS_CLOSED, LIPS_FLAT = -0.12, -0.3
 
 
 def face_targets(basemesh):
     units = pathlib.Path(LocationService.get_mpfb_data("targets")) / "expression" / "units" / "asian"
     for unit in FACE_UNITS:
-        TargetService.load_target(basemesh, str(units / f"{unit}.target.gz"), weight=0.0, name=unit)
+        key = TargetService.load_target(basemesh, str(units / f"{unit}.target.gz"), weight=0.0, name=unit)
+        key.slider_min = -1.0
 
 
 # ---------------------------------------------------------------- poses and shots
-REST = {"yaw": -8, "pitch": 5, "roll": 3, "smile": 0.25, "open": 0.0, "lids": 3.0, "chest": 0.0,
-        "L": None, "R": None, "curlL": 15, "curlR": 15, "kick": 0}
+REST = {"yaw": -8, "pitch": 4, "roll": 3, "gaze": (0, 0), "smile": 0.2, "open": 0.0, "purse": 0.0,
+        "brows": 0.0, "lidsL": 2.0, "lidsR": 2.0, "chest": 0.0,
+        "L": None, "R": None, "fingersL": HIP_GRIP, "fingersR": RELAXED, "kick": 0}
 
 
 def apply_pose(rig, basemesh, spec):
@@ -511,24 +619,20 @@ def apply_pose(rig, basemesh, spec):
     kick(rig, p["kick"])
     breathe(rig, p["chest"])
     head_turn(rig, p["yaw"], p["pitch"], p["roll"])
+    gaze(rig, *p["gaze"])
     for side, rest in (("L", hip_state), ("R", hang_state)):
-        target, pole, hand, roll = (p[side] or rest)(rig)
-        reach(rig, side, target, pole)
-        twist(rig, side, roll)
-        aim(rig, f"wrist.{side}", hand)
-        # +X on each finger joint curls it towards the palm; 15 degrees reads as a relaxed hand.
-        for finger in range(2, 6):
-            for joint in range(1, 4):
-                pb = rig.pose.bones[f"finger{finger}-{joint}.{side}"]
-                pb.rotation_mode = "XYZ"
-                pb.rotation_euler = (math.radians(p["curl" + side]), 0, 0)
-    for bone in LIDS:
+        target, pole, palm, flex, dev = (p[side] or rest)(rig)
+        arm(rig, side, target, pole, palm, flex, dev)
+        curl_fingers(rig, side, p["fingers" + side])
+    for side, bone in LIDS.items():
         pb = rig.pose.bones[bone]
         pb.rotation_mode = "XYZ"
-        pb.rotation_euler = (math.radians(p["lids"]), 0, 0)
+        pb.rotation_euler = (math.radians(p["lids" + side]), 0, 0)
     keys = basemesh.data.shape_keys.key_blocks
     keys["mouth-corner-puller"].value = p["smile"]
-    keys["mouth-open"].value = p["open"]
+    keys["mouth-open"].value = LIPS_CLOSED + p["open"]
+    keys["mouth-pursing"].value = LIPS_FLAT + p["purse"]
+    keys["eyebrows-left-up"].value = keys["eyebrows-right-up"].value = p["brows"]
     update()
 
 
@@ -546,44 +650,61 @@ def frame(name, **spec):
 
 
 def gesture(shot, n, step, hold, make):
-    """n frames easing from rest into make(1), hold the last one, then the same frames back."""
+    """n frames easing from rest into make(1), hold the last one, then the same frames back,
+    so every shot starts and ends one small step away from the rest pose."""
     names = [frame(f"{shot}_{k:02d}", **make(ease(k / n))) for k in range(1, n + 1)]
     SHOTS[shot] = ([(f, step) for f in names[:-1]] + [(names[-1], hold)]
                    + [(f, step) for f in reversed(names[:-1])])
+    return names
 
 
 def define_shots():
-    """Calm, real-time motions; durations in ms. The app returns to `rest` after each shot."""
+    """The v2 action set at a real person's pace: limbs move 120-200 ms per frame, eased, with
+    holds; every shot rises from rest and comes back down through the same frames. About 43
+    frames in all (the sprite sheet is held in memory by the app)."""
     frame("rest")
-    half, shut = frame("blink_00", lids=-13), frame("blink_01", lids=-26)
+    half, shut = frame("blink_00", lidsL=-13, lidsR=-13), frame("blink_01", lidsL=-26, lidsR=-26)
     SHOTS["blink"] = [(half, 60), (shut, 90), (half, 60)]
-    gesture("breathe", 4, 330, 500, lambda t: dict(chest=t))
-    gesture("look", 4, 150, 1300, lambda t: dict(yaw=-8 + 26 * t, pitch=5 - 4 * t, roll=3 - 5 * t))
-    gesture("hair", 5, 160, 600, lambda t: dict(
-        L=towards(hair_state, t, (0.06, -0.06, 0), side="L"), curlL=15 - 5 * t, yaw=-8 - 4 * t,
-        pitch=5 - 2 * t, roll=3 - 6 * t, smile=0.25 + 0.15 * t, lids=3 - 4 * t))
-    gesture("think", 5, 160, 2600, lambda t: dict(
-        L=towards(think_state, t, (0.04, -0.08, 0), side="L"), curlL=15 + 30 * t,
-        yaw=-8 + 4 * t, pitch=5 - 3 * t, roll=3 + 5 * t, lids=3 - 7 * t, smile=0.25 - 0.1 * t))
-    talk = [frame(f"talk_{k:02d}", L=towards(offer_state, t, side="L"), curlL=8, pitch=pitch, smile=0.45, open=mouth)
-            for k, (t, pitch, mouth) in enumerate(
-                [(0.3, 6, 0.12), (0.6, 8, 0.28), (0.85, 6, 0.08), (1.0, 4, 0.24), (1.0, 6, 0.04)])]
-    SHOTS["talk"] = [(f, 170) for f in talk] + [(f, 170) for f in reversed(talk[:3])]
-    gesture("happy", 4, 140, 1200, lambda t: dict(
-        L=towards(clasp_state("L"), t, side="L"), R=towards(clasp_state("R"), t, (0, -0.06, 0)),
-        curlL=15 + 10 * t, curlR=15 + 10 * t, smile=0.25 + 0.75 * t, open=0.12 * t, roll=3 - 9 * t,
-        pitch=5 - 6 * t, chest=0.6 * t, lids=3 - 6 * t))
-    up = [frame(f"wave_up_{k}", L=towards(wave_state, ease(k / 3), (0.08, -0.06, 0), side="L"),
-                curlL=15 - 11 * ease(k / 3), smile=0.25 + 0.4 * ease(k / 3), roll=3 + 3 * ease(k / 3)) for k in (1, 2, 3)]
-    sway = [frame(f"wave_{k}", L=lambda rig, s=s: wave_state(rig, s), curlL=4, smile=0.65, roll=6, open=0.08)
-            for k, s in enumerate((0.6, 1.2, -0.6, -1.2))]
-    cycle = [up[2], sway[0], sway[1], sway[0], up[2], sway[2], sway[3], sway[2]]
-    SHOTS["wave"] = ([(f, 160) for f in up[:2]] + [(f, 110) for f in cycle * 2]
-                     + [(up[2], 160), (up[1], 160), (up[0], 160)])
-    # Shown while she is dragged: a playful "being lifted" pose, one leg dangling back.
-    SHOTS["surprise"] = [(frame("surprise", L=lifted_state, R=flinch_state, curlL=20, curlR=8, kick=50,
-                                lids=7, open=0.14, smile=0.3, yaw=-14, pitch=-3, roll=8, chest=0.8), 0)]
-    SHOTS["sleep"] = [(frame("sleep", lids=-26, pitch=16, roll=9, yaw=-4, smile=0.1, curlR=22), 0)]
+    gesture("breathe", 3, 300, 450, lambda t: dict(chest=t))
+    gesture("look", 3, 170, 1300, lambda t: dict(yaw=-8 + 26 * t, pitch=4 - 4 * t, roll=3 - 5 * t, gaze=(0, 6 * t)))
+    gesture("hair", 4, 150, 600, lambda t: dict(
+        L=towards(hair_state, t, (0.06, -0.07, 0)), fingersL=blend(HIP_GRIP, {1: 15, 2: 25, 3: 32, 4: 40, 5: 46}, t),
+        yaw=-8 - 4 * t, pitch=4 - 2 * t, roll=3 - 6 * t, smile=0.2 + 0.15 * t, lidsL=2 - 4 * t, lidsR=2 - 4 * t))
+    gesture("think", 4, 160, 2600, lambda t: dict(
+        L=towards(think_state, t, (0.04, -0.08, 0)), R=towards(waist_state, t, (0.02, -0.03, 0), side="R"),
+        fingersL=blend(HIP_GRIP, {1: 25, 2: 48, 3: 52, 4: 55, 5: 58}, t),
+        yaw=-8 + 4 * t, pitch=4 - 3 * t, roll=3 + 5 * t, lidsL=2 - 6 * t, lidsR=2 - 6 * t,
+        smile=0.2 - 0.1 * t, purse=0.25 * t, gaze=(4 * t, 6 * t)))
+    up = [frame(f"talk_up_{k}", L=towards(offer_state, ease(k / 3), (0.03, -0.04, 0)),
+                fingersL=blend(HIP_GRIP, {1: 8, 2: 8, 3: 12, 4: 16, 5: 20}, ease(k / 3)),
+                pitch=4 + 2 * ease(k / 3), smile=0.2 + 0.2 * ease(k / 3)) for k in (1, 2, 3)]
+    syllables = [frame(f"talk_{k}", **{**FRAMES[up[-1]], "open": mouth, "pitch": 5 + 2 * math.sin(k * math.pi / 2),
+                                       "brows": 0.25 if k == 1 else 0.0}) for k, mouth in enumerate((0.06, 0.2, 0.1, 0.24))]
+    SHOTS["talk"] = ([(f, 150) for f in up] + [(f, 130) for f in syllables * 2] + [(f, 150) for f in reversed(up[:-1])])
+    h = gesture("happy", 4, 140, 1000, lambda t: dict(
+        L=towards(clasp_state("L"), t, (0.02, -0.04, 0)), R=towards(clasp_state("R"), t, (0, -0.07, 0), side="R"),
+        fingersL=blend(HIP_GRIP, {1: 20, 2: 28, 3: 32, 4: 36, 5: 40}, t), fingersR=blend(RELAXED, {1: 20, 2: 28, 3: 32, 4: 36, 5: 40}, t),
+        smile=0.2 + 0.55 * t, open=0.06 * t, roll=3 - 9 * t, pitch=4 - 5 * t, chest=0.5 * t, lidsL=2 - 10 * t, lidsR=2 - 10 * t))
+    bob = frame("happy_bob", **{**FRAMES[h[-1]], "chest": 0.9, "pitch": -4, "open": 0.1, "smile": 0.8})
+    SHOTS["happy"] = ([(f, 140) for f in h[:-1]] + [(h[-1], 300), (bob, 300), (h[-1], 300), (bob, 300), (h[-1], 400)]
+                      + [(f, 140) for f in reversed(h[:-1])])
+    wu = [frame(f"wave_up_{k}", L=towards(wave_state, ease(k / 3), (0.08, -0.06, 0)),
+                fingersL=blend(HIP_GRIP, {1: 6, 2: 3, 3: 3, 4: 5, 5: 8}, ease(k / 3)),
+                smile=0.2 + 0.4 * ease(k / 3), roll=3 + 3 * ease(k / 3), open=0.03 * ease(k / 3)) for k in (1, 2, 3)]
+    sway = [frame(f"wave_{k}", **{**FRAMES[wu[-1]], "L": (lambda rig, s=s: wave_state(rig, s))}) for k, s in enumerate((-14, -5, 5, 14))]
+    cycle = sway + sway[1:-1][::-1]
+    SHOTS["wave"] = ([(f, 160) for f in wu] + [(f, 120) for f in cycle * 2] + [(sway[0], 120)] + [(f, 160) for f in reversed(wu)])
+    # Shown while she is dragged: lifted "oh!" pose, one leg dangling back; held on the last frame.
+    drag = [frame(f"drag_{k}", L=towards(lifted_state, ease(k / 3), (0.03, -0.05, 0)), R=towards(flinch_state, ease(k / 3), side="R"),
+                  fingersL=blend(HIP_GRIP, {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}, ease(k / 3)), fingersR=blend(RELAXED, {1: 4, 2: 6, 3: 8, 4: 10, 5: 12}, ease(k / 3)),
+                  kick=45 * ease(k / 3), lidsL=2 + 5 * ease(k / 3), lidsR=2 + 5 * ease(k / 3), brows=0.7 * ease(k / 3),
+                  open=0.12 * ease(k / 3), purse=0.3 * ease(k / 3), smile=0.2 + 0.1 * ease(k / 3), chest=0.8 * ease(k / 3),
+                  yaw=-8 - 6 * ease(k / 3), pitch=4 - 7 * ease(k / 3), roll=3 + 5 * ease(k / 3)) for k in range(1, 4)]
+    SHOTS["drag"] = [(f, 140) for f in drag[:-1]] + [(drag[-1], 0)]
+    # Dozing off: the head sinks and the eyes close, hands stay where they rest; held on the last frame.
+    sleep = [frame(f"sleep_{k}", lidsL=2 - 28 * ease(k / 4), lidsR=2 - 28 * ease(k / 4), yaw=-8 + 4 * ease(k / 4),
+                   pitch=4 + 12 * ease(k / 4), roll=3 + 6 * ease(k / 4), smile=0.2 - 0.1 * ease(k / 4)) for k in range(1, 5)]
+    SHOTS["sleep"] = [(f, 200) for f in sleep[:-1]] + [(sleep[-1], 0)]
 
 
 # ---------------------------------------------------------------- checks
@@ -598,14 +719,20 @@ def group_weight(obj, vertex, prefixes, suffix=""):
                if names[g.group].name.startswith(prefixes) and names[g.group].name.endswith(suffix))
 
 
-def evaluated(obj, depsgraph):
+def evaluated(obj, depsgraph, surface=False):
     """World-space vertices and polygons of an object as the depsgraph evaluates it."""
+    shells=[m for m in obj.modifiers if surface and m.type=='SOLIDIFY' and m.show_viewport]
+    for m in shells: m.show_viewport=False
+    if shells:
+        update()
+        depsgraph=bpy.context.evaluated_depsgraph_get()
     ev = obj.evaluated_get(depsgraph)
     mesh = ev.to_mesh()
     mw = obj.matrix_world
     verts = [mw @ v.co for v in mesh.vertices]
     polys = [list(p.vertices) for p in mesh.polygons]
     ev.to_mesh_clear()
+    for m in shells: m.show_viewport=True
     return verts, polys
 
 
@@ -618,7 +745,7 @@ class Collider:
 
     def __init__(self, rig, basemesh, scene):
         self.rig, self.basemesh, self.scene = rig, basemesh, scene
-        self.shirt, self.skirt, self.hair = find("shirt"), find("skirt"), find("ponytail")
+        self.shirt, self.skirt, self.hair = find("shirt"), find("skirt"), find(HAIR)
         verts = basemesh.data.vertices
         body = basemesh.vertex_groups["body"].index
         self.body = {v.index for v in verts if any(g.group == body for g in v.groups)}
@@ -658,7 +785,8 @@ class Collider:
     def report(self, name):
         skin_v, skin_p = self.skin()
         dg = bpy.context.evaluated_depsgraph_get()
-        shirt, skirt = (BVHTree.FromPolygons(*evaluated(o, dg)) for o in (self.shirt, self.skirt))
+        # Count crossings of the garment envelope, excluding the inner Solidify shell.
+        shirt, skirt = (BVHTree.FromPolygons(*evaluated(o, dg, surface=True)) for o in (self.shirt, self.skirt))
         parts, worst = [], 0.0
         for side in "LR":
             skin = BVHTree.FromPolygons(skin_v, [p for p in skin_p if all(i in self.body and i not in self.arm[side] for i in p)])
@@ -677,10 +805,11 @@ class Collider:
             parts.append(f"{side}: " + (", ".join(f"{n} in {k} ({d * 1000:.0f} mm)" for k, (n, d) in hits.items())
                                         or f"clear, gap {gap * 1000:.0f} mm"))
         skirt_v = [self.skirt.matrix_world @ v.co for v in self.skirt.evaluated_get(dg).data.vertices]
-        zlo, zhi = min(v.z for v in skirt_v) + 0.01, max(v.z for v in skirt_v) - 0.01
+        zlo, zhi = min(v.z for v in skirt_v) + 0.02, max(v.z for v in skirt_v) - 0.01
         poke = sum(1 for i in self.leg if zlo < skin_v[i].z < zhi and not self.enclosed(skirt, skin_v[i]))
         hair, _ = evaluated(self.hair, dg)
         collar = sum(1 for p in hair if self.enclosed(shirt, p))
+        self.last_report={'legsOutsideSkirt':poke,'hairInsideShirt':collar}
         log(f"{name:11s} {parts[0]:36s} {parts[1]:36s} legs-out-of-skirt {poke:3d}  hair-in-shirt {collar:3d}")
         return worst
 
@@ -718,7 +847,7 @@ def setup_scene(samples=40):
     scene.world = world
     world.use_nodes = True
     world.node_tree.nodes["Background"].inputs[0].default_value = (0.82, 0.84, 0.9, 1)
-    world.node_tree.nodes["Background"].inputs[1].default_value = 0.6
+    world.node_tree.nodes["Background"].inputs[1].default_value = 0.38
 
     def light(name, kind, energy, loc, rot, size=2.0, color=(1, 1, 1)):
         data = bpy.data.lights.new(name, kind)
@@ -731,9 +860,9 @@ def setup_scene(samples=40):
         obj.rotation_euler = [math.radians(a) for a in rot]
         scene.collection.objects.link(obj)
 
-    light("key", "AREA", 260, (1.6, -2.2, 2.4), (55, 0, 35), 2.5, (1.0, 0.97, 0.94))
-    light("fill", "AREA", 110, (-2.2, -1.6, 1.6), (65, 0, -50), 3.0, (1.0, 0.95, 0.97))
-    light("rim", "AREA", 220, (-0.6, 2.4, 2.4), (-60, 0, 180), 1.5, (0.88, 0.93, 1.0))
+    light("key", "AREA", 180, (1.6, -2.2, 2.4), (55, 0, 35), 2.5, (1.0, 0.97, 0.94))
+    light("fill", "AREA", 65, (-2.2, -1.6, 1.6), (65, 0, -50), 3.0, (1.0, 0.95, 0.97))
+    light("rim", "AREA", 140, (-0.6, 2.4, 2.4), (-60, 0, 180), 1.5, (0.88, 0.93, 1.0))
     return scene
 
 
@@ -746,11 +875,11 @@ def setup_camera(scene, target_obj):
     cam = bpy.data.objects.new("cam", cam_data)
     scene.collection.objects.link(cam)
     scene.camera = cam
-    # Three-quarter view from slightly left, at chest height, framing the whole body.
+    # Slight three-quarter view from the left, at chest height, framing the whole body.
     sensor_h = cam_data.sensor_width * H / W
-    dist = (height * 1.2) * cam_data.lens / sensor_h
-    angle = math.radians(-20)
-    centre = Vector((0, 0, zmin + height * 0.5))
+    dist = (height * 1.24) * cam_data.lens / sensor_h
+    angle = math.radians(-14)
+    centre = Vector((0, 0, zmin + height * 0.51))
     cam.location = centre + Vector((math.sin(angle) * dist, -math.cos(angle) * dist, height * 0.06))
     cam.rotation_euler = (centre - cam.location).to_track_quat("-Z", "Y").to_euler()
     cam_data.sensor_fit = "HORIZONTAL"
@@ -759,10 +888,10 @@ def setup_camera(scene, target_obj):
 
 def face_camera(scene, cam, rig):
     """Re-aim the camera for a 360x360 face close-up (used by the `face` mode)."""
-    head = head_of(rig, "head") + Vector((0, 0, 0.09))
-    cam.location = head + Vector((-0.2, -0.78, 0.0))
+    head = head_of(rig, "head") + Vector((0, 0, 0.025))
+    cam.location = head + Vector((-0.025, -0.78, 0.0))
     cam.rotation_euler = (head - cam.location).to_track_quat("-Z", "Y").to_euler()
-    scene.render.resolution_x = scene.render.resolution_y = 360
+    scene.render.resolution_x = scene.render.resolution_y = 720
 
 
 def render(scene, name):
@@ -776,20 +905,58 @@ def check(rig, basemesh, scene):
     the rest pose on the screen-edge side."""
     collider = Collider(rig, basemesh, scene)
     worst, edge, rest_edge = 0.0, {}, None
-    for name, spec in FRAMES.items():
+    selected=sys.argv[sys.argv.index('--')+2:] if '--' in sys.argv else []
+    report = {"frames": {}, "failures": [], "sourceHash": source_hash(), "complete": not selected}
+    for name in selected or FRAMES:
+        spec=FRAMES[name]
         apply_pose(rig, basemesh, spec)
         p = {**REST, **spec}
+        measurements = {}
         for side, rest in (("L", hip_state), ("R", hang_state)):
             target = (p[side] or rest)(rig)[0]
             miss = (tail_of(rig, f"lowerarm02.{side}") - target).length
             if miss > 0.005:
                 log(f"{name}.{side}: wrist misses target by {miss:.3f} m")
-        worst = max(worst, collider.report(name))
+                report['failures'].append(f'{name}.{side}: unreachable target ({miss*1000:.1f} mm)')
+            upper=(head_of(rig,f'lowerarm01.{side}')-head_of(rig,f'upperarm01.{side}')).normalized()
+            lower=(head_of(rig,f'wrist.{side}')-head_of(rig,f'lowerarm01.{side}')).normalized()
+            forward,palm=hand_axes(rig,side)
+            flex=math.degrees(lower.angle(forward))
+            elbow=math.degrees(upper.angle(lower))
+            measurements[side]={"targetMissMm":round(miss*1000,2),"wristSwingDeg":round(flex,2),
+                                "elbowFlexionDeg":round(elbow,2),"palmNormal":[round(v,3) for v in palm]}
+            # Wrist swing is explicit per pose (the hand on the hip is extended 28 degrees).
+            if flex>40 or elbow>155 or elbow<3:
+                report['failures'].append(f'{name}.{side}: joint range wrist {flex:.1f}, elbow {elbow:.1f}')
+        penetration=collider.report(name)
+        if penetration>.003:
+            report['failures'].append(f'{name}: penetration {penetration*1000:.1f} mm')
+        worst = max(worst, penetration)
+        measurements['penetrationMm']=round(penetration*1000,2)
+        measurements.update(collider.last_report)
+        if collider.last_report['legsOutsideSkirt']:
+            report['failures'].append(f'{name}: leg vertices outside skirt')
+        report['frames'][name]=measurements
         edge[name] = collider.left_edge()
         rest_edge = rest_edge if rest_edge is not None else edge[name]
     wide = {n: round(rest_edge - x) for n, x in edge.items() if x < rest_edge - 2}
     log(f"rest left edge {rest_edge:.0f} px; frames reaching further left (px): {wide or 'none'}")
     log(f"worst penetration {worst * 1000:.1f} mm")
+    report['worstPenetrationMm']=round(worst*1000,2)
+    report['edgeOverhangPx']=wide
+    (OUT.parent/('validation-preview.json' if selected else 'validation.json')).write_text(json.dumps(report,indent=2),encoding='utf-8')
+    if report['failures']:
+        raise RuntimeError(f"{len(report['failures'])} joint / reach failures; see validation.json")
+
+
+def source_hash():
+    return hashlib.sha256(b''.join((pathlib.Path(__file__).parent/name).read_bytes()
+                                  for name in ('build.py','reference_style.py'))).hexdigest()
+
+
+def save_editable(rig, basemesh, scene):
+    from export_scene import save
+    save(rig, basemesh, scene, FRAMES, SHOTS, apply_pose, ROOT / 'output' / 'character')
 
 
 def main():
@@ -806,9 +973,14 @@ def main():
     if MODE == "check":
         check(rig, basemesh, scene)
         return
+    if MODE == 'save':
+        save_editable(rig,basemesh,scene)
+        return
     if MODE == "face":
         face_camera(scene, cam, rig)
-        for name, spec in (("face_neutral", {}), ("face_smile", dict(smile=0.85, open=0.1, lids=-2))):
+        still = dict(yaw=0, pitch=0, roll=0, gaze=(0, 0))
+        for name, spec in (("face_neutral", dict(still, smile=0.08)),
+                           ("face_smile", dict(still, smile=0.55, lidsL=-3, lidsR=-3))):
             apply_pose(rig, basemesh, spec)
             render(scene, name)
         return
@@ -823,7 +995,8 @@ def main():
         render(scene, "probe" if MODE == "probe" else name)
         log(f"rendered {name} ({i}/{len(names)})")
     if MODE == "full":
-        meta = {"frames": names, "shots": SHOTS, "facing": "right"}
+        meta = {"frames": names, "shots": SHOTS, "facing": "right", "sourceHash": source_hash(),
+                "version": "reference-v4"}
         (OUT / "meta.json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
     log("done")
 
