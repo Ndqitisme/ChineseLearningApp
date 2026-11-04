@@ -1,0 +1,325 @@
+{
+  "id": "transport",
+  "words": [
+    {
+      "hanzi": "走",
+      "pinyin": "zǒu",
+      "vi": "đi; đi bộ",
+      "ex": {
+        "zh": "请问，去地铁站怎么走？",
+        "py": "Qǐngwèn, qù dìtiězhàn zěnme zǒu?",
+        "vi": "Cho hỏi, đến ga tàu điện ngầm đi thế nào?"
+      }
+    },
+    {
+      "hanzi": "坐",
+      "pinyin": "zuò",
+      "vi": "đi (xe, tàu); ngồi",
+      "ex": {
+        "zh": "我每天坐地铁上班。",
+        "py": "Wǒ měi tiān zuò dìtiě shàngbān.",
+        "vi": "Hằng ngày tôi đi tàu điện ngầm đi làm."
+      }
+    },
+    {
+      "hanzi": "开车",
+      "pinyin": "kāichē",
+      "vi": "lái xe",
+      "ex": {
+        "zh": "他开车送我去机场。",
+        "py": "Tā kāichē sòng wǒ qù jīchǎng.",
+        "vi": "Anh ấy lái xe đưa tôi ra sân bay."
+      }
+    },
+    {
+      "hanzi": "地铁",
+      "pinyin": "dìtiě",
+      "vi": "tàu điện ngầm",
+      "ex": {
+        "zh": "坐地铁比打车快。",
+        "py": "Zuò dìtiě bǐ dǎchē kuài.",
+        "vi": "Đi tàu điện ngầm nhanh hơn đi taxi."
+      }
+    },
+    {
+      "hanzi": "公交车",
+      "pinyin": "gōngjiāochē",
+      "vi": "xe buýt",
+      "ex": {
+        "zh": "这路公交车去火车站吗？",
+        "py": "Zhè lù gōngjiāochē qù huǒchēzhàn ma?",
+        "vi": "Xe buýt tuyến này có đến ga tàu không?"
+      }
+    },
+    {
+      "hanzi": "出租车",
+      "pinyin": "chūzūchē",
+      "vi": "taxi",
+      "ex": {
+        "zh": "我们坐出租车去吧。",
+        "py": "Wǒmen zuò chūzūchē qù ba.",
+        "vi": "Chúng ta đi taxi đi."
+      }
+    },
+    {
+      "hanzi": "打车",
+      "pinyin": "dǎchē",
+      "vi": "bắt xe, gọi taxi",
+      "ex": {
+        "zh": "太晚了，我们打车回家吧。",
+        "py": "Tài wǎn le, wǒmen dǎchē huí jiā ba.",
+        "vi": "Muộn quá rồi, mình gọi xe về nhé."
+      }
+    },
+    {
+      "hanzi": "滴滴",
+      "pinyin": "Dīdī",
+      "vi": "Didi (app gọi xe)",
+      "ex": {
+        "zh": "我用滴滴叫个车。",
+        "py": "Wǒ yòng Dīdī jiào ge chē.",
+        "vi": "Để tôi gọi xe qua Didi."
+      }
+    },
+    {
+      "hanzi": "站",
+      "pinyin": "zhàn",
+      "vi": "bến, ga, trạm",
+      "ex": {
+        "zh": "我还有两站就到了。",
+        "py": "Wǒ hái yǒu liǎng zhàn jiù dào le.",
+        "vi": "Tôi còn hai trạm nữa là tới."
+      }
+    },
+    {
+      "hanzi": "票",
+      "pinyin": "piào",
+      "vi": "vé",
+      "ex": {
+        "zh": "我买了两张火车票。",
+        "py": "Wǒ mǎile liǎng zhāng huǒchēpiào.",
+        "vi": "Tôi đã mua hai vé tàu hỏa."
+      }
+    },
+    {
+      "hanzi": "飞机",
+      "pinyin": "fēijī",
+      "vi": "máy bay",
+      "ex": {
+        "zh": "我坐飞机去北京。",
+        "py": "Wǒ zuò fēijī qù Běijīng.",
+        "vi": "Tôi đi máy bay đến Bắc Kinh."
+      }
+    },
+    {
+      "hanzi": "火车",
+      "pinyin": "huǒchē",
+      "vi": "tàu hỏa",
+      "ex": {
+        "zh": "火车几点开？",
+        "py": "Huǒchē jǐ diǎn kāi?",
+        "vi": "Tàu mấy giờ chạy?"
+      }
+    },
+    {
+      "hanzi": "高铁",
+      "pinyin": "gāotiě",
+      "vi": "tàu cao tốc",
+      "ex": {
+        "zh": "坐高铁去上海很快。",
+        "py": "Zuò gāotiě qù Shànghǎi hěn kuài.",
+        "vi": "Đi tàu cao tốc đến Thượng Hải rất nhanh."
+      }
+    },
+    {
+      "hanzi": "机场",
+      "pinyin": "jīchǎng",
+      "vi": "sân bay",
+      "ex": {
+        "zh": "去机场要多长时间？",
+        "py": "Qù jīchǎng yào duō cháng shíjiān?",
+        "vi": "Ra sân bay mất bao lâu?"
+      }
+    },
+    {
+      "hanzi": "自行车",
+      "pinyin": "zìxíngchē",
+      "vi": "xe đạp",
+      "ex": {
+        "zh": "我骑自行车上学。",
+        "py": "Wǒ qí zìxíngchē shàngxué.",
+        "vi": "Tôi đi xe đạp đến trường."
+      }
+    },
+    {
+      "hanzi": "骑",
+      "pinyin": "qí",
+      "vi": "đi, cưỡi (xe đạp, xe máy)",
+      "ex": {
+        "zh": "你会骑电动车吗？",
+        "py": "Nǐ huì qí diàndòngchē ma?",
+        "vi": "Bạn có biết đi xe điện không?"
+      }
+    },
+    {
+      "hanzi": "共享单车",
+      "pinyin": "gòngxiǎng dānchē",
+      "vi": "xe đạp công cộng (thuê)",
+      "ex": {
+        "zh": "扫码就能骑共享单车。",
+        "py": "Sǎomǎ jiù néng qí gòngxiǎng dānchē.",
+        "vi": "Quét mã là đi được xe đạp công cộng."
+      }
+    },
+    {
+      "hanzi": "路",
+      "pinyin": "lù",
+      "vi": "đường; tuyến (xe buýt)",
+      "ex": {
+        "zh": "这条路车太多了。",
+        "py": "Zhè tiáo lù chē tài duō le.",
+        "vi": "Đường này xe đông quá."
+      }
+    },
+    {
+      "hanzi": "左",
+      "pinyin": "zuǒ",
+      "vi": "trái",
+      "ex": {
+        "zh": "前面往左拐就是银行。",
+        "py": "Qiánmiàn wǎng zuǒ guǎi jiù shì yínháng.",
+        "vi": "Phía trước rẽ trái là tới ngân hàng."
+      }
+    },
+    {
+      "hanzi": "右",
+      "pinyin": "yòu",
+      "vi": "phải",
+      "ex": {
+        "zh": "出门往右走五分钟。",
+        "py": "Chūmén wǎng yòu zǒu wǔ fēnzhōng.",
+        "vi": "Ra khỏi cửa đi về bên phải năm phút."
+      }
+    },
+    {
+      "hanzi": "往",
+      "pinyin": "wǎng",
+      "vi": "về phía, hướng về",
+      "ex": {
+        "zh": "往前走两百米就到了。",
+        "py": "Wǎng qián zǒu liǎngbǎi mǐ jiù dào le.",
+        "vi": "Đi về phía trước 200 mét là tới."
+      }
+    },
+    {
+      "hanzi": "拐",
+      "pinyin": "guǎi",
+      "vi": "rẽ",
+      "ex": {
+        "zh": "到红绿灯那儿往右拐。",
+        "py": "Dào hónglǜdēng nàr wǎng yòu guǎi.",
+        "vi": "Đến chỗ đèn giao thông thì rẽ phải."
+      }
+    },
+    {
+      "hanzi": "一直",
+      "pinyin": "yìzhí",
+      "vi": "thẳng; suốt, liên tục",
+      "ex": {
+        "zh": "一直往前走，别拐。",
+        "py": "Yìzhí wǎng qián zǒu, bié guǎi.",
+        "vi": "Cứ đi thẳng, đừng rẽ."
+      }
+    },
+    {
+      "hanzi": "远",
+      "pinyin": "yuǎn",
+      "vi": "xa",
+      "ex": {
+        "zh": "机场离这儿远吗？",
+        "py": "Jīchǎng lí zhèr yuǎn ma?",
+        "vi": "Sân bay cách đây có xa không?"
+      }
+    },
+    {
+      "hanzi": "近",
+      "pinyin": "jìn",
+      "vi": "gần",
+      "ex": {
+        "zh": "很近，走路十分钟。",
+        "py": "Hěn jìn, zǒulù shí fēnzhōng.",
+        "vi": "Gần lắm, đi bộ mười phút."
+      }
+    },
+    {
+      "hanzi": "离",
+      "pinyin": "lí",
+      "vi": "cách (khoảng cách)",
+      "ex": {
+        "zh": "我家离公司不远。",
+        "py": "Wǒ jiā lí gōngsī bù yuǎn.",
+        "vi": "Nhà tôi cách công ty không xa."
+      }
+    },
+    {
+      "hanzi": "路口",
+      "pinyin": "lùkǒu",
+      "vi": "ngã tư, giao lộ",
+      "ex": {
+        "zh": "我在路口等你。",
+        "py": "Wǒ zài lùkǒu děng nǐ.",
+        "vi": "Tôi đợi bạn ở ngã tư."
+      }
+    },
+    {
+      "hanzi": "红绿灯",
+      "pinyin": "hónglǜdēng",
+      "vi": "đèn giao thông",
+      "ex": {
+        "zh": "过马路要看红绿灯。",
+        "py": "Guò mǎlù yào kàn hónglǜdēng.",
+        "vi": "Qua đường phải nhìn đèn giao thông."
+      }
+    },
+    {
+      "hanzi": "堵车",
+      "pinyin": "dǔchē",
+      "vi": "tắc đường, kẹt xe",
+      "ex": {
+        "zh": "早上堵车，我迟到了。",
+        "py": "Zǎoshang dǔchē, wǒ chídào le.",
+        "vi": "Sáng nay tắc đường nên tôi đến muộn."
+      }
+    },
+    {
+      "hanzi": "下车",
+      "pinyin": "xiàchē",
+      "vi": "xuống xe",
+      "ex": {
+        "zh": "到了，我们在这儿下车。",
+        "py": "Dào le, wǒmen zài zhèr xiàchē.",
+        "vi": "Đến rồi, chúng ta xuống xe ở đây."
+      }
+    },
+    {
+      "hanzi": "换乘",
+      "pinyin": "huànchéng",
+      "vi": "chuyển tuyến, đổi xe",
+      "ex": {
+        "zh": "在人民广场换乘二号线。",
+        "py": "Zài Rénmín Guǎngchǎng huànchéng èr hào xiàn.",
+        "vi": "Đổi sang tuyến số 2 ở ga Quảng trường Nhân Dân."
+      }
+    },
+    {
+      "hanzi": "迷路",
+      "pinyin": "mílù",
+      "vi": "lạc đường",
+      "ex": {
+        "zh": "我迷路了，这是哪儿？",
+        "py": "Wǒ mílù le, zhè shì nǎr?",
+        "vi": "Tôi bị lạc rồi, đây là đâu vậy?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,325 @@
+{
+  "id": "places",
+  "words": [
+    {
+      "hanzi": "地方",
+      "pinyin": "dìfang",
+      "vi": "nơi, chỗ",
+      "ex": {
+        "zh": "这个地方真漂亮。",
+        "py": "Zhège dìfang zhēn piàoliang.",
+        "vi": "Chỗ này đẹp thật."
+      }
+    },
+    {
+      "hanzi": "城市",
+      "pinyin": "chéngshì",
+      "vi": "thành phố",
+      "ex": {
+        "zh": "上海是一个大城市。",
+        "py": "Shànghǎi shì yí ge dà chéngshì.",
+        "vi": "Thượng Hải là một thành phố lớn."
+      }
+    },
+    {
+      "hanzi": "哪儿",
+      "pinyin": "nǎr",
+      "vi": "đâu, ở đâu",
+      "ex": {
+        "zh": "你现在在哪儿？",
+        "py": "Nǐ xiànzài zài nǎr?",
+        "vi": "Bây giờ bạn đang ở đâu?"
+      }
+    },
+    {
+      "hanzi": "这儿",
+      "pinyin": "zhèr",
+      "vi": "đây, chỗ này",
+      "ex": {
+        "zh": "这儿可以坐吗？",
+        "py": "Zhèr kěyǐ zuò ma?",
+        "vi": "Chỗ này ngồi được không?"
+      }
+    },
+    {
+      "hanzi": "那儿",
+      "pinyin": "nàr",
+      "vi": "đó, chỗ kia",
+      "ex": {
+        "zh": "那儿人太多了，别去了。",
+        "py": "Nàr rén tài duō le, bié qù le.",
+        "vi": "Chỗ đó đông người quá, đừng đi nữa."
+      }
+    },
+    {
+      "hanzi": "附近",
+      "pinyin": "fùjìn",
+      "vi": "gần đây, lân cận",
+      "ex": {
+        "zh": "这附近有银行吗？",
+        "py": "Zhè fùjìn yǒu yínháng ma?",
+        "vi": "Gần đây có ngân hàng không?"
+      }
+    },
+    {
+      "hanzi": "旁边",
+      "pinyin": "pángbiān",
+      "vi": "bên cạnh",
+      "ex": {
+        "zh": "便利店就在地铁站旁边。",
+        "py": "Biànlìdiàn jiù zài dìtiězhàn pángbiān.",
+        "vi": "Cửa hàng tiện lợi ở ngay cạnh ga tàu điện."
+      }
+    },
+    {
+      "hanzi": "对面",
+      "pinyin": "duìmiàn",
+      "vi": "đối diện",
+      "ex": {
+        "zh": "学校对面有个公园。",
+        "py": "Xuéxiào duìmiàn yǒu ge gōngyuán.",
+        "vi": "Đối diện trường có một công viên."
+      }
+    },
+    {
+      "hanzi": "中间",
+      "pinyin": "zhōngjiān",
+      "vi": "ở giữa",
+      "ex": {
+        "zh": "银行在超市和饭馆中间。",
+        "py": "Yínháng zài chāoshì hé fànguǎn zhōngjiān.",
+        "vi": "Ngân hàng nằm giữa siêu thị và quán ăn."
+      }
+    },
+    {
+      "hanzi": "银行",
+      "pinyin": "yínháng",
+      "vi": "ngân hàng",
+      "ex": {
+        "zh": "我要去银行取钱。",
+        "py": "Wǒ yào qù yínháng qǔ qián.",
+        "vi": "Tôi phải đi ngân hàng rút tiền."
+      }
+    },
+    {
+      "hanzi": "学校",
+      "pinyin": "xuéxiào",
+      "vi": "trường học",
+      "ex": {
+        "zh": "我家离学校很近。",
+        "py": "Wǒ jiā lí xuéxiào hěn jìn.",
+        "vi": "Nhà tôi ở gần trường."
+      }
+    },
+    {
+      "hanzi": "公司",
+      "pinyin": "gōngsī",
+      "vi": "công ty",
+      "ex": {
+        "zh": "我在一家小公司工作。",
+        "py": "Wǒ zài yì jiā xiǎo gōngsī gōngzuò.",
+        "vi": "Tôi làm việc ở một công ty nhỏ."
+      }
+    },
+    {
+      "hanzi": "商场",
+      "pinyin": "shāngchǎng",
+      "vi": "trung tâm thương mại",
+      "ex": {
+        "zh": "周末我们去商场逛逛吧。",
+        "py": "Zhōumò wǒmen qù shāngchǎng guàngguang ba.",
+        "vi": "Cuối tuần mình đi dạo trung tâm thương mại nhé."
+      }
+    },
+    {
+      "hanzi": "饭馆",
+      "pinyin": "fànguǎn",
+      "vi": "quán ăn, nhà hàng",
+      "ex": {
+        "zh": "这家饭馆的菜很好吃。",
+        "py": "Zhè jiā fànguǎn de cài hěn hǎochī.",
+        "vi": "Món ở quán này ngon lắm."
+      }
+    },
+    {
+      "hanzi": "公园",
+      "pinyin": "gōngyuán",
+      "vi": "công viên",
+      "ex": {
+        "zh": "我每天去公园跑步。",
+        "py": "Wǒ měi tiān qù gōngyuán pǎobù.",
+        "vi": "Ngày nào tôi cũng ra công viên chạy bộ."
+      }
+    },
+    {
+      "hanzi": "酒店",
+      "pinyin": "jiǔdiàn",
+      "vi": "khách sạn",
+      "ex": {
+        "zh": "我住在机场附近的酒店。",
+        "py": "Wǒ zhù zài jīchǎng fùjìn de jiǔdiàn.",
+        "vi": "Tôi ở khách sạn gần sân bay."
+      }
+    },
+    {
+      "hanzi": "洗手间",
+      "pinyin": "xǐshǒujiān",
+      "vi": "nhà vệ sinh",
+      "ex": {
+        "zh": "洗手间在二楼。",
+        "py": "Xǐshǒujiān zài èr lóu.",
+        "vi": "Nhà vệ sinh ở tầng hai."
+      }
+    },
+    {
+      "hanzi": "楼",
+      "pinyin": "lóu",
+      "vi": "tòa nhà; tầng",
+      "ex": {
+        "zh": "你家住几楼？",
+        "py": "Nǐ jiā zhù jǐ lóu?",
+        "vi": "Nhà bạn ở tầng mấy?"
+      }
+    },
+    {
+      "hanzi": "街",
+      "pinyin": "jiē",
+      "vi": "phố, đường phố",
+      "ex": {
+        "zh": "这条街上有很多小吃。",
+        "py": "Zhè tiáo jiē shang yǒu hěn duō xiǎochī.",
+        "vi": "Phố này có nhiều đồ ăn vặt."
+      }
+    },
+    {
+      "hanzi": "门口",
+      "pinyin": "ménkǒu",
+      "vi": "cổng, trước cửa",
+      "ex": {
+        "zh": "我在商场门口等你。",
+        "py": "Wǒ zài shāngchǎng ménkǒu děng nǐ.",
+        "vi": "Tôi đợi bạn ở cổng trung tâm thương mại."
+      }
+    },
+    {
+      "hanzi": "便利店",
+      "pinyin": "biànlìdiàn",
+      "vi": "cửa hàng tiện lợi",
+      "ex": {
+        "zh": "楼下有一家便利店。",
+        "py": "Lóuxià yǒu yì jiā biànlìdiàn.",
+        "vi": "Dưới nhà có một cửa hàng tiện lợi."
+      }
+    },
+    {
+      "hanzi": "咖啡馆",
+      "pinyin": "kāfēiguǎn",
+      "vi": "quán cà phê",
+      "ex": {
+        "zh": "我们在咖啡馆见面吧。",
+        "py": "Wǒmen zài kāfēiguǎn jiànmiàn ba.",
+        "vi": "Mình gặp nhau ở quán cà phê nhé."
+      }
+    },
+    {
+      "hanzi": "图书馆",
+      "pinyin": "túshūguǎn",
+      "vi": "thư viện",
+      "ex": {
+        "zh": "我常去图书馆看书。",
+        "py": "Wǒ cháng qù túshūguǎn kàn shū.",
+        "vi": "Tôi hay đến thư viện đọc sách."
+      }
+    },
+    {
+      "hanzi": "电影院",
+      "pinyin": "diànyǐngyuàn",
+      "vi": "rạp chiếu phim",
+      "ex": {
+        "zh": "电影院在商场五楼。",
+        "py": "Diànyǐngyuàn zài shāngchǎng wǔ lóu.",
+        "vi": "Rạp phim ở tầng năm trung tâm thương mại."
+      }
+    },
+    {
+      "hanzi": "广场",
+      "pinyin": "guǎngchǎng",
+      "vi": "quảng trường",
+      "ex": {
+        "zh": "晚上很多人在广场跳舞。",
+        "py": "Wǎnshang hěn duō rén zài guǎngchǎng tiàowǔ.",
+        "vi": "Buổi tối nhiều người nhảy múa ở quảng trường."
+      }
+    },
+    {
+      "hanzi": "小区",
+      "pinyin": "xiǎoqū",
+      "vi": "khu dân cư, khu chung cư",
+      "ex": {
+        "zh": "我住的小区很安静。",
+        "py": "Wǒ zhù de xiǎoqū hěn ānjìng.",
+        "vi": "Khu chung cư tôi ở rất yên tĩnh."
+      }
+    },
+    {
+      "hanzi": "市中心",
+      "pinyin": "shìzhōngxīn",
+      "vi": "trung tâm thành phố",
+      "ex": {
+        "zh": "我想住在市中心。",
+        "py": "Wǒ xiǎng zhù zài shìzhōngxīn.",
+        "vi": "Tôi muốn sống ở trung tâm thành phố."
+      }
+    },
+    {
+      "hanzi": "博物馆",
+      "pinyin": "bówùguǎn",
+      "vi": "bảo tàng",
+      "ex": {
+        "zh": "这个博物馆周一不开门。",
+        "py": "Zhège bówùguǎn zhōuyī bù kāimén.",
+        "vi": "Bảo tàng này thứ Hai không mở cửa."
+      }
+    },
+    {
+      "hanzi": "菜市场",
+      "pinyin": "càishìchǎng",
+      "vi": "chợ (rau, thịt, cá)",
+      "ex": {
+        "zh": "妈妈每天去菜市场买菜。",
+        "py": "Māma měi tiān qù càishìchǎng mǎi cài.",
+        "vi": "Ngày nào mẹ cũng đi chợ mua thức ăn."
+      }
+    },
+    {
+      "hanzi": "理发店",
+      "pinyin": "lǐfàdiàn",
+      "vi": "tiệm cắt tóc",
+      "ex": {
+        "zh": "我去理发店剪头发。",
+        "py": "Wǒ qù lǐfàdiàn jiǎn tóufa.",
+        "vi": "Tôi ra tiệm cắt tóc."
+      }
+    },
+    {
+      "hanzi": "停车场",
+      "pinyin": "tíngchēchǎng",
+      "vi": "bãi đỗ xe",
+      "ex": {
+        "zh": "商场的停车场在地下。",
+        "py": "Shāngchǎng de tíngchēchǎng zài dìxià.",
+        "vi": "Bãi đỗ xe của trung tâm thương mại ở tầng hầm."
+      }
+    },
+    {
+      "hanzi": "派出所",
+      "pinyin": "pàichūsuǒ",
+      "vi": "đồn công an",
+      "ex": {
+        "zh": "外国人要去派出所登记。",
+        "py": "Wàiguórén yào qù pàichūsuǒ dēngjì.",
+        "vi": "Người nước ngoài phải đến đồn công an đăng ký."
+      }
+    }
+  ]
+}

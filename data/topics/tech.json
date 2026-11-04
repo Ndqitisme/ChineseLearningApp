@@ -1,0 +1,315 @@
+{
+  "id": "tech",
+  "words": [
+    {
+      "hanzi": "手机",
+      "pinyin": "shǒujī",
+      "vi": "điện thoại di động",
+      "ex": {
+        "zh": "我的手机没电了。",
+        "py": "Wǒ de shǒujī méi diàn le.",
+        "vi": "Điện thoại tôi hết pin rồi."
+      }
+    },
+    {
+      "hanzi": "电话",
+      "pinyin": "diànhuà",
+      "vi": "điện thoại; cuộc gọi",
+      "ex": {
+        "zh": "到了给我打个电话。",
+        "py": "Dàole gěi wǒ dǎ ge diànhuà.",
+        "vi": "Đến nơi thì gọi cho tôi nhé."
+      }
+    },
+    {
+      "hanzi": "号码",
+      "pinyin": "hàomǎ",
+      "vi": "số (điện thoại)",
+      "ex": {
+        "zh": "你的手机号码是多少？",
+        "py": "Nǐ de shǒujī hàomǎ shì duōshao?",
+        "vi": "Số điện thoại của bạn là bao nhiêu?"
+      }
+    },
+    {
+      "hanzi": "电脑",
+      "pinyin": "diànnǎo",
+      "vi": "máy tính",
+      "ex": {
+        "zh": "这台电脑有点儿慢。",
+        "py": "Zhè tái diànnǎo yǒudiǎnr màn.",
+        "vi": "Cái máy tính này hơi chậm."
+      }
+    },
+    {
+      "hanzi": "上网",
+      "pinyin": "shàngwǎng",
+      "vi": "lên mạng, vào mạng",
+      "ex": {
+        "zh": "这儿能上网吗？",
+        "py": "Zhèr néng shàngwǎng ma?",
+        "vi": "Ở đây có vào mạng được không?"
+      }
+    },
+    {
+      "hanzi": "网络",
+      "pinyin": "wǎngluò",
+      "vi": "mạng (internet)",
+      "ex": {
+        "zh": "今天网络不太好。",
+        "py": "Jīntiān wǎngluò bú tài hǎo.",
+        "vi": "Hôm nay mạng không ổn lắm."
+      }
+    },
+    {
+      "hanzi": "密码",
+      "pinyin": "mìmǎ",
+      "vi": "mật khẩu",
+      "ex": {
+        "zh": "WiFi密码是多少？",
+        "py": "WiFi mìmǎ shì duōshao?",
+        "vi": "Mật khẩu WiFi là gì vậy?"
+      }
+    },
+    {
+      "hanzi": "微信",
+      "pinyin": "Wēixìn",
+      "vi": "WeChat",
+      "ex": {
+        "zh": "我们加个微信吧。",
+        "py": "Wǒmen jiā ge Wēixìn ba.",
+        "vi": "Mình kết bạn WeChat nhé."
+      }
+    },
+    {
+      "hanzi": "发",
+      "pinyin": "fā",
+      "vi": "gửi",
+      "ex": {
+        "zh": "我把照片发给你。",
+        "py": "Wǒ bǎ zhàopiàn fā gěi nǐ.",
+        "vi": "Tôi gửi ảnh cho bạn."
+      }
+    },
+    {
+      "hanzi": "消息",
+      "pinyin": "xiāoxi",
+      "vi": "tin nhắn; tin tức",
+      "ex": {
+        "zh": "看到消息请回复我。",
+        "py": "Kàndào xiāoxi qǐng huífù wǒ.",
+        "vi": "Thấy tin nhắn thì trả lời tôi nhé."
+      }
+    },
+    {
+      "hanzi": "聊天",
+      "pinyin": "liáotiān",
+      "vi": "trò chuyện, chat",
+      "ex": {
+        "zh": "我们用微信聊天吧。",
+        "py": "Wǒmen yòng Wēixìn liáotiān ba.",
+        "vi": "Mình nhắn tin qua WeChat nhé."
+      }
+    },
+    {
+      "hanzi": "视频",
+      "pinyin": "shìpín",
+      "vi": "video",
+      "ex": {
+        "zh": "我常和妈妈视频聊天。",
+        "py": "Wǒ cháng hé māma shìpín liáotiān.",
+        "vi": "Tôi hay gọi video nói chuyện với mẹ."
+      }
+    },
+    {
+      "hanzi": "照片",
+      "pinyin": "zhàopiàn",
+      "vi": "ảnh, bức ảnh",
+      "ex": {
+        "zh": "这张照片拍得真好。",
+        "py": "Zhè zhāng zhàopiàn pāi de zhēn hǎo.",
+        "vi": "Tấm ảnh này chụp đẹp thật."
+      }
+    },
+    {
+      "hanzi": "充电",
+      "pinyin": "chōngdiàn",
+      "vi": "sạc pin",
+      "ex": {
+        "zh": "哪儿可以给手机充电？",
+        "py": "Nǎr kěyǐ gěi shǒujī chōngdiàn?",
+        "vi": "Sạc điện thoại ở đâu được nhỉ?"
+      }
+    },
+    {
+      "hanzi": "充电宝",
+      "pinyin": "chōngdiànbǎo",
+      "vi": "sạc dự phòng",
+      "ex": {
+        "zh": "你有充电宝吗？借我用一下。",
+        "py": "Nǐ yǒu chōngdiànbǎo ma? Jiè wǒ yòng yíxià.",
+        "vi": "Bạn có sạc dự phòng không? Cho tôi mượn chút."
+      }
+    },
+    {
+      "hanzi": "软件",
+      "pinyin": "ruǎnjiàn",
+      "vi": "phần mềm, ứng dụng",
+      "ex": {
+        "zh": "这个软件很好用。",
+        "py": "Zhège ruǎnjiàn hěn hǎoyòng.",
+        "vi": "Ứng dụng này dùng rất tiện."
+      }
+    },
+    {
+      "hanzi": "下载",
+      "pinyin": "xiàzài",
+      "vi": "tải xuống",
+      "ex": {
+        "zh": "你先下载这个软件。",
+        "py": "Nǐ xiān xiàzài zhège ruǎnjiàn.",
+        "vi": "Bạn tải ứng dụng này về trước đã."
+      }
+    },
+    {
+      "hanzi": "点",
+      "pinyin": "diǎn",
+      "vi": "bấm, nhấn (vào)",
+      "ex": {
+        "zh": "点这儿就可以了。",
+        "py": "Diǎn zhèr jiù kěyǐ le.",
+        "vi": "Bấm vào đây là được."
+      }
+    },
+    {
+      "hanzi": "二维码",
+      "pinyin": "èrwéimǎ",
+      "vi": "mã QR",
+      "ex": {
+        "zh": "请扫一下这个二维码。",
+        "py": "Qǐng sǎo yíxià zhège èrwéimǎ.",
+        "vi": "Vui lòng quét mã QR này."
+      }
+    },
+    {
+      "hanzi": "账号",
+      "pinyin": "zhànghào",
+      "vi": "tài khoản",
+      "ex": {
+        "zh": "我忘了账号的密码。",
+        "py": "Wǒ wàngle zhànghào de mìmǎ.",
+        "vi": "Tôi quên mật khẩu tài khoản rồi."
+      }
+    },
+    {
+      "hanzi": "登录",
+      "pinyin": "dēnglù",
+      "vi": "đăng nhập",
+      "ex": {
+        "zh": "请先用手机号登录。",
+        "py": "Qǐng xiān yòng shǒujīhào dēnglù.",
+        "vi": "Vui lòng đăng nhập bằng số điện thoại trước."
+      }
+    },
+    {
+      "hanzi": "注册",
+      "pinyin": "zhùcè",
+      "vi": "đăng ký (tài khoản)",
+      "ex": {
+        "zh": "注册很简单，一分钟就好。",
+        "py": "Zhùcè hěn jiǎndān, yì fēnzhōng jiù hǎo.",
+        "vi": "Đăng ký dễ lắm, một phút là xong."
+      }
+    },
+    {
+      "hanzi": "信号",
+      "pinyin": "xìnhào",
+      "vi": "sóng, tín hiệu",
+      "ex": {
+        "zh": "这儿手机信号不太好。",
+        "py": "Zhèr shǒujī xìnhào bú tài hǎo.",
+        "vi": "Ở đây sóng điện thoại không tốt lắm."
+      }
+    },
+    {
+      "hanzi": "流量",
+      "pinyin": "liúliàng",
+      "vi": "dung lượng data (3G/4G)",
+      "ex": {
+        "zh": "我的流量快用完了。",
+        "py": "Wǒ de liúliàng kuài yòngwán le.",
+        "vi": "Data của tôi sắp hết rồi."
+      }
+    },
+    {
+      "hanzi": "耳机",
+      "pinyin": "ěrjī",
+      "vi": "tai nghe",
+      "ex": {
+        "zh": "我忘带耳机了。",
+        "py": "Wǒ wàng dài ěrjī le.",
+        "vi": "Tôi quên mang tai nghe rồi."
+      }
+    },
+    {
+      "hanzi": "坏",
+      "pinyin": "huài",
+      "vi": "hỏng; xấu",
+      "ex": {
+        "zh": "电脑坏了，帮我看看。",
+        "py": "Diànnǎo huài le, bāng wǒ kànkan.",
+        "vi": "Máy tính hỏng rồi, xem giúp tôi với."
+      }
+    },
+    {
+      "hanzi": "屏幕",
+      "pinyin": "píngmù",
+      "vi": "màn hình",
+      "ex": {
+        "zh": "我的手机屏幕摔坏了。",
+        "py": "Wǒ de shǒujī píngmù shuāihuài le.",
+        "vi": "Màn hình điện thoại tôi bị rơi vỡ rồi."
+      }
+    },
+    {
+      "hanzi": "关机",
+      "pinyin": "guānjī",
+      "vi": "tắt máy",
+      "ex": {
+        "zh": "开会时请关机。",
+        "py": "Kāihuì shí qǐng guānjī.",
+        "vi": "Khi họp vui lòng tắt máy."
+      }
+    },
+    {
+      "hanzi": "打字",
+      "pinyin": "dǎzì",
+      "vi": "gõ chữ",
+      "ex": {
+        "zh": "我用拼音打字。",
+        "py": "Wǒ yòng pīnyīn dǎzì.",
+        "vi": "Tôi gõ chữ bằng pinyin."
+      }
+    },
+    {
+      "hanzi": "搜索",
+      "pinyin": "sōusuǒ",
+      "vi": "tìm kiếm",
+      "ex": {
+        "zh": "你可以在网上搜索一下。",
+        "py": "Nǐ kěyǐ zài wǎngshàng sōusuǒ yíxià.",
+        "vi": "Bạn có thể tìm thử trên mạng."
+      }
+    },
+    {
+      "hanzi": "更新",
+      "pinyin": "gēngxīn",
+      "vi": "cập nhật",
+      "ex": {
+        "zh": "手机要更新系统了。",
+        "py": "Shǒujī yào gēngxīn xìtǒng le.",
+        "vi": "Điện thoại cần cập nhật hệ thống rồi."
+      }
+    }
+  ]
+}

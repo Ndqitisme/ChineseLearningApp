@@ -1,0 +1,325 @@
+{
+  "id": "clothes-shopping",
+  "words": [
+    {
+      "hanzi": "衣服",
+      "pinyin": "yīfu",
+      "vi": "quần áo",
+      "ex": {
+        "zh": "我想去买几件衣服。",
+        "py": "Wǒ xiǎng qù mǎi jǐ jiàn yīfu.",
+        "vi": "Tôi muốn đi mua mấy bộ quần áo."
+      }
+    },
+    {
+      "hanzi": "买",
+      "pinyin": "mǎi",
+      "vi": "mua",
+      "ex": {
+        "zh": "这个我买了。",
+        "py": "Zhège wǒ mǎi le.",
+        "vi": "Cái này tôi lấy."
+      }
+    },
+    {
+      "hanzi": "卖",
+      "pinyin": "mài",
+      "vi": "bán",
+      "ex": {
+        "zh": "这儿卖鞋吗？",
+        "py": "Zhèr mài xié ma?",
+        "vi": "Ở đây có bán giày không?"
+      }
+    },
+    {
+      "hanzi": "多少钱",
+      "pinyin": "duōshao qián",
+      "vi": "bao nhiêu tiền",
+      "ex": {
+        "zh": "这件衣服多少钱？",
+        "py": "Zhè jiàn yīfu duōshao qián?",
+        "vi": "Cái áo này bao nhiêu tiền?"
+      }
+    },
+    {
+      "hanzi": "贵",
+      "pinyin": "guì",
+      "vi": "đắt",
+      "ex": {
+        "zh": "太贵了，便宜点儿吧。",
+        "py": "Tài guì le, piányi diǎnr ba.",
+        "vi": "Đắt quá, bớt chút đi."
+      }
+    },
+    {
+      "hanzi": "便宜",
+      "pinyin": "piányi",
+      "vi": "rẻ",
+      "ex": {
+        "zh": "这件很便宜，才五十块。",
+        "py": "Zhè jiàn hěn piányi, cái wǔshí kuài.",
+        "vi": "Cái này rẻ lắm, chỉ 50 tệ thôi."
+      }
+    },
+    {
+      "hanzi": "穿",
+      "pinyin": "chuān",
+      "vi": "mặc; đi (giày, tất)",
+      "ex": {
+        "zh": "今天冷，多穿点儿衣服。",
+        "py": "Jīntiān lěng, duō chuān diǎnr yīfu.",
+        "vi": "Hôm nay lạnh, mặc thêm áo vào."
+      }
+    },
+    {
+      "hanzi": "试",
+      "pinyin": "shì",
+      "vi": "thử",
+      "ex": {
+        "zh": "我可以试一下吗？",
+        "py": "Wǒ kěyǐ shì yíxià ma?",
+        "vi": "Tôi mặc thử được không?"
+      }
+    },
+    {
+      "hanzi": "件",
+      "pinyin": "jiàn",
+      "vi": "chiếc, cái (áo, đồ)",
+      "ex": {
+        "zh": "这件衬衫我很喜欢。",
+        "py": "Zhè jiàn chènshān wǒ hěn xǐhuan.",
+        "vi": "Tôi rất thích chiếc sơ mi này."
+      }
+    },
+    {
+      "hanzi": "条",
+      "pinyin": "tiáo",
+      "vi": "chiếc (quần, váy); con",
+      "ex": {
+        "zh": "我买了两条裤子。",
+        "py": "Wǒ mǎile liǎng tiáo kùzi.",
+        "vi": "Tôi đã mua hai cái quần."
+      }
+    },
+    {
+      "hanzi": "双",
+      "pinyin": "shuāng",
+      "vi": "đôi",
+      "ex": {
+        "zh": "我想买一双运动鞋。",
+        "py": "Wǒ xiǎng mǎi yì shuāng yùndòngxié.",
+        "vi": "Tôi muốn mua một đôi giày thể thao."
+      }
+    },
+    {
+      "hanzi": "裤子",
+      "pinyin": "kùzi",
+      "vi": "quần",
+      "ex": {
+        "zh": "这条裤子有点儿长。",
+        "py": "Zhè tiáo kùzi yǒudiǎnr cháng.",
+        "vi": "Cái quần này hơi dài."
+      }
+    },
+    {
+      "hanzi": "裙子",
+      "pinyin": "qúnzi",
+      "vi": "váy",
+      "ex": {
+        "zh": "她穿了一条红裙子。",
+        "py": "Tā chuānle yì tiáo hóng qúnzi.",
+        "vi": "Cô ấy mặc một chiếc váy đỏ."
+      }
+    },
+    {
+      "hanzi": "鞋",
+      "pinyin": "xié",
+      "vi": "giày",
+      "ex": {
+        "zh": "这双鞋穿着很舒服。",
+        "py": "Zhè shuāng xié chuānzhe hěn shūfu.",
+        "vi": "Đôi giày này đi rất êm chân."
+      }
+    },
+    {
+      "hanzi": "衬衫",
+      "pinyin": "chènshān",
+      "vi": "áo sơ mi",
+      "ex": {
+        "zh": "我上班要穿白衬衫。",
+        "py": "Wǒ shàngbān yào chuān bái chènshān.",
+        "vi": "Đi làm tôi phải mặc sơ mi trắng."
+      }
+    },
+    {
+      "hanzi": "外套",
+      "pinyin": "wàitào",
+      "vi": "áo khoác",
+      "ex": {
+        "zh": "外面冷，穿件外套吧。",
+        "py": "Wàimiàn lěng, chuān jiàn wàitào ba.",
+        "vi": "Ngoài trời lạnh, mặc áo khoác vào đi."
+      }
+    },
+    {
+      "hanzi": "帽子",
+      "pinyin": "màozi",
+      "vi": "mũ, nón",
+      "ex": {
+        "zh": "太阳很大，戴个帽子吧。",
+        "py": "Tàiyáng hěn dà, dài ge màozi ba.",
+        "vi": "Nắng to lắm, đội mũ vào đi."
+      }
+    },
+    {
+      "hanzi": "袜子",
+      "pinyin": "wàzi",
+      "vi": "tất, vớ",
+      "ex": {
+        "zh": "我买了五双袜子。",
+        "py": "Wǒ mǎile wǔ shuāng wàzi.",
+        "vi": "Tôi đã mua năm đôi tất."
+      }
+    },
+    {
+      "hanzi": "包",
+      "pinyin": "bāo",
+      "vi": "túi, cặp",
+      "ex": {
+        "zh": "这个包是在网上买的。",
+        "py": "Zhège bāo shì zài wǎngshàng mǎi de.",
+        "vi": "Cái túi này mua trên mạng đấy."
+      }
+    },
+    {
+      "hanzi": "颜色",
+      "pinyin": "yánsè",
+      "vi": "màu sắc",
+      "ex": {
+        "zh": "有没有别的颜色？",
+        "py": "Yǒu méiyǒu bié de yánsè?",
+        "vi": "Có màu khác không?"
+      }
+    },
+    {
+      "hanzi": "号",
+      "pinyin": "hào",
+      "vi": "cỡ, size; số",
+      "ex": {
+        "zh": "你穿多大号的？",
+        "py": "Nǐ chuān duō dà hào de?",
+        "vi": "Bạn mặc cỡ bao nhiêu?"
+      }
+    },
+    {
+      "hanzi": "合适",
+      "pinyin": "héshì",
+      "vi": "vừa, hợp",
+      "ex": {
+        "zh": "这件衣服你穿很合适。",
+        "py": "Zhè jiàn yīfu nǐ chuān hěn héshì.",
+        "vi": "Bộ này bạn mặc rất hợp."
+      }
+    },
+    {
+      "hanzi": "漂亮",
+      "pinyin": "piàoliang",
+      "vi": "đẹp",
+      "ex": {
+        "zh": "你穿红色很漂亮。",
+        "py": "Nǐ chuān hóngsè hěn piàoliang.",
+        "vi": "Bạn mặc màu đỏ rất đẹp."
+      }
+    },
+    {
+      "hanzi": "商店",
+      "pinyin": "shāngdiàn",
+      "vi": "cửa hàng",
+      "ex": {
+        "zh": "这个商店几点关门？",
+        "py": "Zhège shāngdiàn jǐ diǎn guānmén?",
+        "vi": "Cửa hàng này mấy giờ đóng cửa?"
+      }
+    },
+    {
+      "hanzi": "超市",
+      "pinyin": "chāoshì",
+      "vi": "siêu thị",
+      "ex": {
+        "zh": "我去超市买点儿水果。",
+        "py": "Wǒ qù chāoshì mǎi diǎnr shuǐguǒ.",
+        "vi": "Tôi đi siêu thị mua ít hoa quả."
+      }
+    },
+    {
+      "hanzi": "打折",
+      "pinyin": "dǎzhé",
+      "vi": "giảm giá",
+      "ex": {
+        "zh": "周末商场打折，我们去看看吧。",
+        "py": "Zhōumò shāngchǎng dǎzhé, wǒmen qù kànkan ba.",
+        "vi": "Cuối tuần trung tâm thương mại giảm giá, mình đi xem nhé."
+      }
+    },
+    {
+      "hanzi": "网购",
+      "pinyin": "wǎnggòu",
+      "vi": "mua sắm online",
+      "ex": {
+        "zh": "现在很多人喜欢网购。",
+        "py": "Xiànzài hěn duō rén xǐhuan wǎnggòu.",
+        "vi": "Bây giờ nhiều người thích mua online."
+      }
+    },
+    {
+      "hanzi": "快递",
+      "pinyin": "kuàidì",
+      "vi": "hàng chuyển phát; giao hàng",
+      "ex": {
+        "zh": "你的快递到了，在门口。",
+        "py": "Nǐ de kuàidì dào le, zài ménkǒu.",
+        "vi": "Hàng của bạn đến rồi, ở ngoài cửa."
+      }
+    },
+    {
+      "hanzi": "换",
+      "pinyin": "huàn",
+      "vi": "đổi",
+      "ex": {
+        "zh": "能换个大一号的吗？",
+        "py": "Néng huàn ge dà yí hào de ma?",
+        "vi": "Đổi giúp tôi cỡ lớn hơn được không?"
+      }
+    },
+    {
+      "hanzi": "退货",
+      "pinyin": "tuìhuò",
+      "vi": "trả hàng",
+      "ex": {
+        "zh": "衣服太小了，我想退货。",
+        "py": "Yīfu tài xiǎo le, wǒ xiǎng tuìhuò.",
+        "vi": "Áo nhỏ quá, tôi muốn trả hàng."
+      }
+    },
+    {
+      "hanzi": "质量",
+      "pinyin": "zhìliàng",
+      "vi": "chất lượng",
+      "ex": {
+        "zh": "这家店的衣服质量很好。",
+        "py": "Zhè jiā diàn de yīfu zhìliàng hěn hǎo.",
+        "vi": "Quần áo tiệm này chất lượng tốt."
+      }
+    },
+    {
+      "hanzi": "收银台",
+      "pinyin": "shōuyíntái",
+      "vi": "quầy thu ngân",
+      "ex": {
+        "zh": "请到收银台付款。",
+        "py": "Qǐng dào shōuyíntái fùkuǎn.",
+        "vi": "Mời ra quầy thu ngân thanh toán."
+      }
+    }
+  ]
+}

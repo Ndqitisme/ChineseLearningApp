@@ -1,0 +1,325 @@
+{
+  "id": "body-health",
+  "words": [
+    {
+      "hanzi": "身体",
+      "pinyin": "shēntǐ",
+      "vi": "cơ thể; sức khỏe",
+      "ex": {
+        "zh": "最近身体怎么样？",
+        "py": "Zuìjìn shēntǐ zěnmeyàng?",
+        "vi": "Dạo này sức khỏe thế nào?"
+      }
+    },
+    {
+      "hanzi": "头",
+      "pinyin": "tóu",
+      "vi": "đầu",
+      "ex": {
+        "zh": "我头很疼，想早点儿回家。",
+        "py": "Wǒ tóu hěn téng, xiǎng zǎo diǎnr huí jiā.",
+        "vi": "Tôi đau đầu quá, muốn về nhà sớm."
+      }
+    },
+    {
+      "hanzi": "手",
+      "pinyin": "shǒu",
+      "vi": "tay",
+      "ex": {
+        "zh": "吃饭前要洗手。",
+        "py": "Chīfàn qián yào xǐshǒu.",
+        "vi": "Trước khi ăn phải rửa tay."
+      }
+    },
+    {
+      "hanzi": "脚",
+      "pinyin": "jiǎo",
+      "vi": "bàn chân",
+      "ex": {
+        "zh": "走了一天路，脚很疼。",
+        "py": "Zǒule yì tiān lù, jiǎo hěn téng.",
+        "vi": "Đi bộ cả ngày, chân đau quá."
+      }
+    },
+    {
+      "hanzi": "眼睛",
+      "pinyin": "yǎnjing",
+      "vi": "mắt",
+      "ex": {
+        "zh": "看手机太久，眼睛很累。",
+        "py": "Kàn shǒujī tài jiǔ, yǎnjing hěn lèi.",
+        "vi": "Xem điện thoại lâu quá, mỏi cả mắt."
+      }
+    },
+    {
+      "hanzi": "肚子",
+      "pinyin": "dùzi",
+      "vi": "bụng",
+      "ex": {
+        "zh": "我肚子疼，不想吃饭。",
+        "py": "Wǒ dùzi téng, bù xiǎng chīfàn.",
+        "vi": "Tôi đau bụng, không muốn ăn gì."
+      }
+    },
+    {
+      "hanzi": "疼",
+      "pinyin": "téng",
+      "vi": "đau",
+      "ex": {
+        "zh": "你哪儿疼？",
+        "py": "Nǐ nǎr téng?",
+        "vi": "Bạn đau ở đâu?"
+      }
+    },
+    {
+      "hanzi": "生病",
+      "pinyin": "shēngbìng",
+      "vi": "bị ốm, bị bệnh",
+      "ex": {
+        "zh": "他生病了，今天不来上班。",
+        "py": "Tā shēngbìng le, jīntiān bù lái shàngbān.",
+        "vi": "Anh ấy bị ốm, hôm nay không đi làm."
+      }
+    },
+    {
+      "hanzi": "医院",
+      "pinyin": "yīyuàn",
+      "vi": "bệnh viện",
+      "ex": {
+        "zh": "我带你去医院吧。",
+        "py": "Wǒ dài nǐ qù yīyuàn ba.",
+        "vi": "Để tôi đưa bạn đi bệnh viện nhé."
+      }
+    },
+    {
+      "hanzi": "医生",
+      "pinyin": "yīshēng",
+      "vi": "bác sĩ",
+      "ex": {
+        "zh": "医生说我要多休息。",
+        "py": "Yīshēng shuō wǒ yào duō xiūxi.",
+        "vi": "Bác sĩ bảo tôi phải nghỉ ngơi nhiều."
+      }
+    },
+    {
+      "hanzi": "药",
+      "pinyin": "yào",
+      "vi": "thuốc",
+      "ex": {
+        "zh": "这个药一天吃三次。",
+        "py": "Zhège yào yì tiān chī sān cì.",
+        "vi": "Thuốc này mỗi ngày uống ba lần."
+      }
+    },
+    {
+      "hanzi": "累",
+      "pinyin": "lèi",
+      "vi": "mệt",
+      "ex": {
+        "zh": "我今天太累了，想早点儿睡。",
+        "py": "Wǒ jīntiān tài lèi le, xiǎng zǎo diǎnr shuì.",
+        "vi": "Hôm nay tôi mệt quá, muốn ngủ sớm."
+      }
+    },
+    {
+      "hanzi": "舒服",
+      "pinyin": "shūfu",
+      "vi": "dễ chịu, khỏe (trong người)",
+      "ex": {
+        "zh": "我今天不太舒服。",
+        "py": "Wǒ jīntiān bú tài shūfu.",
+        "vi": "Hôm nay tôi thấy không được khỏe."
+      }
+    },
+    {
+      "hanzi": "休息",
+      "pinyin": "xiūxi",
+      "vi": "nghỉ ngơi",
+      "ex": {
+        "zh": "你累了，快去休息吧。",
+        "py": "Nǐ lèi le, kuài qù xiūxi ba.",
+        "vi": "Bạn mệt rồi, mau đi nghỉ đi."
+      }
+    },
+    {
+      "hanzi": "感冒",
+      "pinyin": "gǎnmào",
+      "vi": "cảm, cảm cúm",
+      "ex": {
+        "zh": "我感冒了，有点儿发烧。",
+        "py": "Wǒ gǎnmào le, yǒudiǎnr fāshāo.",
+        "vi": "Tôi bị cảm rồi, hơi sốt một chút."
+      }
+    },
+    {
+      "hanzi": "发烧",
+      "pinyin": "fāshāo",
+      "vi": "sốt",
+      "ex": {
+        "zh": "孩子发烧了，三十九度。",
+        "py": "Háizi fāshāo le, sānshíjiǔ dù.",
+        "vi": "Con bị sốt rồi, 39 độ."
+      }
+    },
+    {
+      "hanzi": "看病",
+      "pinyin": "kànbìng",
+      "vi": "khám bệnh, đi khám",
+      "ex": {
+        "zh": "我下午去医院看病。",
+        "py": "Wǒ xiàwǔ qù yīyuàn kànbìng.",
+        "vi": "Chiều nay tôi đi bệnh viện khám."
+      }
+    },
+    {
+      "hanzi": "牙",
+      "pinyin": "yá",
+      "vi": "răng",
+      "ex": {
+        "zh": "我牙疼，要去看牙医。",
+        "py": "Wǒ yá téng, yào qù kàn yáyī.",
+        "vi": "Tôi đau răng, phải đi khám nha sĩ."
+      }
+    },
+    {
+      "hanzi": "嘴",
+      "pinyin": "zuǐ",
+      "vi": "miệng",
+      "ex": {
+        "zh": "请张嘴，我看看。",
+        "py": "Qǐng zhāng zuǐ, wǒ kànkan.",
+        "vi": "Há miệng ra, để tôi xem nào."
+      }
+    },
+    {
+      "hanzi": "耳朵",
+      "pinyin": "ěrduo",
+      "vi": "tai",
+      "ex": {
+        "zh": "他耳朵不好，你大声点儿。",
+        "py": "Tā ěrduo bù hǎo, nǐ dàshēng diǎnr.",
+        "vi": "Ông ấy nghe kém, bạn nói to lên chút."
+      }
+    },
+    {
+      "hanzi": "鼻子",
+      "pinyin": "bízi",
+      "vi": "mũi",
+      "ex": {
+        "zh": "感冒了，鼻子很难受。",
+        "py": "Gǎnmào le, bízi hěn nánshòu.",
+        "vi": "Bị cảm nên mũi khó chịu lắm."
+      }
+    },
+    {
+      "hanzi": "腿",
+      "pinyin": "tuǐ",
+      "vi": "chân, cẳng chân",
+      "ex": {
+        "zh": "我的腿受伤了，不能跑步。",
+        "py": "Wǒ de tuǐ shòushāng le, bù néng pǎobù.",
+        "vi": "Chân tôi bị thương, không chạy bộ được."
+      }
+    },
+    {
+      "hanzi": "健康",
+      "pinyin": "jiànkāng",
+      "vi": "khỏe mạnh; sức khỏe",
+      "ex": {
+        "zh": "祝你身体健康！",
+        "py": "Zhù nǐ shēntǐ jiànkāng!",
+        "vi": "Chúc bạn mạnh khỏe!"
+      }
+    },
+    {
+      "hanzi": "锻炼",
+      "pinyin": "duànliàn",
+      "vi": "rèn luyện, tập thể dục",
+      "ex": {
+        "zh": "我每天早上锻炼身体。",
+        "py": "Wǒ měi tiān zǎoshang duànliàn shēntǐ.",
+        "vi": "Sáng nào tôi cũng tập thể dục."
+      }
+    },
+    {
+      "hanzi": "胖",
+      "pinyin": "pàng",
+      "vi": "béo, mập",
+      "ex": {
+        "zh": "我最近胖了，要多运动。",
+        "py": "Wǒ zuìjìn pàng le, yào duō yùndòng.",
+        "vi": "Dạo này tôi béo lên, phải vận động nhiều hơn."
+      }
+    },
+    {
+      "hanzi": "瘦",
+      "pinyin": "shòu",
+      "vi": "gầy",
+      "ex": {
+        "zh": "你瘦了，最近很忙吗？",
+        "py": "Nǐ shòu le, zuìjìn hěn máng ma?",
+        "vi": "Bạn gầy đi rồi, dạo này bận lắm à?"
+      }
+    },
+    {
+      "hanzi": "检查",
+      "pinyin": "jiǎnchá",
+      "vi": "kiểm tra, khám",
+      "ex": {
+        "zh": "明天我要去医院检查身体。",
+        "py": "Míngtiān wǒ yào qù yīyuàn jiǎnchá shēntǐ.",
+        "vi": "Mai tôi phải đi bệnh viện khám sức khỏe."
+      }
+    },
+    {
+      "hanzi": "咳嗽",
+      "pinyin": "késou",
+      "vi": "ho",
+      "ex": {
+        "zh": "他咳嗽得很厉害。",
+        "py": "Tā késou de hěn lìhai.",
+        "vi": "Anh ấy ho rất dữ."
+      }
+    },
+    {
+      "hanzi": "药店",
+      "pinyin": "yàodiàn",
+      "vi": "hiệu thuốc",
+      "ex": {
+        "zh": "附近有药店吗？",
+        "py": "Fùjìn yǒu yàodiàn ma?",
+        "vi": "Gần đây có hiệu thuốc không?"
+      }
+    },
+    {
+      "hanzi": "挂号",
+      "pinyin": "guàhào",
+      "vi": "lấy số khám, đăng ký khám",
+      "ex": {
+        "zh": "看病要先挂号。",
+        "py": "Kànbìng yào xiān guàhào.",
+        "vi": "Đi khám bệnh phải lấy số trước."
+      }
+    },
+    {
+      "hanzi": "打针",
+      "pinyin": "dǎzhēn",
+      "vi": "tiêm, chích",
+      "ex": {
+        "zh": "医生说不用打针。",
+        "py": "Yīshēng shuō búyòng dǎzhēn.",
+        "vi": "Bác sĩ nói không cần tiêm."
+      }
+    },
+    {
+      "hanzi": "过敏",
+      "pinyin": "guòmǐn",
+      "vi": "dị ứng",
+      "ex": {
+        "zh": "我对海鲜过敏。",
+        "py": "Wǒ duì hǎixiān guòmǐn.",
+        "vi": "Tôi bị dị ứng hải sản."
+      }
+    }
+  ]
+}

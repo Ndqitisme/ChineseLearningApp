@@ -1,0 +1,21 @@
+Character "Tiểu Mai": built with MakeHuman / MPFB2 (https://static.makehumancommunity.org/mpfb.html)
+and rendered to 2D frames with Blender. Output of MakeHuman itself is CC0.
+
+Assets used (MakeHuman community asset packs, https://static.makehumancommunity.org/assets/assetpacks.html):
+- Shirt "elvs_male_shirt_untucked_bd1" by Elvaerwyn, CC-BY,
+  https://static.makehumancommunity.org/assets/assetpacks/shirts02.html
+  Modified: sleeves shortened, recoloured as denim, bust smoothed.
+- Skirt "mtknife_pleated_mini_skirt" by MTKnife, CC-BY,
+  https://static.makehumancommunity.org/assets/assetpacks/skirts02.html
+  Modified: recoloured charcoal grey.
+- Glasses "toigo_round_glasses_leopard" by MargaretToigo, CC0,
+  https://static.makehumancommunity.org/assets/assetpacks/glasses01.html
+  Modified: metal frame material, clear lenses, scaled down 10%.
+- Hair ponytail01, shoes04 (socks removed), eyebrow010, eyelashes02, high-poly eyes,
+  teeth_base, tongue01, skin young_asian_female, expression targets: MakeHuman system
+  assets, CC0.
+
+Licences are as listed in the MakeHuman asset pack metadata (shirts02, skirts02, glasses01,
+makehuman_system_assets); the packs say "CC-BY" without a version.
+CC-BY: Creative Commons Attribution, https://creativecommons.org/licenses/by/4.0/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/

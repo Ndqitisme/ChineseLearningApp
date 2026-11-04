@@ -1,0 +1,325 @@
+{
+  "id": "hobbies",
+  "words": [
+    {
+      "hanzi": "爱好",
+      "pinyin": "àihào",
+      "vi": "sở thích",
+      "ex": {
+        "zh": "你有什么爱好？",
+        "py": "Nǐ yǒu shénme àihào?",
+        "vi": "Bạn có sở thích gì?"
+      }
+    },
+    {
+      "hanzi": "喜欢",
+      "pinyin": "xǐhuan",
+      "vi": "thích",
+      "ex": {
+        "zh": "我喜欢在家看书。",
+        "py": "Wǒ xǐhuan zài jiā kàn shū.",
+        "vi": "Tôi thích ở nhà đọc sách."
+      }
+    },
+    {
+      "hanzi": "玩",
+      "pinyin": "wán",
+      "vi": "chơi",
+      "ex": {
+        "zh": "孩子们在外面玩呢。",
+        "py": "Háizimen zài wàimiàn wán ne.",
+        "vi": "Bọn trẻ đang chơi ở ngoài."
+      }
+    },
+    {
+      "hanzi": "周末",
+      "pinyin": "zhōumò",
+      "vi": "cuối tuần",
+      "ex": {
+        "zh": "周末你一般做什么？",
+        "py": "Zhōumò nǐ yìbān zuò shénme?",
+        "vi": "Cuối tuần bạn thường làm gì?"
+      }
+    },
+    {
+      "hanzi": "有空",
+      "pinyin": "yǒu kòng",
+      "vi": "rảnh, có thời gian",
+      "ex": {
+        "zh": "你明天有空吗？",
+        "py": "Nǐ míngtiān yǒu kòng ma?",
+        "vi": "Mai bạn rảnh không?"
+      }
+    },
+    {
+      "hanzi": "运动",
+      "pinyin": "yùndòng",
+      "vi": "thể thao; vận động",
+      "ex": {
+        "zh": "你喜欢什么运动？",
+        "py": "Nǐ xǐhuan shénme yùndòng?",
+        "vi": "Bạn thích môn thể thao nào?"
+      }
+    },
+    {
+      "hanzi": "音乐",
+      "pinyin": "yīnyuè",
+      "vi": "âm nhạc",
+      "ex": {
+        "zh": "我开车的时候听音乐。",
+        "py": "Wǒ kāichē de shíhou tīng yīnyuè.",
+        "vi": "Tôi nghe nhạc khi lái xe."
+      }
+    },
+    {
+      "hanzi": "电影",
+      "pinyin": "diànyǐng",
+      "vi": "phim, điện ảnh",
+      "ex": {
+        "zh": "晚上一起去看电影吧！",
+        "py": "Wǎnshang yìqǐ qù kàn diànyǐng ba!",
+        "vi": "Tối nay cùng đi xem phim nhé!"
+      }
+    },
+    {
+      "hanzi": "电视",
+      "pinyin": "diànshì",
+      "vi": "tivi, truyền hình",
+      "ex": {
+        "zh": "吃完饭，我们一起看电视。",
+        "py": "Chīwán fàn, wǒmen yìqǐ kàn diànshì.",
+        "vi": "Ăn cơm xong, cả nhà cùng xem tivi."
+      }
+    },
+    {
+      "hanzi": "游戏",
+      "pinyin": "yóuxì",
+      "vi": "trò chơi, game",
+      "ex": {
+        "zh": "他一有时间就玩游戏。",
+        "py": "Tā yì yǒu shíjiān jiù wán yóuxì.",
+        "vi": "Hễ rảnh là cậu ấy chơi game."
+      }
+    },
+    {
+      "hanzi": "唱歌",
+      "pinyin": "chànggē",
+      "vi": "hát",
+      "ex": {
+        "zh": "我们去KTV唱歌吧。",
+        "py": "Wǒmen qù KTV chànggē ba.",
+        "vi": "Mình đi karaoke hát đi."
+      }
+    },
+    {
+      "hanzi": "跳舞",
+      "pinyin": "tiàowǔ",
+      "vi": "nhảy, múa",
+      "ex": {
+        "zh": "她跳舞跳得很好。",
+        "py": "Tā tiàowǔ tiào de hěn hǎo.",
+        "vi": "Cô ấy nhảy rất giỏi."
+      }
+    },
+    {
+      "hanzi": "跑步",
+      "pinyin": "pǎobù",
+      "vi": "chạy bộ",
+      "ex": {
+        "zh": "我每天早上跑步半小时。",
+        "py": "Wǒ měi tiān zǎoshang pǎobù bàn xiǎoshí.",
+        "vi": "Sáng nào tôi cũng chạy bộ nửa tiếng."
+      }
+    },
+    {
+      "hanzi": "游泳",
+      "pinyin": "yóuyǒng",
+      "vi": "bơi",
+      "ex": {
+        "zh": "夏天我常去游泳。",
+        "py": "Xiàtiān wǒ cháng qù yóuyǒng.",
+        "vi": "Mùa hè tôi hay đi bơi."
+      }
+    },
+    {
+      "hanzi": "散步",
+      "pinyin": "sànbù",
+      "vi": "đi dạo",
+      "ex": {
+        "zh": "晚饭后我常去公园散步。",
+        "py": "Wǎnfàn hòu wǒ cháng qù gōngyuán sànbù.",
+        "vi": "Sau bữa tối tôi hay ra công viên đi dạo."
+      }
+    },
+    {
+      "hanzi": "爬山",
+      "pinyin": "páshān",
+      "vi": "leo núi",
+      "ex": {
+        "zh": "天气好的时候我去爬山。",
+        "py": "Tiānqì hǎo de shíhou wǒ qù páshān.",
+        "vi": "Hôm nào trời đẹp tôi đi leo núi."
+      }
+    },
+    {
+      "hanzi": "健身",
+      "pinyin": "jiànshēn",
+      "vi": "tập gym, tập thể hình",
+      "ex": {
+        "zh": "我下班后去健身房健身。",
+        "py": "Wǒ xiàbān hòu qù jiànshēnfáng jiànshēn.",
+        "vi": "Tan làm tôi đến phòng gym tập."
+      }
+    },
+    {
+      "hanzi": "篮球",
+      "pinyin": "lánqiú",
+      "vi": "bóng rổ",
+      "ex": {
+        "zh": "下课后我们去打篮球。",
+        "py": "Xiàkè hòu wǒmen qù dǎ lánqiú.",
+        "vi": "Tan học chúng tôi đi chơi bóng rổ."
+      }
+    },
+    {
+      "hanzi": "足球",
+      "pinyin": "zúqiú",
+      "vi": "bóng đá",
+      "ex": {
+        "zh": "你看昨天的足球比赛了吗？",
+        "py": "Nǐ kàn zuótiān de zúqiú bǐsài le ma?",
+        "vi": "Bạn có xem trận bóng đá hôm qua không?"
+      }
+    },
+    {
+      "hanzi": "羽毛球",
+      "pinyin": "yǔmáoqiú",
+      "vi": "cầu lông",
+      "ex": {
+        "zh": "你会打羽毛球吗？",
+        "py": "Nǐ huì dǎ yǔmáoqiú ma?",
+        "vi": "Bạn có biết chơi cầu lông không?"
+      }
+    },
+    {
+      "hanzi": "乒乓球",
+      "pinyin": "pīngpāngqiú",
+      "vi": "bóng bàn",
+      "ex": {
+        "zh": "中国人很喜欢打乒乓球。",
+        "py": "Zhōngguórén hěn xǐhuan dǎ pīngpāngqiú.",
+        "vi": "Người Trung Quốc rất thích chơi bóng bàn."
+      }
+    },
+    {
+      "hanzi": "比赛",
+      "pinyin": "bǐsài",
+      "vi": "trận đấu, cuộc thi",
+      "ex": {
+        "zh": "比赛几点开始？",
+        "py": "Bǐsài jǐ diǎn kāishǐ?",
+        "vi": "Trận đấu mấy giờ bắt đầu?"
+      }
+    },
+    {
+      "hanzi": "旅游",
+      "pinyin": "lǚyóu",
+      "vi": "du lịch",
+      "ex": {
+        "zh": "放假我想去云南旅游。",
+        "py": "Fàngjià wǒ xiǎng qù Yúnnán lǚyóu.",
+        "vi": "Được nghỉ tôi muốn đi du lịch Vân Nam."
+      }
+    },
+    {
+      "hanzi": "拍照",
+      "pinyin": "pāizhào",
+      "vi": "chụp ảnh",
+      "ex": {
+        "zh": "我们在这儿拍照吧。",
+        "py": "Wǒmen zài zhèr pāizhào ba.",
+        "vi": "Mình chụp ảnh ở đây đi."
+      }
+    },
+    {
+      "hanzi": "有意思",
+      "pinyin": "yǒu yìsi",
+      "vi": "thú vị, hay",
+      "ex": {
+        "zh": "这个电影很有意思。",
+        "py": "Zhège diànyǐng hěn yǒu yìsi.",
+        "vi": "Bộ phim này hay lắm."
+      }
+    },
+    {
+      "hanzi": "小说",
+      "pinyin": "xiǎoshuō",
+      "vi": "tiểu thuyết",
+      "ex": {
+        "zh": "我睡觉前喜欢看小说。",
+        "py": "Wǒ shuìjiào qián xǐhuan kàn xiǎoshuō.",
+        "vi": "Trước khi ngủ tôi thích đọc tiểu thuyết."
+      }
+    },
+    {
+      "hanzi": "画画儿",
+      "pinyin": "huà huàr",
+      "vi": "vẽ tranh",
+      "ex": {
+        "zh": "我女儿很喜欢画画儿。",
+        "py": "Wǒ nǚ'ér hěn xǐhuan huà huàr.",
+        "vi": "Con gái tôi rất thích vẽ tranh."
+      }
+    },
+    {
+      "hanzi": "吉他",
+      "pinyin": "jítā",
+      "vi": "đàn guitar",
+      "ex": {
+        "zh": "他在学弹吉他。",
+        "py": "Tā zài xué tán jítā.",
+        "vi": "Anh ấy đang học chơi guitar."
+      }
+    },
+    {
+      "hanzi": "演唱会",
+      "pinyin": "yǎnchànghuì",
+      "vi": "buổi biểu diễn ca nhạc",
+      "ex": {
+        "zh": "我买到了演唱会的票！",
+        "py": "Wǒ mǎidàole yǎnchànghuì de piào!",
+        "vi": "Tôi mua được vé concert rồi!"
+      }
+    },
+    {
+      "hanzi": "抖音",
+      "pinyin": "Dǒuyīn",
+      "vi": "Douyin (TikTok Trung Quốc)",
+      "ex": {
+        "zh": "他每天晚上都刷抖音。",
+        "py": "Tā měi tiān wǎnshang dōu shuā Dǒuyīn.",
+        "vi": "Tối nào anh ấy cũng lướt Douyin."
+      }
+    },
+    {
+      "hanzi": "钓鱼",
+      "pinyin": "diàoyú",
+      "vi": "câu cá",
+      "ex": {
+        "zh": "我爸爸周末喜欢去钓鱼。",
+        "py": "Wǒ bàba zhōumò xǐhuan qù diàoyú.",
+        "vi": "Bố tôi cuối tuần thích đi câu cá."
+      }
+    },
+    {
+      "hanzi": "下棋",
+      "pinyin": "xiàqí",
+      "vi": "chơi cờ",
+      "ex": {
+        "zh": "爷爷每天和朋友下棋。",
+        "py": "Yéye měi tiān hé péngyou xiàqí.",
+        "vi": "Ngày nào ông cũng chơi cờ với bạn."
+      }
+    }
+  ]
+}

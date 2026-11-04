@@ -1,0 +1,42 @@
+/* Shared by both windows. Colours come from theme tokens set on :root by applyTheme(). */
+@font-face {
+  font-family: 'TieuMai Kai';
+  src: url('/fonts/TieuMaiKai.woff2') format('woff2');
+  font-display: block;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito.woff2') format('woff2');
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+:root {
+  --font-ui: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  --font-han: 'TieuMai Kai', 'KaiTi', 'STKaiti', 'Kaiti SC', serif;
+  /* Nunito lacks ǐ ǒ ǖ ǘ ǚ ǜ, so pinyin uses the Kai font, which has every tone letter. */
+  --font-pinyin: 'TieuMai Kai', 'Nunito', system-ui, sans-serif;
+  /* Fallback tokens until the theme is applied (avoids a flash of unstyled colours). */
+  --bg: #fff6f8; --surface: #fff; --text: #3d2a33; --text-2: #8a6f7b; --primary: #ec6f97;
+  --border: #f6d3dd; --radius: 18px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.han {
+  font-family: var(--font-han);
+  font-weight: normal;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
