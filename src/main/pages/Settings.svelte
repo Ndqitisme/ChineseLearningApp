@@ -1,8 +1,9 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import { onMount } from 'svelte';
   import { disable as disableAutostart, enable as enableAutostart, isEnabled as autostartEnabled } from '@tauri-apps/plugin-autostart';
   import { open as openDialog } from '@tauri-apps/plugin-dialog';
-  import { settings, updateSettings, type Settings, type SpeechSettings, type VoiceSlot } from '../../lib/settings.svelte.ts';
+  import { setHskOpen, settings, updateSettings, type Settings, type SpeechSettings, type VoiceSlot } from '../../lib/settings.svelte.ts';
   import { chineseSystemVoices, speak, whenVoicesReady, type VoiceInfo } from '../../lib/speech/index.ts';
   import { packInfo } from '../../lib/speech/native.ts';
   import { theme } from '../../lib/theme/apply.svelte.ts';
@@ -14,6 +15,9 @@
   let voices = $state<VoiceInfo[]>([]);
   let speechMsg = $state('');
   let packMsg = $state('');
+  /** Level whose pack is loading; 0 when idle. */
+  let hskLoading = $state(0);
+  let hskFailed = $state(false);
 
   onMount(async () => {
     if (section) document.getElementById(section)?.scrollIntoView({ block: 'start' });
@@ -26,6 +30,11 @@
   const setSpeech = (patch: Partial<SpeechSettings>) => updateSettings({ speech: { ...settings.speech, ...patch } });
   const setVoice = (slot: VoiceSlot, id: string) => setSpeech({ voices: { ...settings.speech.voices, [slot]: id } });
 
+  async function openHsk(level: number) {
+    hskLoading = level;
+    hskFailed = false;
+    try { await setHskOpen(level); } catch (e) { console.error(e); hskFailed = true; } finally { hskLoading = 0; }
+  }
   async function toggleAutostart(on: boolean) {
     await (on ? enableAutostart() : disableAutostart());
     autostart = await autostartEnabled();
@@ -61,7 +70,7 @@
 </script>
 
 <div class="page">
-  <h1>⚙️ Cài đặt</h1>
+  <h1><Icon name="nav-settings" /> Cài đặt</h1>
 
   <h2 class="section-title">Giao diện</h2>
   <div class="card stack">
@@ -70,15 +79,15 @@
         <button class="theme" class:on={settings.theme === t.id} onclick={() => set({ theme: t.id as ThemeId })}
           style:background={(theme.dark ? t.dark : t.light).bg} style:color={(theme.dark ? t.dark : t.light).text}
           style:border-color={(theme.dark ? t.dark : t.light).primary}>
-          <span class="ti">{t.icon}</span>{t.name}
+          <span class="ti"><Icon name={t.icon} /></span>{t.name}
           <span class="sw" style:background={(theme.dark ? t.dark : t.light).primary}></span>
         </button>
       {/each}
     </div>
     <div class="row">
       <span class="lbl">Chế độ</span>
-      {#each [['system', 'Theo hệ thống'], ['light', '☀️ Sáng'], ['dark', '🌙 Tối']] as [v, label] (v)}
-        <button class="chip" class:on={settings.mode === v} onclick={() => set({ mode: v as Settings['mode'] })}>{label}</button>
+      {#each [['system', 'Theo hệ thống', null], ['light', 'Sáng', 'mode-light'], ['dark', 'Tối', 'mode-dark']] as const as [v, label, icon] (v)}
+        <button class="chip" class:on={settings.mode === v} onclick={() => set({ mode: v as Settings['mode'] })}>{#if icon}<Icon name={icon} />{/if}{label}</button>
       {/each}
     </div>
     <div class="row wrap">
@@ -94,7 +103,7 @@
       <summary>CSS riêng (tuỳ biến mọi thành phần)</summary>
       <textarea rows="6" placeholder={'.bubble { border-radius: 4px; }\n:root { --font-ui: "Comic Sans MS"; }'} value={settings.customCss}
         onchange={(e) => set({ customCss: e.currentTarget.value })}></textarea>
-      <p class="muted small">Áp dụng cho cả app chính và bong bóng của Tiểu Mai. Biến màu: --primary, --accent, --bg, --surface, --text, --bubble-bg, --tone1…--tone5.</p>
+      <p class="muted small">Áp dụng cho cả app chính và bong bóng của Tiểu Mai.<br />Biến màu: --primary, --accent, --bg, --surface, --text, --bubble-bg, --tone1…--tone5.</p>
     </details>
   </div>
 
@@ -122,12 +131,36 @@
       <input type="time" value={settings.quietFrom} onchange={(e) => set({ quietFrom: e.currentTarget.value })} /> đến
       <input type="time" value={settings.quietTo} onchange={(e) => set({ quietTo: e.currentTarget.value })} />
     </div>
-    <p class="muted small">Chọn chủ đề và cấp HSK để Tiểu Mai nhắc ở trang <a href="#/topics">Chủ đề</a> (nút 🔔).</p>
+    <p class="muted small">Chọn chủ đề và cấp HSK để Tiểu Mai nhắc ở trang <a href="#/topics">Chủ đề</a> (nút <Icon name="bell" />).</p>
+  </div>
+
+  <h2 class="section-title" id="hsk">Khoá học HSK</h2>
+  <div class="card stack">
+    <div class="row wrap">
+      <span class="lbl">Đang mở</span>
+      {#each [3, 4, 5, 6] as n (n)}
+        <button class="chip" class:on={settings.hskOpen === n} disabled={!!hskLoading} onclick={() => openHsk(n)}>HSK 1–{n}</button>
+      {/each}
+      {#if hskLoading}<span class="muted small">Đang tải HSK {hskLoading}…</span>{/if}
+    </div>
+    <div class="row wrap">
+      <span class="lbl">Bộ từ</span>
+      {#each [2021, 2025] as const as e (e)}
+        <button class="chip" class:on={settings.hskEdition === e} onclick={() => set({ hskEdition: e })}>Bản {e}</button>
+      {/each}
+    </div>
+    <p class="muted small">
+      Bản 2021: chuẩn HSK 3.0 đầu tiên, nhiều từ hơn ở cấp 1–3.<br />
+      Bản 2025: đề cương chính thức công bố tháng 11/2025, dùng cho kỳ thi HSK mới.<br />
+      Đổi bộ từ không ảnh hưởng tiến độ ôn tập.
+    </p>
+    <p class="muted small">Chọn mức thấp hơn thì từ của các cấp cao hơn tạm ẩn và trợ lý ngừng nhắc; tiến độ ôn tập vẫn được giữ.</p>
+    {#if hskFailed}<p class="small bad">Không mở khoá được. Hãy thử lại.</p>{/if}
   </div>
 
   <h2 class="section-title" id="voice">Giọng đọc (tuỳ chọn)</h2>
   <div class="card stack">
-    <p class="muted small">App không kèm sẵn giọng đọc để nhẹ. Bạn có thể dùng giọng của hệ điều hành, một API giọng đọc (online hoặc server chạy trên máy), hoặc một gói giọng tải về.</p>
+    <p class="muted small">App không kèm sẵn giọng đọc.<br />Nguồn có thể dùng: giọng của hệ điều hành, API giọng đọc (online hoặc server chạy trên máy), hoặc gói giọng tải về.</p>
     <div class="row wrap">
       <span class="lbl">Nguồn</span>
       {#each [['none', 'Tắt'], ['system', 'Giọng hệ thống'], ['http', 'API giọng đọc'], ['pack', 'Gói giọng']] as [v, label] (v)}
@@ -143,12 +176,14 @@
               <option value="">Tự chọn</option>
               {#each voices as v (v.id)}<option value={v.id}>{v.label}</option>{/each}
             </select>
-            <button class="btn" onclick={() => test(slot as VoiceSlot)}>▶ Thử</button></label>
+            <button class="btn" onclick={() => test(slot as VoiceSlot)}><Icon name="play" /> Thử</button></label>
         {/each}
       {:else}
         <div class="hint">
-          Máy chưa có giọng tiếng Trung. Trên Windows: <b>Cài đặt → Thời gian & ngôn ngữ → Giọng nói → Thêm giọng nói</b>, chọn
-          “Chinese (Simplified, China)” (Huihui nữ, Kangkang nam), rồi mở lại trang này. macOS: Cài đặt hệ thống → Trợ năng → Nội dung được đọc.
+          Máy chưa có giọng tiếng Trung.<br />
+          Windows: <b>Cài đặt → Thời gian & ngôn ngữ → Giọng nói → Thêm giọng nói</b>, chọn “Chinese (Simplified, China)” (giọng nữ Huihui, giọng nam Kangkang).<br />
+          macOS: <b>Cài đặt hệ thống → Trợ năng → Nội dung được đọc</b>.<br />
+          Cài xong thì mở lại trang này.
         </div>
       {/if}
     {:else if settings.speech.provider === 'http'}
@@ -177,32 +212,32 @@
         <label class="row"><span class="lbl">{label}</span>
           <input type="text" placeholder={settings.speech.http.preset === 'azure' ? (slot === 'female' ? 'zh-CN-XiaoyiNeural' : 'zh-CN-YunjianNeural') : slot === 'female' ? 'zf_xiaoyi' : 'zm_yunjian'}
             value={settings.speech.voices[slot as VoiceSlot]} onchange={(e) => setVoice(slot as VoiceSlot, e.currentTarget.value)} />
-          <button class="btn" onclick={() => test(slot as VoiceSlot)}>▶ Thử</button></label>
+          <button class="btn" onclick={() => test(slot as VoiceSlot)}><Icon name="play" /> Thử</button></label>
       {/each}
       <p class="muted small">
         {#if settings.speech.http.preset === 'custom'}URL dạng GET trả về file âm thanh; dùng {'{text}'} và {'{voice}'} làm chỗ điền.
         {:else if settings.speech.http.preset === 'openai'}Chạy giọng offline trên máy: ví dụ server Kokoro-FastAPI ở http://localhost:8880/v1/audio/speech (giọng zf_xiaoyi, zm_yunjian…).
-        {:else}Dùng key của dịch vụ Azure AI Speech của bạn. API key lưu trong máy (settings.json).{/if}
-        Mỗi câu chỉ gọi API một lần rồi lưu cache.
+        {:else}Dùng key của dịch vụ Azure AI Speech của bạn.<br />API key lưu trong máy (settings.json).{/if}
+        <br />Mỗi câu chỉ gọi API một lần rồi lưu cache.
       </p>
     {:else if settings.speech.provider === 'pack'}
       <div class="row wrap">
-        <button class="btn" onclick={pickPack}>📁 Chọn thư mục gói giọng…</button>
+        <button class="btn" onclick={pickPack}><Icon name="folder" /> Chọn thư mục gói giọng…</button>
         <span class="muted small">{settings.speech.packDir || 'Chưa chọn'}</span>
       </div>
       {#if packMsg}<p class="small">{packMsg}</p>{/if}
       <div class="row">
-        <button class="btn" onclick={() => test('female')}>▶ Thử giọng nữ</button>
-        <button class="btn" onclick={() => test('male')}>▶ Thử giọng nam</button>
+        <button class="btn" onclick={() => test('female')}><Icon name="play" /> Thử giọng nữ</button>
+        <button class="btn" onclick={() => test('male')}><Icon name="play" /> Thử giọng nam</button>
       </div>
-      <p class="muted small">Gói giọng là thư mục có manifest.json và các file MP3 đặt tên theo chữ Hán. Có thể tự tạo bằng tools/voicepack (sherpa-onnx + Kokoro, giấy phép Apache-2.0).</p>
+      <p class="muted small">Gói giọng là thư mục có manifest.json và các file MP3 đặt tên theo chữ Hán.<br />Có thể tự tạo bằng tools/voicepack (sherpa-onnx + Kokoro, giấy phép Apache-2.0).</p>
     {/if}
 
     {#if settings.speech.provider !== 'none'}
       <div class="row wrap">
         <span class="lbl">Giọng mặc định</span>
-        <button class="chip" class:on={settings.speech.slot === 'female'} onclick={() => setSpeech({ slot: 'female' })}>👩 Nữ dễ thương</button>
-        <button class="chip" class:on={settings.speech.slot === 'male'} onclick={() => setSpeech({ slot: 'male' })}>👨 Nam trầm ấm</button>
+        <button class="chip" class:on={settings.speech.slot === 'female'} onclick={() => setSpeech({ slot: 'female' })}><Icon name="voice-female" /> Giọng nữ</button>
+        <button class="chip" class:on={settings.speech.slot === 'male'} onclick={() => setSpeech({ slot: 'male' })}><Icon name="voice-male" /> Giọng nam</button>
       </div>
       <label class="row"><span class="lbl">Tốc độ</span>
         <input type="range" min="0.6" max="1.3" step="0.05" value={settings.speech.rate} oninput={(e) => setSpeech({ rate: +e.currentTarget.value })} />
@@ -215,7 +250,7 @@
   <h2 class="section-title">Khởi động</h2>
   <div class="card stack">
     <label class="row"><input type="checkbox" checked={autostart} onchange={(e) => toggleAutostart(e.currentTarget.checked)} /> Mở Tiểu Mai cùng máy tính (chỉ hiện trợ lý, không mở cửa sổ này)</label>
-    <p class="muted small">Đóng cửa sổ này thì Tiểu Mai vẫn chạy ngầm ở khay hệ thống. Muốn thoát hẳn: chuột phải icon ở khay → Thoát.</p>
+    <p class="muted small">Đóng cửa sổ này thì Tiểu Mai vẫn chạy ngầm ở khay hệ thống.<br />Muốn thoát hẳn: chuột phải icon ở khay → Thoát.</p>
   </div>
 </div>
 

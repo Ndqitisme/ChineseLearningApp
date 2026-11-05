@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import BackButton from '../components/BackButton.svelte';
   import { isHan } from '../../lib/pinyin.ts';
   import { settings, updateSettings } from '../../lib/settings.svelte.ts';
@@ -18,7 +19,7 @@
   let showOutline = $state(true);
   let result = $state<number | null>(null);
   let totalMistakes = $state(0);
-  /** The demo plays automatically only the first time a character comes up, not on "Viết lại". */
+  /** Auto demo runs only on a character's first try, not after "Viết lại". */
   let firstTry = $state(true);
   let board = $state<HanziStroke>();
 
@@ -41,10 +42,12 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1>✍️ Viết theo nét</h1>
-  <p class="lead">{deck.title} · xem mẫu thứ tự nét, rồi tự vẽ lại bằng chuột. Bí thì bấm “Gợi ý nét”; sai 3 lần cũng tự có gợi ý.</p>
+  <h1><Icon name="write" /> Viết theo nét</h1>
+  <p class="lead">{deck.title}<br />Xem mẫu thứ tự nét rồi vẽ lại bằng chuột. Sai 3 lần ở một nét thì nét đó tự hiện gợi ý.</p>
 
-  {#if word}
+  {#if deck.gone}
+    <p class="empty">{deck.gone.text} <a href={deck.gone.href}>{deck.gone.link}</a></p>
+  {:else if word}
     <div class="layout">
       <div class="card target" data-has-pinyin>
         <span class="muted">Từ {wi + 1}/{queue.length}</span>
@@ -62,13 +65,13 @@
         {/key}
         {#if result === null}
           <div class="row tools">
-            <button class="btn" onclick={() => board?.demo()}>▶ Xem mẫu</button>
-            <button class="btn" onclick={() => board?.hint()}>💡 Gợi ý nét</button>
+            <button class="btn" onclick={() => board?.demo()}><Icon name="play" /> Xem mẫu</button>
+            <button class="btn" onclick={() => board?.hint()}><Icon name="hint" /> Gợi ý nét</button>
           </div>
         {/if}
         {#if result !== null}
           <div class="result card">
-            <b class={result === 0 ? 'good' : result < 3 ? '' : 'bad'}>{result === 0 ? 'Hoàn hảo! 🎉' : `Xong, sai ${result} nét`}</b>
+            <b class={result === 0 ? 'good' : result < 3 ? '' : 'bad'}>{result === 0 ? 'Không sai nét nào' : `Sai ${result} nét`}</b>
             <div class="row">
               <button class="btn" onclick={retry}>Viết lại</button>
               <button class="btn primary" onclick={next}>Tiếp →</button>
@@ -79,7 +82,7 @@
     </div>
   {:else if queue.length}
     <div class="card done">
-      <div class="big">🖌️</div>
+      <div class="big"><Icon name="brush" /></div>
       <h2>Xong {queue.length} từ, tổng cộng sai {totalMistakes} nét</h2>
       <a class="btn primary" href="#/practice">Về trang luyện tập</a>
     </div>

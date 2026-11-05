@@ -1,17 +1,25 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import BackButton from '../components/BackButton.svelte';
   import { onMount, tick } from 'svelte';
-  import { topicById, wordById } from '../../lib/data.ts';
+  import { levelOf, loadLevels, topicById, wordById } from '../../lib/data.ts';
   import { requestExposurePatch } from '../../lib/exposure.ts';
   import { isHan } from '../../lib/pinyin.ts';
   import { progress, saveProgress } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
+  import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
   import { previewIntervals } from '../../lib/srs.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
   import HanziStroke from '../components/HanziStroke.svelte';
 
   let { id }: { id: string } = $props();
-  const word = $derived(wordById.get(id));
+  // A link may name a word of a locked level whose pack is not loaded: load the packs to say which level it is in.
+  let packsLoaded = $state(settings.hskOpen === 6);
+  const known = $derived((void packsLoaded, wordById.get(id)));
+  const word = $derived(known && isOpen(known) ? known : undefined);
+  const level = $derived(word && hskLevel(word));
+  const otherEdition = $derived(settings.hskEdition === 2025 ? 2021 : 2025);
+  const otherLevel = $derived(word && levelOf(word, otherEdition));
   const e = $derived(word ? progress.exposure[word.id] : undefined);
   const card = $derived(word ? progress.srs[word.id] : undefined);
   let speakError = $state('');
@@ -32,7 +40,10 @@
     strokeKey++;
     playStrokes();
   }
-  onMount(playStrokes);
+  onMount(() => {
+    playStrokes();
+    if (!wordById.get(id)) loadLevels(6).catch(() => {}).finally(() => (packsLoaded = true));
+  });
 
   async function say(slot: 'female' | 'male', text: string) {
     speakError = '';
@@ -61,19 +72,22 @@
         <div class="vi">{word.vi}</div>
         {#if word.hanviet}<div class="hv">Hán Việt: <b>{word.hanviet}</b></div>{/if}
         <div class="chips">
-          {#if word.hsk}<a class="chip" href="#/hsk/{word.hsk}">HSK {word.hsk}</a>{/if}
+          {#if level}<a class="chip" href="#/hsk/{level}">HSK {level}</a>{/if}
+          {#if (level || otherLevel) && otherLevel !== level}
+            <span class="chip other" title="Cấp của từ này trong bộ từ bản {otherEdition}">Bản {otherEdition}: {otherLevel ? `HSK ${otherLevel}` : 'không có'}</span>
+          {/if}
           {#each word.topics as t (t)}
             {@const topic = topicById.get(t)}
-            {#if topic}<a class="chip" href="#/topic/{t}">{topic.icon} {topic.title}</a>{/if}
+            {#if topic}<a class="chip" href="#/topic/{t}"><Icon name={topic.icon} /> {topic.title}</a>{/if}
           {/each}
         </div>
         <div class="row btns">
-          <button class="btn" onclick={replayStrokes}>✍️ Xem lại nét</button>
+          <button class="btn" onclick={replayStrokes}><Icon name="write" /> Xem lại nét</button>
           {#if speechAvailable()}
-            <button class="btn" onclick={() => say('female', word.hanzi)}>🔊 Giọng nữ</button>
-            <button class="btn" onclick={() => say('male', word.hanzi)}>🔊 Giọng nam</button>
+            <button class="btn" onclick={() => say('female', word.hanzi)}><Icon name="speaker" /> Giọng nữ</button>
+            <button class="btn" onclick={() => say('male', word.hanzi)}><Icon name="speaker" /> Giọng nam</button>
           {:else}
-            <a class="btn ghost" href="#/settings">🔇 Cài giọng đọc…</a>
+            <a class="btn ghost" href="#/settings"><Icon name="speaker-off" /> Cài giọng đọc…</a>
           {/if}
         </div>
         {#if speakError}<p class="bad small">{speakError}</p>{/if}
@@ -84,7 +98,7 @@
       <h2 class="section-title">Ví dụ</h2>
       <div class="card ex">
         <div class="han ex-zh" data-hover-pinyin="on">{word.ex.zh}
-          {#if speechAvailable()}<button class="btn ghost sm" onclick={() => say('female', word.ex!.zh)}>🔊</button>{/if}
+          {#if speechAvailable()}<button class="btn ghost sm" onclick={() => say('female', word.ex!.zh)}><Icon name="speaker" /></button>{/if}
         </div>
         <div class="ex-py" data-has-pinyin>{word.ex.py}</div>
         <div class="ex-vi">{word.ex.vi}</div>
@@ -103,12 +117,18 @@
       {#if card}
         <span class="muted">Ôn tiếp: {new Date(card.due).toLocaleDateString('vi-VN')} · lần ôn {card.reps}</span>
       {:else}
-        <button class="btn" onclick={addToReview}>🔁 Thêm vào ôn tập</button>
+        <button class="btn" onclick={addToReview}><Icon name="nav-review" /> Thêm vào ôn tập</button>
         <span class="muted small">Nếu nhớ tốt, lần ôn sau: {previewIntervals(undefined)[3]}</span>
       {/if}
     </div>
-    <p class="muted small">Tiểu Mai đã cho bạn xem từ này {e?.n ?? 0} lần.</p>
-  {:else}
+    <p class="muted small">Đã gặp từ này {e?.n ?? 0} lần.</p>
+  {:else if known && hskLevel(known)}
+    <BackButton to="/search" useHistory />
+    <p class="empty">Từ “{known.hanzi}” thuộc HSK {hskLevel(known)}, cấp này đang khoá. Mở khoá ở trang <a href="#/hsk/{hskLevel(known)}">HSK {hskLevel(known)}</a>.</p>
+  {:else if known}
+    <BackButton to="/search" useHistory />
+    <p class="empty">Từ “{known.hanzi}” không có trong bộ từ HSK bản {settings.hskEdition}. Đổi bộ từ trong <a href="#/settings/hsk">Cài đặt</a>.</p>
+  {:else if packsLoaded}
     <p class="empty">Không tìm thấy từ “{id}”.</p>
   {/if}
 </div>
@@ -120,7 +140,7 @@
   .py { font-size: 30px; }
   .vi { font-size: 24px; font-weight: 900; }
   .hv { color: var(--text-2); font-size: 16px; }
-  .hv b { text-transform: capitalize; color: var(--text); }
+  .hv b { color: var(--text); }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .chips a { text-decoration: none; }
   .btns { flex-wrap: wrap; margin-top: 6px; }

@@ -1,14 +1,15 @@
 <script lang="ts">
+  import Icon from '../lib/ui/Icon.svelte';
+  import type { IconName } from '../lib/ui/icon-names.ts';
   import { onMount } from 'svelte';
   import { listen } from '@tauri-apps/api/event';
   import { getCurrentWindow } from '@tauri-apps/api/window';
   import { EVENTS } from '../lib/ipc.ts';
-  import { initProgress, progress } from '../lib/progress.svelte.ts';
-  import { initSettings, settings, updateSettings } from '../lib/settings.svelte.ts';
+  import { initProgress } from '../lib/progress.svelte.ts';
+  import { settings, updateSettings } from '../lib/settings.svelte.ts';
   import Sprite, { SpritePlayer } from '../lib/sprite/Sprite.svelte';
   import { loadSkin, type Skin } from '../lib/sprite/skins.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
-  import { isDue } from '../lib/srs.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
   import TitleBar from './components/TitleBar.svelte';
   import { go, route } from './router.svelte.ts';
@@ -20,6 +21,7 @@
   import Review from './pages/Review.svelte';
   import Search from './pages/Search.svelte';
   import Settings from './pages/Settings.svelte';
+  import Support from './pages/Support.svelte';
   import Tones from './pages/Tones.svelte';
   import TopicPage from './pages/Topic.svelte';
   import Topics from './pages/Topics.svelte';
@@ -27,30 +29,39 @@
   import Write from './pages/Write.svelte';
   import Build from './pages/Build.svelte';
   import './app.css';
+  import { reviewQueueIds } from './review-queue.ts';
 
   let ready = $state(false);
   let skin = $state<Skin | null>(null);
   const avatar = new SpritePlayer();
 
-  const dueCount = $derived(Object.values(progress.srs).filter((c) => isDue(c)).length);
+  const dueCount = $derived(reviewQueueIds().length);
 
-  const NAV = [
-    { path: '/', name: 'home', icon: '🏠', label: 'Trang chủ' },
-    { path: '/topics', name: 'topics', icon: '🗂️', label: 'Chủ đề' },
-    { path: '/practice', name: 'practice', icon: '🎯', label: 'Luyện tập' },
-    { path: '/review', name: 'review', icon: '🔁', label: 'Ôn tập' },
-    { path: '/search', name: 'search', icon: '🔎', label: 'Tra cứu' },
-    { path: '/notebook', name: 'notebook', icon: '⭐', label: 'Sổ tay' },
-    { path: '/settings', name: 'settings', icon: '⚙️', label: 'Cài đặt' },
-    { path: '/about', name: 'about', icon: '💌', label: 'Giới thiệu' },
+  const NAV: { path: string; name: string; icon: IconName; label: string }[] = [
+    { path: '/', name: 'home', icon: 'nav-home', label: 'Trang chủ' },
+    { path: '/topics', name: 'topics', icon: 'nav-topics', label: 'Chủ đề' },
+    { path: '/practice', name: 'practice', icon: 'nav-practice', label: 'Luyện tập' },
+    { path: '/review', name: 'review', icon: 'nav-review', label: 'Ôn tập' },
+    { path: '/search', name: 'search', icon: 'nav-search', label: 'Tra cứu' },
+    { path: '/notebook', name: 'notebook', icon: 'nav-notebook', label: 'Sổ tay' },
+    { path: '/settings', name: 'settings', icon: 'nav-settings', label: 'Cài đặt' },
+    { path: '/about', name: 'about', icon: 'nav-about', label: 'Giới thiệu' },
+    { path: '/support', name: 'support', icon: 'nav-support', label: 'Ủng hộ tác giả' },
   ];
   const ACTIVE: Record<string, string> = { topic: 'topics', hsk: 'topics', word: 'search', quiz: 'practice', write: 'practice', tones: 'practice', build: 'practice' };
   const active = $derived(ACTIVE[route.name] ?? route.name);
+  let content = $state<HTMLElement>();
+  // The scroll box outlives the page: reset it before the new page mounts, so a page that
+  // scrolls itself (Settings → section) still wins.
+  $effect.pre(() => {
+    void route.path;
+    if (content) content.scrollTop = 0;
+  });
 
   onMount(() => {
     const unlisten = listen<string>(EVENTS.navigate, ({ payload }) => go(payload));
     (async () => {
-      const [loaded] = await Promise.all([loadSkin(), initSettings(), initProgress()]);
+      const [loaded] = await Promise.all([loadSkin(), initProgress()]);
       skin = loaded;
       avatar.setSkin(loaded);
       applyTheme();
@@ -72,7 +83,7 @@
         </button>
         {#each NAV as item (item.path)}
           <a href="#{item.path}" class:on={active === item.name}>
-            <span class="ic">{item.icon}</span>{item.label}
+            <span class="ic"><Icon name={item.icon} /></span>{item.label}
             {#if item.name === 'review' && dueCount}<span class="badge">{dueCount}</span>{/if}
           </a>
         {/each}
@@ -82,7 +93,7 @@
           Trợ lý trên màn hình
         </label>
       </nav>
-      <main class="content">
+      <main class="content" bind:this={content}>
         {#key route.path}
           {#if route.name === 'home'}<Home />
           {:else if route.name === 'topics'}<Topics />
@@ -98,6 +109,7 @@
           {:else if route.name === 'notebook'}<Notebook />
           {:else if route.name === 'settings'}<Settings section={route.params[0]} />
           {:else if route.name === 'about'}<About />
+          {:else if route.name === 'support'}<Support />
           {:else}<Home />{/if}
         {/key}
       </main>

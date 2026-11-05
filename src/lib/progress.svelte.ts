@@ -23,12 +23,18 @@ const KEYS: Key[] = ['exposure', 'srs', 'seenDays', 'reviewDays', 'pausedUntil']
 
 let store: Store | undefined;
 
+/** A damaged or hand-edited file can hold anything; a value of the wrong type reads as empty. */
+function valid(key: Key, v: unknown): unknown {
+  if (key === 'pausedUntil') return typeof v === 'number' ? v : 0;
+  return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+}
+
 export async function initProgress() {
   store = await load('progress.json', { autoSave: 1500, defaults: {} });
   for (const key of KEYS) {
     const v = await store.get(key);
-    if (v !== undefined) (progress as Record<Key, unknown>)[key] = v;
-    await store.onKeyChange(key, (nv) => { if (nv !== undefined) (progress as Record<Key, unknown>)[key] = nv; });
+    if (v !== undefined) (progress as Record<Key, unknown>)[key] = valid(key, v);
+    await store.onKeyChange(key, (nv) => { if (nv !== undefined) (progress as Record<Key, unknown>)[key] = valid(key, nv); });
   }
 }
 

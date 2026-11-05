@@ -1,13 +1,16 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import { openUrl } from '@tauri-apps/plugin-opener';
-  import { dataset } from '../../lib/data.ts';
+  import { dataset, words } from '../../lib/data.ts';
+  import { isOpen, settings } from '../../lib/settings.svelte.ts';
 
   const SOURCES = [
-    { name: 'MakeHuman / MPFB2', what: 'Dựng nhân vật trợ lý 3D (tóc, giày, kính, da, biểu cảm), render sẵn thành ảnh', license: 'CC0', url: 'https://static.makehumancommunity.org/assets/assetpacks.html' },
-    { name: 'Áo sơ mi “elvs_male_shirt_untucked_bd1” — Elvaerwyn', what: 'Áo của nhân vật (tay ngắn, cắt lửng, vải cotton trắng)', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/shirts02.html' },
+    { name: 'MakeHuman / MPFB2', what: 'Nhân vật trợ lý (cơ thể, da, tóc, giày, biểu cảm), render sẵn thành ảnh', license: 'CC0', url: 'https://static.makehumancommunity.org/assets/assetpacks.html' },
+    { name: 'Áo sơ mi “elvs_male_shirt_untucked_bd1” — Elvaerwyn', what: 'Áo của nhân vật', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/shirts02.html' },
     { name: 'CVDICT', what: 'Nghĩa tiếng Việt', license: 'CC BY-SA 4.0', url: 'https://github.com/ph0ngp/CVDICT' },
     { name: 'CC-CEDICT', what: 'Nền của CVDICT, đối chiếu pinyin', license: 'CC BY-SA 4.0', url: 'https://cc-cedict.org/wiki/' },
-    { name: 'complete-hsk-vocabulary', what: 'Danh sách từ HSK 3.0', license: 'MIT', url: 'https://github.com/drkameleon/complete-hsk-vocabulary' },
+    { name: 'complete-hsk-vocabulary', what: 'Danh sách từ HSK 3.0 (bản 2021, cấp new-1…new-6; bản 2025, cấp newest-1…newest-6)', license: 'MIT', url: 'https://github.com/drkameleon/complete-hsk-vocabulary' },
+    { name: 'hanviet-pinyin-wordlist', what: 'Âm Hán Việt cho chữ HSK 4–6 (theo cặp chữ và pinyin)', license: 'MIT', url: 'https://github.com/ph0ngp/hanviet-pinyin-wordlist' },
     { name: 'Make Me a Hanzi / hanzi-writer-data', what: 'Dữ liệu thứ tự nét', license: 'Arphic Public License', url: 'https://github.com/chanind/hanzi-writer-data' },
     { name: 'Hanzi Writer', what: 'Hoạt hình và quiz viết chữ', license: 'MIT', url: 'https://github.com/chanind/hanzi-writer' },
     { name: 'pinyin-pro', what: 'Pinyin theo ngữ cảnh khi rê chuột', license: 'MIT', url: 'https://github.com/zh-lx/pinyin-pro' },
@@ -21,16 +24,19 @@
 
 <div class="page">
   <img class="logo" src="/logo/logo.webp" alt="Tiểu Mai — học tiếng Trung" width="180" height="180" />
-  <h1>💌 Giới thiệu</h1>
-  <p class="lead">Tiểu Mai (小梅) là app mã nguồn mở, miễn phí, giúp người Việt làm quen từ vựng tiếng Trung mỗi ngày mà không cần “ngồi vào học”.</p>
+  <h1><Icon name="nav-about" /> Giới thiệu</h1>
+  <p class="lead">Tiểu Mai (小梅) là ứng dụng mã nguồn mở giúp người Việt học từ vựng tiếng Trung hằng ngày qua một trợ lý trên màn hình.</p>
 
   <div class="card stack">
-    <div><b>{dataset.words.length}</b> từ · <b>{dataset.topics.length}</b> chủ đề · HSK 3.0 cấp 1–3</div>
-    <div class="muted">
-      Nghĩa ngắn, câu ví dụ, âm Hán Việt và bộ chủ đề được biên soạn riêng cho app (có AI hỗ trợ) và phát hành theo CC BY-SA 4.0.
-      Rất mong người bản ngữ góp ý chỗ chưa chuẩn.
-    </div>
-    <div class="muted">Mã nguồn: MIT. Dữ liệu từ vựng: CC BY-SA 4.0. Dữ liệu nét chữ: Arphic Public License. Font: SIL OFL 1.1.</div>
+    <div><b>{words.filter(isOpen).length}</b> từ · <b>{dataset.topics.length}</b> chủ đề · HSK 3.0 cấp 1–{settings.hskOpen} (bộ từ bản {settings.hskEdition})</div>
+    <div class="muted">Nghĩa ngắn, câu ví dụ, âm Hán Việt và các chủ đề được biên soạn riêng cho app, một phần do AI viết, chưa có người bản ngữ duyệt.</div>
+    <ul class="licenses muted">
+      <li>Mã nguồn: MIT</li>
+      <li>Dữ liệu từ vựng: CC BY-SA 4.0</li>
+      <li>Dữ liệu nét chữ: Arphic Public License</li>
+      <li>Font: SIL OFL 1.1</li>
+      <li>Icon: CC0 1.0</li>
+    </ul>
   </div>
 
   <h2 class="section-title">Nguồn dữ liệu và thư viện</h2>
@@ -53,6 +59,7 @@
 <style>
   .logo { display: block; width: 180px; height: 180px; margin: 4px 0 8px; }
   .stack { display: flex; flex-direction: column; gap: 10px; line-height: 1.55; }
+  .licenses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; color: var(--text-2); font-size: 12.5px; padding: 6px 8px; }
   td { padding: 8px; border-top: 1px solid var(--border); }

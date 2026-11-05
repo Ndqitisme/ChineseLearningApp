@@ -36,7 +36,7 @@
   .mid { display: flex; flex-direction: column; flex: 1; min-width: 0; }
   .py { font-size: 15px; }
   .vi { font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .hv { color: var(--text-2); font-size: 13px; text-transform: capitalize; }
+  .hv { color: var(--text-2); font-size: 13px; }
   .star { color: #e0a100; }
   .st { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex: none; }
   .st.learning { background: var(--tone2); }

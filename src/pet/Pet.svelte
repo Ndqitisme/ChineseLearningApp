@@ -1,21 +1,22 @@
 <script lang="ts">
+  import Icon from '../lib/ui/Icon.svelte';
   import { onMount, tick } from 'svelte';
   import { listen } from '@tauri-apps/api/event';
   import {
     getCurrentWindow, LogicalSize, monitorFromPoint, PhysicalPosition, primaryMonitor, type Monitor,
   } from '@tauri-apps/api/window';
-  import { studyPool, wordById } from '../lib/data.ts';
+  import { loadLevels, studyPool, wordById } from '../lib/data.ts';
   import { EVENTS, ipc } from '../lib/ipc.ts';
   import { initProgress, progress, saveProgress, today } from '../lib/progress.svelte.ts';
   import { pickNext, recordExposure } from '../lib/scheduler.ts';
-  import { initSettings, settings, updateSettings } from '../lib/settings.svelte.ts';
+  import { openWord, settings, updateSettings } from '../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../lib/speech/index.ts';
   import { displayScale, loadSkin, type Skin } from '../lib/sprite/skins.ts';
   import Sprite, { SpritePlayer } from '../lib/sprite/Sprite.svelte';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
-  import { BASE_BUBBLE_ROOM, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
+  import { BASE_BUBBLE_ROOM, bubbleInset, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
 
   const win = getCurrentWindow();
@@ -26,6 +27,8 @@
   let bubble = $state<{ word: Word; revealed: boolean } | null>(null);
   let menuOpen = $state(false);
   let sleeping = $state(false);
+  /** No word to show: nothing is turned on, or only levels that were re-locked. */
+  let nothingOn = $state(false);
   let busy = $state(false);
   let hoveringBubble = false;
   let dragging = false;
@@ -51,9 +54,15 @@
   // Side-facing art is mirrored so she always looks toward the middle of the screen.
   const mirror = $derived(!!skin && ((skin.facing === 'left' && anchor.h === 'left') || (skin.facing === 'right' && anchor.h === 'right')));
   const winCss = $derived(settings.petCharacter ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
-  const slotInset = $derived(settings.petCharacter ? { side: spriteCss.w * 0.3, bottom: spriteCss.h + 6 } : { side: 4, bottom: 4 });
+  const slotInset = $derived(settings.petCharacter ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: 4, top: 4 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
-  const pool = $derived(studyPool(settings.topics, settings.hsk));
+  // Packs load once the shared settings unlock them; the main window does the unlocking.
+  let loadedOpen = $state(settings.hskOpen);
+  $effect(() => {
+    const level = settings.hskOpen;
+    loadLevels(level).then(() => { if (level > loadedOpen) loadedOpen = level; }, (e) => console.error('HSK pack', level, e));
+  });
+  const pool = $derived(studyPool(settings.topics, settings.hsk.filter((l) => l <= loadedOpen), settings.hskEdition));
   const starred = $derived(bubble ? !!progress.exposure[bubble.word.id]?.s : false);
 
   const nowMin = () => Date.now() / 60000;
@@ -118,16 +127,16 @@
     await ipc.setHitRects(rects);
   }
   $effect(() => {
-    void [ready, skin, mirror, sleeping, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
+    void [ready, skin, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
     reportHitRects();
   });
   $effect(() => {
-    // Fit the window to the bubble: a tall one was cut off at the top. Grow at once, shrink only
-    // after a clear drop so the window doesn't resize on every word.
+    // Fit the window to the bubble. Grow at once; shrink only after a clear drop so the window
+    // does not resize on every word.
     const el = bubbleEl;
     if (!el) return;
     const ro = new ResizeObserver(() => {
-      const needed = Math.ceil(el.offsetHeight) + 34; // gap under it, tail, shadow
+      const needed = Math.ceil(el.offsetHeight) + 20; // margins and shadow
       if (needed > bubbleRoom || needed < bubbleRoom - 60) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
     });
     ro.observe(el);
@@ -200,9 +209,10 @@
 
   function showNext() {
     const now = nowMin();
-    const due = Object.entries(progress.srs).filter(([, c]) => Date.parse(c.due) <= Date.now()).map(([id]) => id);
+    const due = Object.entries(progress.srs).filter(([id, c]) => Date.parse(c.due) <= Date.now() && openWord(id)).map(([id]) => id);
     const pick = pickNext({ pool, exposure: progress.exposure, due, recent, now });
-    if (!pick) return;
+    nothingOn = !pick;
+    if (!pick) return closeBubble();
     const word = wordById.get(pick.id);
     if (!word) return;
     const seenBefore = (progress.exposure[pick.id]?.n ?? 0) >= 2;
@@ -251,7 +261,7 @@
   let down: { x: number; y: number } | null = null;
   let lastWave = 0;
 
-  // Drag starts from the character, or from the bubble's topic line when the character is hidden.
+  // Drag starts from the character or from any part of the bubble that is not a button.
   function onDragDown(e: PointerEvent) {
     if (e.button !== 0) return;
     down = { x: e.screenX, y: e.screenY };
@@ -352,7 +362,7 @@
   onMount(() => {
     const unlisten: Promise<() => void>[] = [];
     (async () => {
-      const [loaded] = await Promise.all([loadSkin(), initSettings(), initProgress()]);
+      const [loaded] = await Promise.all([loadSkin(), initProgress()]);
       skin = loaded;
       player.setSkin(loaded);
       applyTheme();
@@ -397,14 +407,14 @@
 </script>
 
 <div class="stage" style:width="{winCss.w}px" style:height="{winCss.h}px">
-  {#if bubble || (sleeping && !settings.petCharacter)}
+  {#if bubble || (sleeping && !settings.petCharacter) || (nothingOn && !sleeping)}
     <div
       class="bubble-slot"
       bind:this={bubbleEl}
       role="presentation"
       style:left={anchor.h === 'left' ? `${slotInset.side}px` : null}
       style:right={anchor.h === 'right' ? `${slotInset.side}px` : null}
-      style:bottom="{slotInset.bottom}px"
+      style:top="{slotInset.top}px"
       oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
     >
       {#if bubble}
@@ -416,7 +426,6 @@
         {starred}
         canSpeak={speechAvailable()}
         tail={settings.petCharacter}
-        draggable={!settings.petCharacter}
         showHanviet={settings.showHanviet}
         showExample={settings.showExample}
         onopen={() => ipc.openMain(`/word/${encodeURIComponent(bubble!.word.id)}`)}
@@ -429,8 +438,10 @@
         onreveal={reveal}
         onhover={(inside) => (hoveringBubble = inside)}
       />
+      {:else if !sleeping}
+        <button class="nap" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
       {:else}
-        <button class="nap" onclick={resume}>💤 Tiểu Mai đang nghỉ · bấm để tiếp tục</button>
+        <button class="nap" onclick={resume}><Icon name="pet-sleep" /> Đang tạm dừng, bấm để tiếp tục</button>
       {/if}
     </div>
   {/if}
@@ -446,15 +457,15 @@
       style:right={anchor.h === 'right' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
       style:bottom="{settings.petCharacter ? spriteCss.h * 0.45 : 6}px"
     >
-      <button role="menuitem" onclick={() => { menuOpen = false; nextNow(); }}>✨ Từ tiếp theo</button>
+      <button role="menuitem" onclick={() => { menuOpen = false; nextNow(); }}><Icon name="pet-next" /> Từ tiếp theo</button>
       {#if progress.pausedUntil > Date.now()}
-        <button role="menuitem" onclick={() => pauseFor(0)}>▶️ Tiếp tục</button>
+        <button role="menuitem" onclick={() => pauseFor(0)}><Icon name="play" /> Tiếp tục</button>
       {:else}
-        <button role="menuitem" onclick={() => pauseFor(30)}>💤 Nghỉ 30 phút</button>
+        <button role="menuitem" onclick={() => pauseFor(30)}><Icon name="pet-sleep" /> Tạm dừng 30 phút</button>
       {/if}
-      <button role="menuitem" onclick={() => { menuOpen = false; ipc.openMain(); }}>📖 Mở Tiểu Mai</button>
-      <button role="menuitem" onclick={toggleCharacter}>{settings.petCharacter ? '🙈 Ẩn Tiểu Mai, giữ bảng từ' : '🙋 Hiện lại Tiểu Mai'}</button>
-      <button role="menuitem" onclick={hidePet}>🚫 Ẩn trợ lý</button>
+      <button role="menuitem" onclick={() => { menuOpen = false; ipc.openMain(); }}><Icon name="pet-open" /> Mở Tiểu Mai</button>
+      <button role="menuitem" onclick={toggleCharacter}><Icon name={settings.petCharacter ? 'pet-hide-character' : 'pet-show-character'} /> {settings.petCharacter ? 'Ẩn Tiểu Mai, giữ bảng từ' : 'Hiện lại Tiểu Mai'}</button>
+      <button role="menuitem" onclick={hidePet}><Icon name="pet-hide" /> Ẩn trợ lý</button>
     </div>
   {/if}
 
@@ -482,7 +493,7 @@
 
 <HoverPinyin />
 
-<!-- A press on the bubble's drag handle that never became a drag must not linger. -->
+<!-- A press on the bubble that never became a drag must not linger. -->
 <svelte:window onpointerup={() => (down = null)} />
 
 <style>

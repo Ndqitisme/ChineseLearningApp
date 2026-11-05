@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import BackButton from '../components/BackButton.svelte';
   import { PitchDetector } from 'pitchy';
   import { parseMarked, type Tone } from '../../lib/pinyin.ts';
@@ -83,15 +84,17 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1>🎵 Thanh điệu</h1>
-  <p class="lead">{deck.title} · chọn thanh cho từng âm tiết, rồi thử đọc to để so đường cao độ.</p>
+  <h1><Icon name="tones" /> Thanh điệu</h1>
+  <p class="lead">{deck.title}<br />Chọn thanh cho từng âm tiết, sau đó đọc to để so đường cao độ.</p>
 
-  {#if word}
+  {#if deck.gone}
+    <p class="empty">{deck.gone.text} <a href={deck.gone.href}>{deck.gone.link}</a></p>
+  {:else if word}
     <div class="card drill">
       <span class="muted">Từ {index + 1}/{queue.length} · đúng {score}</span>
       <div class="hz han" data-hover-pinyin="off">{word.hanzi}</div>
       <div class="vi">{word.vi}</div>
-      {#if speechAvailable()}<button class="btn" onclick={() => speak(word.hanzi).catch(() => {})}>🔊 Nghe mẫu</button>{/if}
+      {#if speechAvailable()}<button class="btn" onclick={() => speak(word.hanzi).catch(() => {})}><Icon name="speaker" /> Nghe mẫu</button>{/if}
 
       <div class="sylls" data-hover-pinyin="off">
         {#each bases as base, i (i)}
@@ -118,7 +121,7 @@
         <button class="btn primary" disabled={picks.some((p) => p === null)} onclick={check}>Kiểm tra</button>
       {:else}
         <div class="answer" data-has-pinyin>
-          {picks.every((p, i) => p === tones[i]) ? '🎉 Chính xác!' : 'Chưa đúng — đáp án:'}
+          {picks.every((p, i) => p === tones[i]) ? 'Đúng' : 'Chưa đúng. Đáp án:'}
           <Pinyin text={word.pinyin} syllables={word.syllables} />
         </div>
       {/if}
@@ -127,7 +130,7 @@
     <h2 class="section-title">Đọc to và so cao độ <span class="muted">(tham khảo)</span></h2>
     <div class="card speak">
       <div class="row">
-        <button class="btn primary" disabled={recording} onclick={() => record()}>{recording ? '🎙️ Đang nghe…' : '🎙️ Ghi âm 2 giây'}</button>
+        <button class="btn primary" disabled={recording} onclick={() => record()}><Icon name="mic" /> {recording ? 'Đang nghe…' : 'Ghi âm 2 giây'}</button>
         {#if result}<b class="big-score">{result.score}/100</b>{/if}
         <span class="spacer"></span>
         {#if checked}<button class="btn" onclick={next}>Từ tiếp →</button>{/if}
@@ -140,10 +143,10 @@
         <path d={path(template(tones), 600, 150)} class="tpl" transform="translate(0,5)" />
         {#if result}<path d={path(result.contour, 600, 150)} class="me" transform="translate(0,5)" />{/if}
       </svg>
-      <p class="muted small">Nét đứt là hình dạng chuẩn của thanh điệu, nét liền là giọng của bạn. Điểm chỉ để tham khảo: app chia đều thời gian cho các âm tiết và không nhận dạng chữ.</p>
+      <p class="muted small">Nét đứt là đường thanh chuẩn, nét liền là giọng của bạn.<br />Điểm chỉ mang tính tham khảo: thời gian được chia đều cho các âm tiết và app không nhận dạng chữ.</p>
     </div>
   {:else if queue.length}
-    <div class="card done"><div class="big">🎶</div><h2>Đúng {score}/{queue.length} từ</h2><a class="btn primary" href="#/practice">Về luyện tập</a></div>
+    <div class="card done"><div class="big"><Icon name="result-tones" /></div><h2>Đúng {score}/{queue.length} từ</h2><a class="btn primary" href="#/practice">Về trang luyện tập</a></div>
   {:else}
     <p class="empty">Chưa có từ để luyện.</p>
   {/if}

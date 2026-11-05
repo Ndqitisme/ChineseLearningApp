@@ -1,27 +1,16 @@
 <script lang="ts">
-  import { wordById } from '../../lib/data.ts';
+  import Icon from '../../lib/ui/Icon.svelte';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
   import { TARGET_EXPOSURES } from '../../lib/scheduler.ts';
+  import { openWord } from '../../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
-  import { isDue, previewIntervals, Rating, review, type Grade } from '../../lib/srs.ts';
+  import { previewIntervals, Rating, review, type Grade } from '../../lib/srs.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
+  import { reviewQueueIds } from '../review-queue.ts';
 
-  const NEW_PER_SESSION = 10;
-
-  /** Due cards first; then words Tiểu Mai has shown enough times that have no card yet. */
-  function buildQueue(): Word[] {
-    const due = Object.entries(progress.srs).filter(([, c]) => isDue(c)).sort((a, b) => Date.parse(a[1].due) - Date.parse(b[1].due)).map(([id]) => id);
-    const fresh = Object.entries(progress.exposure)
-      .filter(([id, e]) => !progress.srs[id] && !e.k && e.n >= TARGET_EXPOSURES)
-      .slice(0, NEW_PER_SESSION)
-      .map(([id]) => id);
-    return [...due, ...fresh].map((id) => wordById.get(id)).filter((w): w is Word => !!w);
-  }
-
-  let queue = $state<Word[]>(buildQueue());
+  let queue = $state<Word[]>(reviewQueueIds().map((id) => openWord(id)).filter((w): w is Word => !!w));
   let flipped = $state(false);
-  let done = $state(0);
   const word = $derived(queue[0]);
   const intervals = $derived(word ? previewIntervals(progress.srs[word.id]) : null);
 
@@ -32,7 +21,6 @@
     await Promise.all([saveProgress('srs'), saveProgress('reviewDays')]);
     // "Again" puts the card back at the end of this session.
     queue = g === Rating.Again ? [...queue.slice(1), word] : queue.slice(1);
-    if (g !== Rating.Again) done++;
     flipped = false;
   }
   function onKey(e: KeyboardEvent) {
@@ -51,8 +39,8 @@
 <svelte:window onkeydown={onKey} />
 
 <div class="page">
-  <h1>🔁 Ôn tập</h1>
-  <p class="lead">Còn {queue.length} thẻ · đã xong {done} · phím Space để lật thẻ, phím 1–4 để chấm mức nhớ</p>
+  <h1><Icon name="nav-review" /> Ôn tập</h1>
+  <p class="lead">Ôn các từ đến hạn và từ mới theo lịch lặp lại ngắt quãng.</p>
   {#if word}
     <!-- A div, not a button: Chromium's caret hit-testing skips text inside buttons, so hover
          pinyin could never work on the example sentence. -->
@@ -73,24 +61,28 @@
           {#if word.ex}<div class="ex"><span class="han">{word.ex.zh}</span><br /><span class="muted">{word.ex.vi}</span></div>{/if}
         </div>
       {:else}
-        <div class="muted hint">Nhớ lại nghĩa và cách đọc trong đầu, rồi bấm vào thẻ (hoặc Space) để xem đáp án</div>
+        <div class="muted hint">Bấm vào thẻ để xem đáp án</div>
       {/if}
     </div>
     {#if flipped && intervals}
-      <p class="grade-help">Bạn nhớ từ này đến đâu? Chọn một mức, Tiểu Mai sẽ hẹn lần ôn tiếp theo: càng nhớ chắc thì càng lâu mới phải ôn lại.</p>
+      <p class="grade-help">Chọn mức độ nhớ để hẹn lần ôn tiếp theo.</p>
       <div class="grades">
         {#each BUTTONS as b, i (b.g)}
           <button class="btn {b.cls}" onclick={() => grade(b.g)} title="{b.help} · ôn lại sau {intervals[b.g]}"><span>{i + 1} · {b.label}</span><small>ôn lại sau {intervals[b.g]}</small></button>
         {/each}
-        {#if speechAvailable()}<button class="btn" onclick={() => speak(word.hanzi).catch(() => {})}>🔊</button>{/if}
+        {#if speechAvailable()}<button class="btn" onclick={() => speak(word.hanzi).catch(() => {})}><Icon name="speaker" /></button>{/if}
       </div>
     {/if}
+    <div class="status">
+      <b class="remaining">Còn {queue.length} thẻ cần ôn</b>
+      <span class="muted">Gợi ý phím: Space để lật thẻ, phím 1–2–3–4 để chấm mức độ nhớ</span>
+    </div>
   {:else}
     <div class="card empty-card">
-      <div class="big">🌸</div>
-      <h2>Không còn thẻ nào cần ôn!</h2>
-      <p class="muted">Thẻ mới được tạo khi bạn luyện đoán nghĩa, hoặc khi Tiểu Mai đã cho bạn xem một từ đủ {TARGET_EXPOSURES} lần.</p>
-      <a class="btn primary" href="#/quiz/meaning">🧠 Luyện đoán nghĩa</a>
+      <div class="big"><Icon name="done" /></div>
+      <h2>Không còn thẻ cần ôn</h2>
+      <p class="muted">Thẻ mới được thêm khi bạn luyện đoán nghĩa, hoặc khi một từ đã hiện đủ {TARGET_EXPOSURES} lần.</p>
+      <a class="btn primary" href="#/quiz/meaning"><Icon name="quiz-meaning" /> Luyện đoán nghĩa</a>
     </div>
   {/if}
 </div>
@@ -112,6 +104,7 @@
   .hard { border-color: var(--tone2); color: var(--tone2); }
   .good { border-color: var(--good); color: var(--good); }
   .easy { border-color: var(--tone4); color: var(--tone4); }
+  .status { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 18px; font-size: 14px; }
   .empty-card { text-align: center; padding: 34px; }
   .empty-card .big { font-size: 48px; }
   .empty-card a { text-decoration: none; }

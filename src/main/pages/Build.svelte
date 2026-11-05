@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
   import BackButton from '../components/BackButton.svelte';
   import { untrack } from 'svelte';
   import { dataset, words } from '../../lib/data.ts';
   import { plain, score, tiles, type Score } from '../../lib/sentence.ts';
+  import { isOpen } from '../../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
   import { deckFrom, shuffle } from '../deck.ts';
 
@@ -28,7 +30,7 @@
 
   function orderItems(): { items: Item[]; source: string } {
     const fromDeck = deck.words.filter((w) => w.ex && usable(tiles(w.ex.zh)));
-    const pick = fromDeck.length >= 5 ? fromDeck : words.filter((w) => w.ex && usable(tiles(w.ex.zh)));
+    const pick = fromDeck.length >= 5 ? fromDeck : words.filter((w) => isOpen(w) && w.ex && usable(tiles(w.ex.zh)));
     const source = fromDeck.length >= 5 ? deck.title : 'Câu ví dụ trong các chủ đề';
     return {
       source,
@@ -55,7 +57,7 @@
     };
   }
 
-  let round = $state(mode === 'qa' ? qaItems() : orderItems());
+  let round = $state(deck.gone ? { items: [], source: deck.title } : mode === 'qa' ? qaItems() : orderItems());
   let index = $state(0);
   let picked = $state<number[]>([]);
   let result = $state<Score | null>(null);
@@ -90,7 +92,7 @@
     else if (e.key === 'Backspace' && !result && picked.length) { e.preventDefault(); picked = picked.slice(0, -1); }
   }
   const average = $derived(points.length ? Math.round(points.reduce((a, b) => a + b, 0) / points.length) : 0);
-  const verdict = (p: number) => (p === 100 ? 'Chính xác! 🎉' : p >= 70 ? 'Gần đúng rồi 👏' : 'Cần xem lại 💪');
+  const verdict = (p: number) => (p === 100 ? 'Chính xác' : p >= 70 ? 'Gần đúng' : 'Cần xem lại');
   const tail = deckParams.length ? `/${deckParams.join('/')}` : '';
 </script>
 
@@ -98,17 +100,20 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1>🧩 Ghép câu</h1>
+  <h1><Icon name="build" /> Ghép câu</h1>
   <div class="tabs">
     <a class="chip" class:on={mode === 'order'} href="#/build/order{tail}">Sắp xếp thành câu</a>
     <a class="chip" class:on={mode === 'qa'} href="#/build/qa{tail}">Trả lời câu hỏi</a>
   </div>
   <p class="lead">
-    {round.source} · bấm các từ theo đúng thứ tự để ghép thành câu, bấm lại một từ đã chọn để bỏ ra.
-    Điểm tính theo số từ đúng thứ tự so với câu chuẩn. Phím Enter để chấm, Backspace để bỏ từ cuối.
+    {round.source}<br />
+    Bấm các từ theo đúng thứ tự để ghép câu; bấm lại một từ đã chọn để bỏ ra.<br />
+    Gợi ý phím: Enter để chấm, Backspace để bỏ từ cuối.
   </p>
 
-  {#if item}
+  {#if deck.gone}
+    <p class="empty">{deck.gone.text} <a href={deck.gone.href}>{deck.gone.link}</a></p>
+  {:else if item}
     <div class="progress"><i style:width="{(index / round.items.length) * 100}%"></i></div>
     <div class="card task">
       <span class="muted count">Câu {index + 1}/{round.items.length}</span>
@@ -145,18 +150,18 @@
           <div class="reference" data-has-pinyin>
             <span class="muted">Câu chuẩn:</span>
             <span class="han ref-zh">{result.target === 0 ? item.sentence : item.accepted[result.target].join('')}</span>
-            {#if speechAvailable()}<button class="btn ghost sm" onclick={() => speak(item.sentence).catch(() => {})}>🔊</button>{/if}
+            {#if speechAvailable()}<button class="btn ghost sm" onclick={() => speak(item.sentence).catch(() => {})}><Icon name="speaker" /></button>{/if}
             <div class="ref-py">{item.py}</div>
             <div class="ref-vi">{item.vi}</div>
           </div>
-          {#if result.points < 100}<p class="muted small">Từ màu cam là chỗ lệch thứ tự so với câu chuẩn. Một số câu có thể đúng theo cách sắp khác; câu chuẩn ở đây là cách nói thông dụng nhất.</p>{/if}
+          {#if result.points < 100}<p class="muted small">Từ màu cam là chỗ lệch thứ tự so với câu chuẩn.<br />Một số câu còn có cách sắp xếp khác cũng đúng; câu chuẩn là cách nói thông dụng nhất.</p>{/if}
           <div class="row actions"><button class="btn primary" onclick={next}>Tiếp →</button></div>
         </div>
       {/if}
     </div>
   {:else if round.items.length}
     <div class="card summary">
-      <div class="big">{average >= 90 ? '🎉' : average >= 60 ? '👏' : '💪'}</div>
+      <div class="big"><Icon name={average >= 90 ? 'result-great' : average >= 60 ? 'result-good' : 'result-try'} /></div>
       <h2>Điểm trung bình {average}/100</h2>
       <p class="muted">{points.filter((p) => p === 100).length}/{points.length} câu chính xác hoàn toàn.</p>
       <div class="row center">

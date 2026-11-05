@@ -5,12 +5,23 @@ export interface Rect { x: number; y: number; w: number; h: number }
 export interface Anchor { h: 'left' | 'right' }
 export interface Size { w: number; h: number }
 
-/** Room above the sprite for an ordinary bubble; taller bubbles grow it (see Pet.svelte). */
+/** Height an ordinary bubble needs; taller bubbles grow it (see Pet.svelte). */
 export const BASE_BUBBLE_ROOM = 250;
+/** Bubble width plus room for its shadow, CSS px. */
+const BUBBLE_W = 280;
+/** The bubble starts this far into the sprite frame, whose sides are transparent margin. */
+const BUBBLE_START = 0.85;
 
-/** Window size in CSS px: the sprite plus room for the bubble, which is always above her head. */
+/** Window size in CSS px: the sprite with the bubble beside her, toward the middle of the screen. */
 export function windowSize(sprite: Size, room = BASE_BUBBLE_ROOM): Size {
-  return { w: Math.round(Math.max(300, 270 + sprite.w * 0.45)), h: Math.round(sprite.h + room) };
+  return { w: Math.round(sprite.w * BUBBLE_START + BUBBLE_W), h: Math.round(Math.max(sprite.h, room)) };
+}
+
+/** Where the bubble sits (CSS px from the window's anchor side and top): its top level with her head,
+ * moved up only as far as a tall bubble needs to fit. */
+export function bubbleInset(win: Size, sprite: Size, room = BASE_BUBBLE_ROOM) {
+  const headTop = win.h - sprite.h + sprite.h * 0.03;
+  return { side: Math.round(sprite.w * BUBBLE_START), top: Math.round(Math.max(4, Math.min(headTop, win.h - room + 4))) };
 }
 
 /** Where the sprite sits inside the window (CSS px). */
@@ -36,9 +47,9 @@ export interface SnapInput {
 }
 
 /**
- * Keeps the sprite where the user dropped it, snaps it to a nearby work-area edge, clamps it
- * on screen with room above her for the bubble, and recomputes the anchor. Idempotent: snapping
- * a snapped result returns the same position, so reacting to our own move events cannot loop.
+ * Keeps the sprite where it was dropped, snaps it to a nearby work-area edge, clamps it so the
+ * whole window (a tall bubble may rise above her head) stays on screen, and recomputes the anchor. Idempotent, so reacting to
+ * its own move event cannot loop.
  */
 export function snap(input: SnapInput): { pos: { x: number; y: number }; anchor: Anchor } {
   const { scale, winCss, spriteCss, workArea } = input;

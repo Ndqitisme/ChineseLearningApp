@@ -1,5 +1,5 @@
-// Sentence building: cut a sentence into word tiles and score a learner's ordering.
-import { MAX_WORD_LEN, wordByHanzi } from './data.ts';
+import { MAX_WORD_LEN } from './data.ts';
+import { openByHanzi } from './settings.svelte.ts';
 import { isHan } from './pinyin.ts';
 
 const SEPARATORS = /[\s，。？！、；：,.?!;:“”"'（）()…—~]+/;
@@ -23,7 +23,7 @@ export function tiles(text: string): string[] {
         continue;
       }
       let len = Math.min(MAX_WORD_LEN, chars.length - i);
-      while (len > 1 && !wordByHanzi.has(chars.slice(i, i + len).join(''))) len--;
+      while (len > 1 && !openByHanzi(chars.slice(i, i + len).join(''))) len--;
       out.push(chars.slice(i, i + len).join(''));
       i += len;
     }

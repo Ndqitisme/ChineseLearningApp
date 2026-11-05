@@ -1,6 +1,8 @@
 <script lang="ts">
+  import Icon from '../lib/ui/Icon.svelte';
   import type { Word } from '../lib/types.ts';
   import { topicById } from '../lib/data.ts';
+  import { hskLevel } from '../lib/settings.svelte.ts';
   import Pinyin from '../lib/ui/Pinyin.svelte';
   import type { Anchor } from './geometry.ts';
 
@@ -13,8 +15,6 @@
     canSpeak: boolean;
     /** false when the character is hidden: no tail pointing at her head. */
     tail: boolean;
-    /** The topic line doubles as a drag handle when there is no character to grab. */
-    draggable: boolean;
     showHanviet: boolean;
     showExample: boolean;
     onopen: () => void;
@@ -30,6 +30,9 @@
   let p: Props = $props();
   const topic = $derived(p.word.topics[0] ? topicById.get(p.word.topics[0]) : undefined);
   const size = $derived([...p.word.hanzi].length > 3 ? 'long' : 'short');
+  const level = $derived(hskLevel(p.word));
+  /** Presses on controls act on them; anywhere else on the bubble starts a window drag. */
+  const onControl = (t: EventTarget | null) => t instanceof Element && !!t.closest('button, a, input, select, textarea');
 </script>
 
 <div
@@ -41,30 +44,18 @@
   tabindex="-1"
   onpointerenter={() => p.onhover(true)}
   onpointerleave={() => p.onhover(false)}
+  onpointerdown={(e) => { if (!onControl(e.target)) p.onhandledown(e); }}
+  onpointermove={p.onhandlemove}
 >
   <div class="content" class:out={p.swapping}>
-  <div
-    class="meta"
-    class:handle={p.draggable}
-    role="presentation"
-    title={p.draggable ? 'Kéo để di chuyển' : undefined}
-    onpointerdown={p.draggable ? p.onhandledown : undefined}
-    onpointermove={p.draggable ? p.onhandlemove : undefined}
-  >
-    {#if topic}<span>{topic.icon} {topic.title}</span>{/if}
-    {#if p.word.hsk}<span class="hsk">HSK {p.word.hsk}</span>{/if}
+  <div class="meta">
+    {#if topic}<span><Icon name={topic.icon} /> {topic.title}</span>{/if}
+    {#if level}<span class="hsk">HSK {level}</span>{/if}
   </div>
 
-  <!-- Pinyin is shown under the word once revealed; before that, hovering must not give it away. -->
+  <!-- Hover pinyin stays off until the meaning is revealed, so it cannot give the answer away. -->
   <div class="head" data-has-pinyin={p.revealed ? '' : undefined} data-hover-pinyin={p.revealed ? undefined : 'off'}>
     <button class="hanzi han {size}" onclick={p.onopen} title="Mở trong app">{p.word.hanzi}</button>
-    <button
-      class="speak"
-      class:off={!p.canSpeak}
-      onclick={p.canSpeak ? p.onspeak : p.onsetupvoice}
-      title={p.canSpeak ? 'Nghe phát âm' : 'Chưa cài giọng đọc — bấm để cài'}
-      aria-label="Nghe phát âm"
-    >🔊</button>
   </div>
 
   {#if p.revealed}
@@ -77,12 +68,21 @@
       {/if}
     </div>
   {:else}
-    <button class="guess" onclick={p.onreveal}>Đoán nghĩa trước nhé… <b>xem đáp án</b></button>
+    <button class="guess" onclick={p.onreveal}>Đoán nghĩa trước khi <b>xem đáp án</b></button>
   {/if}
 
   <div class="actions">
-    <button onclick={p.onknown} title="Mình biết từ này rồi">✓ Biết rồi</button>
-    <button class:on={p.starred} onclick={p.onstar} title="Lưu vào sổ tay">{p.starred ? '★' : '☆'}</button>
+    <div class="marks">
+      <button onclick={p.onknown} title="Đánh dấu đã biết">✓ Biết rồi</button>
+      <button class:on={p.starred} onclick={p.onstar} title="Lưu vào sổ tay">{p.starred ? '★' : '☆'}</button>
+    </div>
+    <button
+      class="speak"
+      class:off={!p.canSpeak}
+      onclick={p.canSpeak ? p.onspeak : p.onsetupvoice}
+      title={p.canSpeak ? 'Nghe phát âm' : 'Chưa cài giọng đọc — bấm để cài'}
+      aria-label="Nghe phát âm"
+    ><Icon name="speaker" /></button>
   </div>
   </div>
 </div>
@@ -98,25 +98,34 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     text-align: center;
+    cursor: grab;
     animation: pop 0.22s cubic-bezier(0.2, 1.4, 0.4, 1);
-    transform-origin: bottom left;
+    transform-origin: top left;
   }
-  .bubble.right { transform-origin: bottom right; }
-  /* tail pointing at Tiểu Mai's head */
+  .bubble.right { transform-origin: top right; }
+  .bubble :global(button) { cursor: pointer; }
+  /* Tail on the side facing Tiểu Mai, level with her head. */
   .bubble::after {
     content: '';
     position: absolute;
-    bottom: -11px;
-    left: 26px;
+    top: 26px;
+    left: -11px;
     width: 16px;
     height: 16px;
     background: var(--bubble-bg);
-    border-right: 2.5px solid var(--bubble-border);
+    border-left: 2.5px solid var(--bubble-border);
     border-bottom: 2.5px solid var(--bubble-border);
     transform: rotate(45deg);
-    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
   }
-  .bubble.right::after { left: auto; right: 26px; }
+  .bubble.right::after {
+    left: auto;
+    right: -11px;
+    border: 0;
+    border-top: 2.5px solid var(--bubble-border);
+    border-right: 2.5px solid var(--bubble-border);
+    border-radius: 0 4px 0 0;
+  }
   .bubble.notail::after { display: none; }
   @keyframes pop {
     from { transform: scale(0.6); opacity: 0; }
@@ -148,21 +157,23 @@
     border-radius: 10px;
   }
   .hanzi.long { font-size: 34px; }
-  .head { display: flex; align-items: center; justify-content: center; gap: 2px; }
+  .head { display: flex; align-items: center; justify-content: center; }
   .speak {
     flex: none;
-    width: 32px;
-    height: 32px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
     border: 0;
     border-radius: 50%;
     background: var(--surface-2);
-    font-size: 16px;
+    color: var(--text);
+    font-size: 15px;
     line-height: 1;
     cursor: pointer;
   }
   .speak:hover { background: var(--accent); }
   .speak.off { opacity: .45; filter: grayscale(1); }
-  .meta.handle { cursor: grab; }
   .hanzi:hover { background: var(--surface-2); }
   .reveal { animation: fade 0.25s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(3px); } }
@@ -184,11 +195,12 @@
   .guess b { color: var(--primary); }
   .actions {
     display: flex;
-    justify-content: center;
-    gap: 6px;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 8px;
   }
-  .actions button {
+  .marks { display: flex; gap: 6px; }
+  .marks button {
     border: 0;
     background: var(--surface-2);
     border-radius: 99px;
@@ -197,6 +209,6 @@
     font-weight: 700;
     color: var(--text);
   }
-  .actions button:hover { background: var(--accent); }
-  .actions button.on { color: #e0a100; }
+  .marks button:hover { background: var(--accent); }
+  .marks button.on { color: #e0a100; }
 </style>

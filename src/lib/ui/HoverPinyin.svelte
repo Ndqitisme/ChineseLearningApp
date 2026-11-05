@@ -2,7 +2,8 @@
   // Shows pinyin for any Chinese character under the pointer, unless the surrounding area
   // already displays pinyin ([data-has-pinyin]) or hides it on purpose ([data-hover-pinyin="off"]).
   import { onMount } from 'svelte';
-  import { MAX_WORD_LEN, wordByHanzi } from '../data.ts';
+  import { MAX_WORD_LEN } from '../data.ts';
+  import { openByHanzi } from '../settings.svelte.ts';
   import { isHan, toSyllables, type Syllable } from '../pinyin.ts';
   import Pinyin from './Pinyin.svelte';
 
@@ -54,7 +55,7 @@
     // Longest dictionary word covering position i.
     for (let len = Math.min(MAX_WORD_LEN, text.length); len >= 1; len--) {
       for (let start = Math.max(0, i - len + 1); start <= i && start + len <= text.length; start++) {
-        const w = wordByHanzi.get(text.slice(start, start + len));
+        const w = openByHanzi(text.slice(start, start + len));
         if (w) return { x: 0, top: 0, bottom: 0, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables, hanviet: w.hanviet, vi: w.vi };
       }
     }

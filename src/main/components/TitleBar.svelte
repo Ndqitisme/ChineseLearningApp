@@ -8,7 +8,7 @@
   <div class="controls">
     <button onclick={() => win.minimize()} aria-label="Thu nhỏ">—</button>
     <button onclick={() => win.toggleMaximize()} aria-label="Phóng to">▢</button>
-    <button class="close" onclick={() => win.close()} aria-label="Đóng (Tiểu Mai vẫn chạy ngầm)">✕</button>
+    <button class="close" onclick={() => win.close()} aria-label="Đóng (app vẫn chạy ở khay hệ thống)">✕</button>
   </div>
 </header>
 

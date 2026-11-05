@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { words } from '../../lib/data.ts';
+  import Icon from '../../lib/ui/Icon.svelte';
+  import { topics, words } from '../../lib/data.ts';
   import { searchKey } from '../../lib/pinyin.ts';
+  import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
   import WordRow from '../components/WordRow.svelte';
 
   import { untrack } from 'svelte';
@@ -8,8 +10,8 @@
   let q = $state(untrack(() => query));
 
   const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
-  // Precomputed once: folding 2.5k entries on every keystroke is wasted work.
-  const index = words.map((w) => ({ w, py: searchKey(w.pinyin), vi: fold(w.vi + ' ' + (w.viFull ?? '')), hv: fold(w.hanviet ?? '') }));
+  // Precomputed once: folding thousands of entries on every keystroke is wasted work.
+  const index = words.filter(isOpen).map((w) => ({ w, py: searchKey(w.pinyin), vi: fold(w.vi + ' ' + (w.viFull ?? '')), hv: fold(w.hanviet ?? '') }));
 
   const results = $derived.by(() => {
     const term = q.trim();
@@ -27,14 +29,14 @@
       const at = e.vi.indexOf(f);
       if (at === 0) s = Math.max(s, 70);
       else if (at > 0) s = Math.max(s, 30);
-      if (s) scored.push({ w: e.w, s: s - (e.w.hsk ?? 4) });
+      if (s) scored.push({ w: e.w, s: s - (hskLevel(e.w) ?? 4) });
     }
     return scored.sort((a, b) => b.s - a.s).slice(0, 100).map((r) => r.w);
   });
 </script>
 
 <div class="page">
-  <h1>🔎 Tra cứu</h1>
+  <h1><Icon name="nav-search" /> Tra cứu</h1>
   <p class="lead">Gõ chữ Hán, pinyin (có hoặc không dấu, ví dụ “mifan”), nghĩa tiếng Việt hoặc âm Hán Việt.</p>
   <!-- svelte-ignore a11y_autofocus -->
   <input class="search" type="search" placeholder="Ví dụ: 米饭 · mifan · cơm · mễ phạn" bind:value={q} autofocus />
@@ -43,7 +45,7 @@
     {#if results.length}
       <div class="card list">{#each results as w (w.id)}<WordRow word={w} />{/each}</div>
     {:else}
-      <p class="empty">Không tìm thấy. Bộ từ hiện có {words.length} từ (HSK 1–3 và 22 chủ đề).</p>
+      <p class="empty">Không tìm thấy. Bộ từ hiện có {index.length} từ (HSK 1–{settings.hskOpen} và {topics.length} chủ đề).</p>
     {/if}
   {/if}
 </div>

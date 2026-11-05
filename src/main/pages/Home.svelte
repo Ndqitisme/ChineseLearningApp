@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { wordById } from '../../lib/data.ts';
+  import Icon from '../../lib/ui/Icon.svelte';
   import { progress, streak, today } from '../../lib/progress.svelte.ts';
   import { TARGET_EXPOSURES } from '../../lib/scheduler.ts';
-  import { settings } from '../../lib/settings.svelte.ts';
-  import { isDue } from '../../lib/srs.ts';
+  import { openWord, settings } from '../../lib/settings.svelte.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
+  import { reviewQueueIds } from '../review-queue.ts';
 
   const hour = new Date().getHours();
-  const greet = hour < 11 ? { vi: 'Chào buổi sáng!', zh: '早上好！' } : hour < 18 ? { vi: 'Chào buổi chiều!', zh: '下午好！' } : { vi: 'Chào buổi tối!', zh: '晚上好！' };
+  const greet = hour < 11 ? { vi: 'Chào buổi sáng', zh: '早上好' } : hour < 18 ? { vi: 'Chào buổi chiều', zh: '下午好' } : { vi: 'Chào buổi tối', zh: '晚上好' };
 
   const seenToday = $derived(progress.seenDays[today()] ?? 0);
-  const due = $derived(Object.values(progress.srs).filter((c) => isDue(c)).length);
-  const familiar = $derived(Object.values(progress.exposure).filter((e) => e.k || e.n >= TARGET_EXPOSURES).length);
+  const due = $derived(reviewQueueIds().length);
+  const familiar = $derived(Object.entries(progress.exposure).filter(([id, e]) => (e.k || e.n >= TARGET_EXPOSURES) && openWord(id)).length);
   const days = $derived(streak());
   const recent = $derived(
     Object.entries(progress.exposure)
       .filter(([, e]) => e.n > 0)
       .sort((a, b) => b[1].t - a[1].t)
       .slice(0, 12)
-      .map(([id]) => wordById.get(id))
+      .map(([id]) => openWord(id))
       .filter((w) => !!w),
   );
 </script>
@@ -26,26 +26,26 @@
 <div class="page">
   <h1>{greet.vi} <span class="han zh">{greet.zh}</span></h1>
   <p class="lead">
-    {#if settings.petEnabled}Tiểu Mai đang ở góc màn hình, mỗi từ hiện {settings.wordSec} giây rồi chuyển sang từ mới.
-    {:else}Trợ lý đang tắt. Bật lại ở thanh bên trái để Tiểu Mai nhắc từ cho bạn nhé.{/if}
+    Tiến độ học hôm nay, lối vào nhanh các bài luyện và những từ vừa gặp.
+    {#if !settings.petEnabled}<br />Trợ lý đang tắt. Bật lại ở mục “Trợ lý trên màn hình” bên trái.{/if}
   </p>
 
   <div class="stats">
     <div class="card stat"><b>{seenToday}</b><span>lượt gặp từ hôm nay</span></div>
-    <div class="card stat"><b>{days}</b><span>ngày học liên tiếp 🔥</span></div>
-    <div class="card stat"><b>{familiar}</b><span>từ đã quen mặt</span></div>
-    <a class="card stat link" href="#/review"><b>{due}</b><span>thẻ cần ôn ngay →</span></a>
+    <div class="card stat"><b>{days}</b><span>ngày học liên tiếp <Icon name="streak" /></span></div>
+    <div class="card stat"><b>{familiar}</b><span>từ đã quen</span></div>
+    <a class="card stat link" href="#/review"><b>{due}</b><span>thẻ cần ôn →</span></a>
   </div>
 
   <h2 class="section-title">Bắt đầu nhanh</h2>
   <div class="grid">
-    <a class="card action" href="#/quiz/meaning"><span class="big">🧠</span><b>Đoán nghĩa</b><span class="muted">Nhìn chữ, chọn nghĩa đúng</span></a>
-    <a class="card action" href="#/write"><span class="big">✍️</span><b>Viết theo nét</b><span class="muted">Tập viết đúng thứ tự nét</span></a>
-    <a class="card action" href="#/tones"><span class="big">🎵</span><b>Luyện thanh điệu</b><span class="muted">Chọn thanh, ghi âm so cao độ</span></a>
-    <a class="card action" href="#/review"><span class="big">🔁</span><b>Ôn tập</b><span class="muted">Thẻ ghi nhớ theo lịch FSRS</span></a>
+    <a class="card action" href="#/quiz/meaning"><span class="big"><Icon name="quiz-meaning" /></span><b>Đoán nghĩa</b><span class="muted">Nhìn chữ, chọn nghĩa đúng</span></a>
+    <a class="card action" href="#/write"><span class="big"><Icon name="write" /></span><b>Viết theo nét</b><span class="muted">Tập viết đúng thứ tự nét</span></a>
+    <a class="card action" href="#/tones"><span class="big"><Icon name="tones" /></span><b>Luyện thanh điệu</b><span class="muted">Chọn thanh, ghi âm và so cao độ</span></a>
+    <a class="card action" href="#/review"><span class="big"><Icon name="nav-review" /></span><b>Ôn tập</b><span class="muted">Thẻ ghi nhớ theo lịch FSRS</span></a>
   </div>
 
-  <h2 class="section-title">Từ Tiểu Mai vừa cho bạn xem</h2>
+  <h2 class="section-title">Từ vừa gặp</h2>
   {#if recent.length}
     <div class="recent" data-has-pinyin>
       {#each recent as w (w.id)}
@@ -57,7 +57,7 @@
       {/each}
     </div>
   {:else}
-    <p class="empty">Chưa có từ nào. Đợi Tiểu Mai một chút, hoặc bấm vào cô ấy để xem từ đầu tiên.</p>
+    <p class="empty">Chưa có từ nào. Bấm vào trợ lý trên màn hình để xem từ đầu tiên.</p>
   {/if}
 </div>
 
