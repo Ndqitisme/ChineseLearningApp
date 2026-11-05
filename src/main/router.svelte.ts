@@ -1,4 +1,4 @@
-// Tiny hash router: "#/word/吃" → { name: 'word', params: ['吃'] }.
+// Hash router: "#/word/吃" → { name: 'word', params: ['吃'] }.
 
 export interface Route { path: string; name: string; params: string[] }
 
@@ -10,8 +10,7 @@ function parse(hash: string): Route {
 
 export const route = $state<Route>(parse(location.hash));
 
-// Position in this window's own history. A window opened straight onto a page (e.g. a word clicked
-// in the assistant's bubble) has nothing to go back to, so back() needs to know that.
+// Position in this window's history. A window opened straight onto a page has nothing to go back to, so back() needs this.
 let index = 0;
 history.replaceState({ i: 0 }, '');
 

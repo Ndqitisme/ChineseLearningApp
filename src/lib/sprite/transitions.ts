@@ -1,10 +1,6 @@
 import type { FrameStep, Skin } from './skins.ts';
 
-/** Reuse rendered neighbouring poses to return to rest when an action is interrupted.
- * Edges are reversible: waking up and putting a lifted foot down follow their entry
- * poses backwards, instead of snapping directly to the idle image. Each step takes 120–220 ms,
- * close to the action's own pace: faster reads as the arm being yanked back.
- */
+/** Returns to rest through neighbouring poses, reversing their entry poses instead of snapping to idle. Steps take 120–220 ms: faster reads as a yank. */
 export function restTransitions(skin: Pick<Skin, 'animations'>): Map<number, FrameStep[]> {
   const idle = skin.animations.idle?.[0]?.[0] ?? 0;
   const graph = new Map<number, Map<number, number>>();

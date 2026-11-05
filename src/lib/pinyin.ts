@@ -61,9 +61,8 @@ export function joinWord(syllables: string[]): string {
 }
 
 /**
- * Splits written pinyin ("mǐfàn", "Xī'ān", "shǎo bīng") into exactly `count` syllables.
- * Spaces, apostrophes and hyphens are hard boundaries; inside a chunk we search all
- * segmentations into valid syllables. Returns null when no segmentation fits.
+ * Splits written pinyin ("mǐfàn", "Xī'ān", "shǎo bīng") into exactly `count` syllables, or null.
+ * Spaces, apostrophes and hyphens are hard boundaries; each chunk tries all segmentations.
  */
 export function splitSyllables(written: string, count: number, valid: Set<string>): string[] | null {
   const chunks = written.split(/[\s'’-]+/).filter(Boolean);
@@ -75,8 +74,7 @@ export function splitSyllables(written: string, count: number, valid: Set<string
     if (out.length >= count) return false;
     for (let len = Math.min(6, chunk.length - pos); len >= 1; len--) {
       const piece = chunk.slice(pos, pos + len);
-      // Orthography: a syllable starting with a/o/e inside a word must be preceded by an
-      // apostrophe, so without one it can't start here ("Hénèi" is Hé|nèi, not Hén|èi).
+      // A/o/e-initial syllables inside a word need an apostrophe before them ("Hénèi" is Hé|nèi).
       if (pos > 0 && /^[aoeāáǎàōóǒòēéěè]/i.test(piece)) continue;
       if (!valid.has(parseMarked(piece.toLowerCase()).base)) continue;
       out.push(piece);

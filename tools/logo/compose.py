@@ -1,17 +1,6 @@
-"""Builds the app's logo files from the chosen icon artwork (a square PNG, generated with Codex).
-
-The artwork carries no text: AI image models garble Vietnamese diacritics, so the name banner is
-drawn here with the app's own fonts.
-
-Usage: .cache/venv/Scripts/python tools/logo/compose.py <artwork.png>   (needs pillow)
-Output:
-  .cache/logo/icon-1024.png   rounded tile, transparent corners -> `pnpm tauri icon` source
-  public/logo/icon.png        128 px tile for the title bar
-  public/logo/logo.webp       512 px tile with the name banner (About page)
-  docs/logo.png               512 px tile with the name banner (README)
-  src-tauri/icons/tray.png    64 px face crop for the tray, where icons show at 16-24 px
-
-Run `pnpm tauri icon .cache/logo/icon-1024.png` afterwards for the app/installer icons.
+"""Builds the app's logo files from square icon artwork (a PNG with no text).
+Usage: .cache/venv/Scripts/python tools/logo/compose.py <artwork.png>   (needs pillow); then `pnpm tauri icon .cache/logo/icon-1024.png`.
+The name banner is drawn with the app's fonts, since AI image models garble Vietnamese diacritics.
 """
 import pathlib
 import sys
@@ -22,8 +11,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 FONTS = ROOT / ".cache" / "sources"
 SIZE = 1024
 RADIUS = 200          # corner radius of the tile at 1024 px
-INSET = 18            # trims whatever the artwork has outside its own rounded tile
-TRAY_BOX = (240, 120, 800, 680)  # face and hair clip in the 1024 tile: still readable at 16 px
+INSET = 18            # trims the artwork's own rounded corners
+TRAY_BOX = (240, 120, 800, 680)  # face and hair clip; stays readable at 16 px
 
 PINK, LAVENDER, INK = (236, 111, 151), (155, 140, 240), (74, 35, 64)
 

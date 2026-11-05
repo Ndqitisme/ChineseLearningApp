@@ -24,7 +24,7 @@ export function review(json: SrsCardJson | undefined, grade: Grade, now = new Da
   return toJson(scheduler.next(toCard(json, now), now, grade).card);
 }
 
-/** Human-readable next interval for each grade, for the flashcard buttons ("10 phút", "3 ngày"). */
+/** Next interval per grade, shown on the flashcard buttons. */
 export function previewIntervals(json: SrsCardJson | undefined, now = new Date()): Record<Grade, string> {
   const card = toCard(json, now);
   const out = {} as Record<Grade, string>;

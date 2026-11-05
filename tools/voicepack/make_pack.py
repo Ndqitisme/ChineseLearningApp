@@ -1,16 +1,7 @@
-"""Generates an offline voice pack (female + male) for every word in the app's dataset.
+"""Generates an offline voice pack (female + male) for every dataset word with Kokoro-82M via sherpa-onnx. The app ships no audio.
 
-Uses sherpa-onnx with the Kokoro-82M multi-language model (Apache-2.0). The app ships no audio;
-users who want pronunciation build a pack once and pick its folder in Settings → Giọng đọc.
-
-Setup:
-  pip install sherpa-onnx==2.0.1 lameenc
-  download + extract https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-multi-lang-v1_0.tar.bz2
-Usage:
-  python tools/voicepack/make_pack.py --model .cache/sources/tts/kokoro-multi-lang-v1_0 --out voicepack [--limit 20] [--examples]
-
-Kokoro's Chinese voices are graded "D" by their author: listen to a sample before generating
-everything, and try other speaker ids (45–52) with --female/--male if one sounds off.
+Setup: pip install sherpa-onnx==2.0.1 lameenc, then extract kokoro-multi-lang-v1_0.tar.bz2 from the sherpa-onnx tts-models release.
+Usage: python tools/voicepack/make_pack.py --model .cache/sources/tts/kokoro-multi-lang-v1_0 --out voicepack [--limit 20] [--examples]
 """
 import argparse
 import json
@@ -22,7 +13,8 @@ import lameenc
 import sherpa_onnx
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-# Speaker ids of the zh voices in kokoro-multi-lang-v1_0 (sherpa-onnx docs).
+# Speaker ids of the zh voices in kokoro-multi-lang-v1_0. The author grades them "D",
+# so audition a sample before a full run.
 VOICES = {"zf_xiaobei": 45, "zf_xiaoni": 46, "zf_xiaoxiao": 47, "zf_xiaoyi": 48,
           "zm_yunjian": 49, "zm_yunxi": 50, "zm_yunxia": 51, "zm_yunyang": 52}
 UNSAFE = set('<>:"/\\|?*')

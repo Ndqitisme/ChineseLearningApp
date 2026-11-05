@@ -1,7 +1,6 @@
-"""Build a local, offline animation review page and a rendered contact sheet.
+"""Builds an offline animation review page and contact sheet. Run after skin:render and skin:pack (needs Pillow).
 
-Run after skin:render and skin:pack with a Python environment containing Pillow.
-The page embeds metadata, so opening it from Explorer does not need a web server.
+The page embeds its metadata, so it opens from Explorer without a web server.
 """
 import json
 import pathlib

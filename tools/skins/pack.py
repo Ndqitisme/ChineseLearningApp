@@ -1,5 +1,4 @@
-"""Packs the rendered character frames (.cache/render3d/reference-v4/frames, from tools/skins/makehuman/build.py)
-into the assistant's sprite sheet and manifest.
+"""Packs the rendered character frames into the assistant's sprite sheet and manifest.
 
 Usage: .cache/venv/Scripts/python tools/skins/pack.py   (needs pillow)
 Output: public/skins/assistant/{sheet.webp, skin.json, CREDITS.txt}
@@ -18,8 +17,7 @@ FRAME_H = 340
 COLUMNS = 10
 PAD = 6
 
-# App animation name -> shot rendered by build.py. `drag` and `sleep` hold their last frame
-# (duration 0) instead of returning to rest; the others end back on the rest frame.
+# App animation -> build.py shot. HELD animations stop on their last frame; the others end on the rest frame.
 SHOT_FOR = {"breathe": "breathe", "blink": "blink", "look": "look", "wink": "hair", "think": "think",
             "talk": "talk", "wave": "wave", "happy": "happy"}
 HELD = {"drag": "drag", "sleep": "sleep"}

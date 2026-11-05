@@ -43,7 +43,7 @@ def save(rig,body,scene,frames,shots,apply_pose,output):
         for property_index,(prop,size) in enumerate((('location',3),('rotation_quaternion',4),('scale',3))):
             for component in range(size):
                 values=[samples[name][0][pb.name][property_index][component] for _,name in timeline]
-                # Make each quaternion channel consistent across the actual timeline order.
+                # Flip quaternion signs so consecutive keys take the short rotation path.
                 if prop=='rotation_quaternion':
                     last=None;values=[]
                     for _,name in timeline:

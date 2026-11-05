@@ -1,6 +1,5 @@
-// The assistant character: one sprite sheet pre-rendered from a 3D model (tools/skins/makehuman)
-// plus a manifest mapping the app's animation names to frames. Rendering offline keeps the
-// running app free of any 3D engine — it only swaps sprite frames.
+// Assistant character: a pre-rendered sprite sheet (tools/skins/makehuman) and a manifest
+// mapping animation names to frames. Rendering offline keeps 3D engines out of the app.
 
 export type AnimationName =
   | 'idle' | 'breathe' | 'blink' | 'look' | 'wink' | 'think' | 'talk' | 'wave' | 'happy' | 'drag' | 'sleep';
@@ -16,7 +15,7 @@ export interface Skin {
   count: number;
   rows: number;
   url: string;
-  /** Which way the character looks; mirrored when needed so she faces the screen centre. */
+  /** Direction the artwork faces; mirrored at render time so it faces the screen centre. */
   facing: 'front' | 'left' | 'right';
   /** Visible character box as fractions of a frame (for click-through hit testing). */
   hit: { x: number; y: number; w: number; h: number };

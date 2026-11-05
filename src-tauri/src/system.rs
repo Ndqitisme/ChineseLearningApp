@@ -88,7 +88,7 @@ fn keep_topmost(app: &AppHandle) {
     }
 }
 
-// macOS/Linux: fullscreen and idle detection are not implemented yet (see docs/PLAN.md §9).
+// Fullscreen and idle detection are Windows-only (see docs/PLAN.md §9).
 #[cfg(not(windows))]
 fn is_busy() -> bool {
     false

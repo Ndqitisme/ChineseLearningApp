@@ -10,9 +10,8 @@ edition = "2024"
 [lib]
 # The `_lib` suffix avoids a lib/bin name clash on Windows (rust-lang/cargo#8519).
 name = "tieumai_lib"
-# Mobile builds need "staticlib" (iOS) and "cdylib" (Android); add them back at the mobile
-# milestone. They are left out on desktop because the windows-gnu linker fails on a cdylib
-# this large ("export ordinal too large").
+# Desktop builds link only an rlib: a cdylib this large fails on windows-gnu ("export ordinal
+# too large"). Mobile targets need "staticlib" (iOS) and "cdylib" (Android).
 crate-type = ["rlib"]
 
 [build-dependencies]

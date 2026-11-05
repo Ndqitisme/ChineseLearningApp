@@ -1,9 +1,8 @@
 """Builds the assistant with MakeHuman (MPFB2 in Blender) and renders it into sprite frames.
 
-The reference variant uses reshaped MakeHuman anatomy and hair, a cropped white blouse,
-black bow, original fitted tartan skirt and thin silver spectacles (credits in pack.py).
-Anatomical hand orientation, capped wrist swing and eased pose paths are rendered into
-transparent PNGs. The editable Blender timeline is available through the `save` mode.
+Renders the reference look (reshaped MakeHuman body and hair, cropped white blouse, black bow,
+tartan skirt, silver spectacles; credits in pack.py) into transparent PNG frames.
+The `save` mode writes the editable Blender timeline instead.
 
 Run (Blender 4.5 with MPFB and its asset packs installed, see README):
   blender -b --python tools/skins/makehuman/build.py -- probe            # rest pose still
@@ -55,9 +54,9 @@ PHENOTYPE = {
     "height": 0.45, "cupsize": 0.55, "firmness": 0.7,
     "race": {"asian": 1.0, "caucasian": 0.0, "african": 0.0},
 }
-# MakeHuman modelling targets (data/targets/<category>/<name>) applied before the clothes are
-# fitted, so the clothes follow the shaped body. Slim fashion-model build: long legs, small
-# waist, moderate bust, narrow hips (about 87-58-87 cm scaled to 1.68 m, waist/hip 0.68).
+# MakeHuman targets (data/targets/<category>/<name>), applied before the clothes are fitted
+# so the clothes follow the body.
+# Slim build: waist/hip about 0.68.
 BODY_TARGETS = [
     ("measure-hips-circ-decr", 0.3), ("buttocks-volume-decr", 0.25), ("hip-scale-horiz-decr", 0.15),
     ("measure-waist-circ-decr", 0.3), ("stomach-tone-incr", 0.3),
@@ -68,9 +67,8 @@ BODY_TARGETS = [
     ("l-hand-scale-decr", 0.25), ("r-hand-scale-decr", 0.25),
     ("l-foot-scale-decr", 0.2), ("r-foot-scale-decr", 0.2),
 ]
-# Face matched to the supplied (AI-generated) beauty reference with MakeHuman targets only:
-# soft round-oval face, small chin, full cheeks, large slightly downturned eyes, straight soft
-# brows, small narrow nose, full lips with a slight smile.
+# Face shape from MakeHuman targets only: round-oval face, small chin, full cheeks,
+# large eyes, small nose, full lips.
 FACE_SHAPE = [
     ("l-eye-scale-incr", 0.9), ("r-eye-scale-incr", 0.9),
     ("l-eye-height2-incr", 0.1), ("r-eye-height2-incr", 0.1),
@@ -412,9 +410,8 @@ def arm(rig, side, target, pole, palm, flex=0.0, dev=0.0):
     the hand straight on the forearm except for explicit bends: `flex` (+ = extension, the
     fingers lift towards the back of the hand) and `dev` (+ = towards the thumb), in degrees.
 
-    v3 aimed the hand at a direction and clamped the swing, which could still fold the wrist
-    sideways; at rest MakeHuman's hand already continues the forearm (6 degrees off), so
-    leaving the wrist bone alone and bending it only on purpose is what keeps wrists whole."""
+    The wrist bone stays at rest unless bent on purpose: MakeHuman's hand already continues
+    the forearm (6 degrees off), and aiming the hand at a direction could fold the wrist sideways."""
     reach(rig, side, target, pole)
     wrist = rig.pose.bones[f"wrist.{side}"]
     wrist.matrix_basis = Matrix.Identity(4)
@@ -494,11 +491,9 @@ def kick(rig, degrees):
 
 
 # Arm states are (wrist target, elbow pole, palm direction, extension, deviation) in world
-# space, so they blend. In the app the sprite is mirrored to face the screen centre, which puts
-# her right arm at the screen edge: that arm hangs (or folds across the waist / meets the other
-# hand in front of the chest, both inside the resting silhouette); every gesture is made with
-# the left. Coordinates are metres in the rest skeleton (shoulder 1.19 m, upper arm 0.21 m,
-# forearm 0.20 m). The poses are the v2 set (commit bc1e63e) rebuilt on this solver.
+# space, so they blend. The app mirrors the sprite, which puts her right arm at the screen edge,
+# so that arm stays inside the resting silhouette and every gesture uses the left. Metres in the rest skeleton
+# (shoulder 1.19 m, upper arm 0.21 m, forearm 0.20 m).
 RELAXED = {1: 10, 2: 18, 3: 24, 4: 30, 5: 36}
 HIP_GRIP = {1: 15, 2: 30, 3: 36, 4: 42, 5: 48}   # fingers wrapped a little over the hip bone
 
@@ -659,9 +654,9 @@ def gesture(shot, n, step, hold, make):
 
 
 def define_shots():
-    """The v2 action set at a real person's pace: limbs move 120-200 ms per frame, eased, with
-    holds; every shot rises from rest and comes back down through the same frames. About 43
-    frames in all (the sprite sheet is held in memory by the app)."""
+    """Actions paced like a real person: limbs move 120-200 ms per frame, eased, with holds.
+    Every shot rises from rest and returns through the same frames. Keep the frame count low:
+    the app holds the whole sprite sheet in memory."""
     frame("rest")
     half, shut = frame("blink_00", lidsL=-13, lidsR=-13), frame("blink_01", lidsL=-26, lidsR=-26)
     SHOTS["blink"] = [(half, 60), (shut, 90), (half, 60)]

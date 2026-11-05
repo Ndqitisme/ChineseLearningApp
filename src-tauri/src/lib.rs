@@ -17,8 +17,8 @@ async fn open_main(app: tauri::AppHandle, route: Option<String>) -> tauri::Resul
     show_main(&app, route.as_deref())
 }
 
-/// For tray and single-instance callbacks: those run inside event handlers, where building a
-/// window synchronously can deadlock on Windows, so hand the work to the async runtime.
+/// For tray and single-instance callbacks: building a window synchronously inside an event
+/// handler can deadlock on Windows.
 pub fn show_main_later(app: &tauri::AppHandle) {
     let app = app.clone();
     tauri::async_runtime::spawn(async move {

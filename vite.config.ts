@@ -17,8 +17,7 @@ export default defineConfig({
     // .cache holds downloaded sources and render output; tools/ are offline build scripts.
     watch: { ignored: ['**/src-tauri/**', '**/.cache/**', '**/tools/**'] },
   },
-  // Only the two app pages: by default Vite scans every *.html under the root, including
-  // .cache/ (cloned asset repos), which once pushed the dev server to ~4 GB.
+  // Scan only the app pages: by default Vite also scans .cache/ (cloned asset repos), pushing the dev server to ~4 GB of memory.
   optimizeDeps: { entries: ['index.html', 'pet.html'] },
   build: {
     // WebView2 on Windows is evergreen Chromium; WKWebView/WebKitGTK need a Safari-level target.

@@ -1,9 +1,7 @@
 //! The desktop assistant window: transparent, frameless, always on top.
 //!
-//! Transparent pixels of a window still swallow clicks, and Tauri can only make a
-//! whole window click-through. So a background thread watches the cursor and lets
-//! the window receive input only while the cursor is over the sprite or bubble
-//! rectangles that the page reports.
+//! Transparent pixels still swallow clicks and Tauri can only make a whole window
+//! click-through, so a poller accepts input only while the cursor is over the rects the page reports.
 
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};

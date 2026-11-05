@@ -1,7 +1,7 @@
-"""Editable geometry and procedural materials for the supplied two-photo reference.
+"""Reference look as editable geometry and procedural materials; no photo is used as a texture.
 
-No photograph is pasted onto the mesh. Clothing, ribbon and fringe remain real geometry
-and follow the armature. Coordinates are metres in MakeHuman's Z-up rest space.
+Clothing, ribbon and fringe are real geometry that follows the armature. Coordinates are metres
+in MakeHuman's Z-up rest space.
 """
 import math
 import random
@@ -67,7 +67,7 @@ def cropped_blouse(shirt, body):
     for v in bm.verts:
         if v.co.z < 1.06:
             t = max(0, (1.06-v.co.z)/.045)
-            # Offset front hem echoes the overlapping triangular front in the photo.
+            # Front hem overlaps in a wedge, as on the reference blouse.
             v.co.z += t * (.018 if v.co.x < 0 else -.018) * max(0, -v.co.y/.13)
             v.co.x *= 1 + .055*t
             v.co.y *= 1 + .045*t
@@ -296,11 +296,9 @@ def rest_skin(body):
 def wispy_bangs(hair,rig,body,brows):
     """See-through bangs and face-framing locks over the tied-back scalp asset.
 
-    Overlapping hair cards (2.5 cm wide strips with a strand alpha texture) rather than
-    hair-fine curves: at sprite scale (about 2 mm per pixel) single strands vanish, while cards
-    with see-through strand gaps read as an airy fringe. Each card starts under the scalp
-    asset's front edge, hugs the measured forehead surface a few millimetres out, sweeps
-    sideways from a part just left of centre, and thins out around the brows."""
+    Hair cards with strand alpha rather than hair-fine curves: single strands vanish at sprite
+    scale (about 2 mm per pixel). Each card hugs the forehead a few millimetres out and thins
+    out around the brows."""
     hair_material(hair)
     hairmat=card_material((80,52,32))
     brow=max(Vector(c).z for c in brows.bound_box)
@@ -375,7 +373,7 @@ def apply(body,rig,find,hair):
     lip_tint(body)
     warm_skin(body)
     wire_glasses(find('glasses'),rig)
-    # Use the supplied MakeHuman brown iris texture, preserving the white sclera.
+    # Brown iris texture; the white sclera is kept.
     from bl_ext.user_default.mpfb.services.locationservice import LocationService
     path=pathlib.Path(LocationService.get_user_data('eyes'))/'materials'/'brown_eye.png'
     for mat in find('high-poly').data.materials:
