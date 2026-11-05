@@ -7,7 +7,7 @@ import { pinyin as pinyinPro } from 'pinyin-pro';
 import {
   isHan, joinWord, numericToMarked, parseMarked, splitSyllables, toSyllables,
 } from '../../src/lib/pinyin.ts';
-import type { Dataset, Example, QA, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
+import type { Dataset, Example, HskLevel, LevelPack, QA, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
 import { fullGloss, parseCedict, referenceOf, shortGloss, type CedictEntry } from './cedict.ts';
 import { CACHE_DIR } from './sources.ts';
 
@@ -43,9 +43,8 @@ const hskAll: HskWord[] = JSON.parse(readFileSync(join(CACHE_DIR, 'complete-hsk.
 const hanvietChars = new Map<string, string>();
 for (const [ch, py, hv] of readTsv('data/hanviet/chars.tsv')) hanvietChars.set(`${ch}|${normNum(py)}`, hv.trim());
 const hanvietWords = new Map(readTsv('data/hanviet/word-overrides.tsv').map(([w, hv]) => [w, hv.trim()]));
-// Per-word review: `show` only when the reading is a real Vietnamese (Hán Việt) word with a related
-// meaning; transliterations (咖啡 "ca phi") and character-by-character readings (没关系 "một quan hệ")
-// are hidden. Every word needs a verdict, so new words cannot ship unreviewed.
+// Only real Vietnamese (Hán Việt) words with a related meaning are shown; transliterations (咖啡 "ca phi")
+// and character-by-character readings (没关系 "một quan hệ") stay hidden. Every word needs a verdict.
 const hanvietVerdicts = new Map(
   readTsv('data/hanviet/word-verdicts.tsv').map(([w, verdict, hv]) => [w, { show: verdict === 'show', reading: hv?.trim() ?? '' }]),
 );
@@ -110,14 +109,26 @@ function erhuaFallback(hanzi: string, numeric: string[]): CedictEntry | undefine
 const proNumeric = (text: string) =>
   pinyinPro(text, { type: 'array', toneType: 'num', nonZh: 'removed' }).map((s) => s.replace(/0$/, '5'));
 
-// ---------------------------------------------------------------- HSK 1–3
+// ---------------------------------------------------------------- HSK 1–6
+// Two HSK 3.0 editions: the 2021 standard ("new-N") and the November 2025 syllabus ("newest-N"). A word is in
+// the core when either puts it in HSK 1–3; the rest go to lazy packs by their lowest level.
 const words = new Map<string, Word>();
-const hskLevels: Dataset['hsk'] = { '1': [], '2': [], '3': [] };
+/** Traditional spelling per word id. */
+const traditional = new Map<string, string>();
+const emptyLevels = (): Record<HskLevel, string[]> => ({ 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] });
+const hskLevels = emptyLevels();
+const hsk2025Levels = emptyLevels();
+const levelIn = (hw: HskWord, tag: string) => {
+  const levels = hw.level.map((l) => new RegExp(`^${tag}-([1-6])$`).exec(l)?.[1]).filter(Boolean).map(Number);
+  return levels.length ? (Math.min(...levels) as HskLevel) : undefined;
+};
+/** The lowest level across both editions: decides core vs pack. */
+const minLevel = (w: Word) => Math.min(w.hsk ?? 9, w.hsk2025 ?? 9);
 
 for (const hw of hskAll) {
-  const levels = hw.level.map((l) => /^new-([123])$/.exec(l)?.[1]).filter(Boolean).map(Number);
-  if (!levels.length) continue;
-  const level = Math.min(...levels) as 1 | 2 | 3;
+  const level = levelIn(hw, 'new');
+  const level2025 = levelIn(hw, 'newest');
+  if (!level && !level2025) continue;
   const forms = hw.forms.filter((f) => !/^[A-Z]/.test(f.transcriptions.numeric));
   const pool = forms.length ? forms : hw.forms;
 
@@ -149,15 +160,19 @@ for (const hw of hskAll) {
     syllables: toSyllables(marked),
     vi,
     viFull: entry ? fullGloss(entry.senses) : undefined,
-    hanviet: hanvietFor(hw.simplified, numeric, `HSK ${level}`),
+    hanviet: hanvietFor(hw.simplified, numeric, `HSK ${level ?? level2025}`),
     hsk: level,
+    hsk2025: level2025,
     topics: [],
     freq: hw.frequency,
   };
   words.set(word.id, word);
-  hskLevels[level].push(word.id);
+  traditional.set(word.id, form.traditional);
+  if (level) hskLevels[level].push(word.id);
+  if (level2025) hsk2025Levels[level2025].push(word.id);
 }
-for (const ids of Object.values(hskLevels)) ids.sort((a, b) => (words.get(a)!.freq ?? 1e9) - (words.get(b)!.freq ?? 1e9));
+for (const ids of [...Object.values(hskLevels), ...Object.values(hsk2025Levels)])
+  ids.sort((a, b) => (words.get(a)!.freq ?? 1e9) - (words.get(b)!.freq ?? 1e9));
 
 // ---------------------------------------------------------------- topics
 interface AuthoredWord { hanzi: string; pinyin: string; vi: string; ex?: Example }
@@ -181,8 +196,7 @@ for (const meta of topicIndex) {
     if (existing) {
       const hskNum = existing.syllables.map((s) => normNum(parseMarked(s.py).base + s.tone));
       if (hskNum.join(' ') !== numeric.join(' ')) {
-        // The editor marked a neutral tone the dictionary lists in citation form (多少 duōshao):
-        // that matches everyday speech, so the hand-written reading wins. Other diffs are only reported.
+        // A neutral tone the dictionary lists in citation form (多少 duōshao) matches everyday speech: keep the hand-written reading.
         const onlyNeutral = hskNum.every((h, i) => h === numeric[i] || (h.slice(0, -1) === numeric[i].slice(0, -1) && numeric[i].endsWith('5')));
         if (onlyNeutral) {
           existing.pinyin = aw.pinyin;
@@ -211,6 +225,7 @@ for (const meta of topicIndex) {
       ex: aw.ex,
     };
     words.set(word.id, word);
+    if (entry) traditional.set(word.id, entry.trad);
     topic.words.push(word.id);
   }
   topics.push(topic);
@@ -264,8 +279,15 @@ for (const c of strokeChars) {
 }
 mkdirSync('public/licenses', { recursive: true });
 copyFileSync(join(hwd, 'ARPHICPL.TXT'), 'public/licenses/ARPHICPL.TXT');
+copyFileSync(join(CACHE_DIR, 'LICENSE-hanviet-pinyin.txt'), 'public/licenses/MIT-hanviet-pinyin-wordlist.txt');
 
 // ---------------------------------------------------------------- validate + write
+// Every word with its computed reading, before verdicts hide it: input for tools/data/hanviet-triage.ts.
+// Column 2 is the lowest level across both editions, empty for topic-only words.
+for (const w of words.values()) {
+  const level = minLevel(w) < 9 ? minLevel(w) : '';
+  report('hanviet-candidates', [w.id, level, w.pinyin, w.hanviet ?? '', w.vi, w.viFull ?? '', traditional.get(w.id) ?? ''].join('\t'));
+}
 for (const w of words.values()) {
   if (!w.pinyin || !w.syllables.length) errors.push(`${w.id}: missing pinyin`);
   if (!w.vi) errors.push(`${w.id}: missing Vietnamese meaning`);
@@ -281,25 +303,45 @@ for (const w of words.values()) {
   }
 }
 
+// A word that is also a topic word stays in the core even at HSK 4–6; its pack only lists the id.
+const inPack = (w: Word) => !w.topics.length && minLevel(w) > 3 && minLevel(w) < 9;
+const coreWords = [...words.values()].filter((w) => !inPack(w));
+const packs: LevelPack[] = ([4, 5, 6] as const).map((level) => ({
+  level,
+  words: [...words.values()].filter((w) => inPack(w) && minLevel(w) === level).sort((a, b) => (a.freq ?? 1e9) - (b.freq ?? 1e9)),
+  ids: hskLevels[level],
+  ids2025: hsk2025Levels[level],
+}));
+
 const charset = new Set<string>();
-for (const w of words.values()) {
+for (const w of coreWords) {
   for (const c of w.hanzi + (w.ex?.zh ?? '')) charset.add(c);
 }
 for (const t of topics) for (const c of t.titleZh) charset.add(c);
 for (const x of qa) for (const c of x.q + x.a) charset.add(c);
+// Glyphs only the packs need go to a separate font file, so HSK 1–3 learners never download them.
+const charsetExt = new Set<string>();
+for (const p of packs) for (const w of p.words) for (const c of w.hanzi) if (isHan(c) && !charset.has(c)) charsetExt.add(c);
 
+// Clear old reports: tools read them, and a report that is now empty must not linger.
+rmSync(REPORT_DIR, { recursive: true, force: true });
 mkdirSync(REPORT_DIR, { recursive: true });
 for (const [name, lines] of Object.entries(reports)) writeFileSync(join(REPORT_DIR, `${name}.tsv`), lines.join('\n') + '\n');
 writeFileSync('.cache/charset.txt', [...charset].filter(isHan).join(''));
+writeFileSync('.cache/charset-ext.txt', [...charsetExt].join(''));
 
-const dataset: Dataset = { words: [...words.values()], topics, hsk: hskLevels, qa };
+const core = (levels: Record<HskLevel, string[]>) => ({ 1: levels[1], 2: levels[2], 3: levels[3] });
+const dataset: Dataset = { words: coreWords, topics, hsk: core(hskLevels), hsk2025: core(hsk2025Levels), qa };
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(join(OUT_DIR, 'dataset.json'), JSON.stringify(dataset));
+for (const p of packs) writeFileSync(join(OUT_DIR, `hsk${p.level}.json`), JSON.stringify(p));
 
 const count = (pred: (w: Word) => boolean) => dataset.words.filter(pred).length;
-console.log(`words ${dataset.words.length}  (HSK1 ${hskLevels[1].length}, HSK2 ${hskLevels[2].length}, HSK3 ${hskLevels[3].length}, topic-only ${count((w) => !w.hsk)})`);
+const sizes = (levels: Record<HskLevel, string[]>) => Object.values(levels).map((ids) => ids.length).join('/');
+console.log(`core words ${dataset.words.length}  (HSK 1–6 by level: 2021 ${sizes(hskLevels)}, 2025 ${sizes(hsk2025Levels)}; topic-only ${count((w) => !w.hsk && !w.hsk2025)}, HSK4–6 topic words ${count((w) => minLevel(w) > 3 && minLevel(w) < 9)})`);
+for (const p of packs) console.log(`pack hsk${p.level}: ${p.ids.length} ids (2025: ${p.ids2025.length}), ${p.words.length} words`);
 console.log(`topics ${topics.length}  topic words ${topics.reduce((n, t) => n + t.words.length, 0)}  with example ${count((w) => !!w.ex)}`);
-console.log(`stroke files ${strokeChars.size - (reports['strokes-missing']?.length ?? 0)}/${strokeChars.size}  charset ${[...charset].filter(isHan).length}`);
+console.log(`stroke files ${strokeChars.size - (reports['strokes-missing']?.length ?? 0)}/${strokeChars.size}  charset ${[...charset].filter(isHan).length} + ext ${charsetExt.size}`);
 for (const [name, lines] of Object.entries(reports)) console.log(`report ${name}: ${lines.length} → ${REPORT_DIR}/${name}.tsv`);
 if (errors.length) {
   console.error(`\n${errors.length} error(s):`);

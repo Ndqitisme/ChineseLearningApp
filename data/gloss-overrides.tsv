@@ -1,6 +1,6 @@
 word	vi
 # Hand-written short meanings for words CVDICT lacks or glosses badly.
-不太	không… lắm; không quá
+不太	không lắm; không quá
 不一会儿	chẳng mấy chốc; một lát sau
 车上	trên xe
 放到	đặt vào; để lên
@@ -8,3 +8,853 @@ word	vi
 能不能	có thể… không?
 送到	đưa tới; giao tới
 这时候	lúc này; khi đó
+# HSK 4–6 gaps (AI-written; native review pending)
+差一点儿	suýt nữa; gần như
+城里	trong thành phố; nội thành
+很难说	khó nói; khó mà biết
+胡同儿	ngõ; hẻm
+两边	hai bên; cả hai phía
+体检	khám sức khỏe
+眼里	trong mắt; theo cách nhìn
+一番	một phen; một lượt
+指着	chỉ vào; trỏ vào
+# HSK 4–6: first sense cut off or wrong, or Han characters left in it (AI-written; native review pending)
+呀	trợ từ cảm thán (à, nhé)
+些	một ít; một vài
+投	ném; bỏ (phiếu); gửi
+俩	hai (người); cả hai
+圈	vòng tròn; cái vòng
+权利	quyền lợi
+处于	ở vào; ở trong (trạng thái)
+追求	theo đuổi; tán tỉnh
+资源	tài nguyên
+义务	nghĩa vụ; tình nguyện
+伙	nhóm; bọn; bữa ăn tập thể
+棵	lượng từ cho cây
+嘴巴	miệng; cái tát
+录取	tuyển sinh; nhận vào
+型号	mẫu; kiểu loại
+平方	bình phương; vuông
+分享	chia sẻ
+颗	lượng từ cho vật nhỏ tròn (hạt, viên)
+俱乐部	câu lạc bộ
+厉害	giỏi; dữ dội
+碎	vỡ; vụn
+甲	giáp (can đầu); loại A
+环节	khâu; mắt xích
+代理	đại diện; làm thay
+火灾	hỏa hoạn
+一向	xưa nay; vốn dĩ
+部位	bộ phận; vị trí
+琴	đàn (nhạc cụ)
+键	phím; nút
+行驶	chạy (xe)
+乙	ất (can thứ hai); loại B
+转让	chuyển nhượng
+亚军	á quân
+为期	kéo dài (thời hạn)
+水产品	thủy sản
+慰问	thăm hỏi; an ủi
+白酒	rượu trắng
+启事	thông báo
+辞典	từ điển
+成语	thành ngữ
+起到	có tác dụng; đóng vai trò
+月饼	bánh trung thu
+中秋节	Tết Trung Thu
+啦	trợ từ cảm thán (rồi đấy, rồi nhé)
+剧	kịch
+主持人	người dẫn chương trình
+收藏	sưu tầm; cất giữ
+罢了	thôi; mà thôi
+番	lần; lượt; phen
+美容	làm đẹp
+券	phiếu; vé
+师父	sư phụ; thợ cả
+便是	chính là; chỉ là
+收养	nhận nuôi
+背着	quay lưng; đeo sau lưng
+背心	áo ba lỗ; áo gi-lê
+评选	bình chọn
+高考	kỳ thi đại học
+养老	dưỡng lão; nuôi người già
+测定	đo đạc; xác định
+栏目	chuyên mục
+安检	kiểm tra an ninh
+盗版	hàng lậu; vi phạm bản quyền
+加盟	gia nhập; liên kết
+出台	ban hành; ra mắt
+新兴	mới nổi
+民工	lao động từ nông thôn ra thành phố
+补习	học thêm
+参展	tham gia triển lãm
+清明节	Tết Thanh Minh
+名胜	danh lam thắng cảnh
+车号	biển số xe
+此致	trân trọng (cuối thư)
+端午节	Tết Đoan Ngọ
+有没有	có... không?
+高潮	cao trào; đỉnh điểm
+# HSK 1–6 (AI-reviewed; native review pending)
+啊	tiếng đệm cuối câu; à; nhé
+哎呀	ôi chao; trời ơi
+案例	trường hợp; vụ việc; ví dụ
+榜样	tấm gương; hình mẫu
+保管	bảo quản; giữ gìn; trông giữ
+保修	bảo hành; sửa chữa miễn phí
+报社	tòa soạn báo; cơ quan báo chí
+北京	Bắc Kinh, thủ đô Trung Quốc
+表示	bày tỏ; cho thấy; có nghĩa
+爱情	tình yêu; ái tình
+爱人	vợ hoặc chồng; người yêu
+安	yên; an toàn; lắp đặt
+把	đưa tân ngữ lên trước; cầm; nắm
+吧	trợ từ cuối câu: gợi ý; phỏng đoán
+搬	dọn; chuyển; khuân vác
+版	bản in; phiên bản; trang báo
+棒	giỏi; tuyệt; gậy
+宝	báu; quý; vật quý
+保养	bảo dưỡng; chăm sóc; giữ gìn
+背	lưng; ngoảnh lưng; học thuộc
+被	bị (câu bị động); chăn
+编制	biên chế; lập; soạn thảo
+表	bảng; đồng hồ; biểu mẫu
+别	đừng; khác; chia tay
+按时	đúng giờ; đúng hạn
+不错	không tồi; khá tốt; đúng
+不得不	phải; đành phải; không thể không
+不得了	ghê gớm; cực kỳ; nghiêm trọng
+不敢当	không dám nhận (lời khen)
+不光	không chỉ; chẳng những
+不料	không ngờ; bất ngờ
+不然	nếu không thì; không thì
+不止	không chỉ; hơn; không ngừng
+布	vải; công bố; bày ra
+部分	phần; bộ phận
+部长	bộ trưởng; trưởng bộ phận
+擦	lau; chà xát; bôi
+才	mới; vừa mới; tài năng
+采取	áp dụng; thực hiện (biện pháp)
+彩色	có màu; nhiều màu
+参与	tham gia; dự vào
+操纵	điều khiển; thao túng
+操作	thao tác; vận hành
+策略	sách lược; chiến lược
+层	tầng; lớp
+查	kiểm tra; điều tra; tra cứu
+差	kém; thiếu; sai khác
+常规	thông thường; thông lệ; thường quy
+场	sân; bãi; lượng từ (trận, buổi)
+超级	siêu; cực kỳ
+朝	hướng về; triều đại; triều đình
+潮流	trào lưu; xu hướng
+车站	ga; bến xe; trạm xe
+趁	nhân lúc; tranh thủ
+称	gọi là; cân; khen ngợi
+成人	người lớn; người trưởng thành
+成千上万	hàng nghìn hàng vạn; vô số
+乘	đi (xe); cưỡi; tận dụng
+乘务员	tiếp viên (tàu, máy bay)
+持有	nắm giữ; giữ (quan điểm)
+尺	thước (đơn vị đo); thước kẻ
+尺子	thước kẻ
+充满	đầy; tràn đầy
+采购	thu mua; mua sắm
+测试	kiểm tra; thử nghiệm
+炒股	chơi chứng khoán
+承办	đứng ra tổ chức; nhận làm
+承受	chịu đựng; gánh chịu
+成本	giá thành; chi phí
+吃力	vất vả; tốn sức
+乘车	đi xe; đáp xe
+车库	nhà để xe; ga-ra
+曾经	đã từng; từng; trước đây
+冲	pha; xối; xông tới
+冲击	va đập; tác động mạnh; tấn công
+崇拜	sùng bái; ngưỡng mộ
+丑	xấu xí; xấu; chú hề
+愁	lo lắng; buồn phiền; sầu
+出场	ra sân khấu; ra sân thi đấu
+出动	xuất quân; điều động; ra quân
+出访	thăm chính thức nước ngoài
+出境	xuất cảnh; rời khỏi đất nước
+出示	xuất trình; đưa ra cho xem
+出行	đi ra ngoài; đi lại; di chuyển
+初等	sơ cấp; sơ đẳng; cơ bản
+初中	trung học cơ sở
+除非	trừ phi; trừ khi; chỉ khi
+储蓄	tiết kiệm; tiền gửi tiết kiệm
+串	xâu lại; xiên; chuỗi
+创新	đổi mới; sáng tạo cái mới
+创意	ý tưởng sáng tạo; sáng tạo
+词语	từ ngữ; thuật ngữ; cách diễn đạt
+次	lần; lượt; thứ hai
+促进	thúc đẩy; xúc tiến; đẩy mạnh
+脆	giòn; mỏng manh; dứt khoát
+寸	tấc (đơn vị đo dài)
+挫折	thất bại; trắc trở; nản lòng
+错	sai; nhầm; lỗi
+搭	đáp (xe, tàu); dựng; ghép
+答应	đồng ý; nhận lời; trả lời
+打破	đập vỡ; phá vỡ; phá (kỷ lục)
+打招呼	chào hỏi; báo trước
+带	mang; dẫn; đeo
+代	đời; thế hệ; thay thế
+待	đối xử; ở lại; đợi
+呆	ở lại; ngẩn ra; ngốc
+单	đơn; đơn lẻ; danh sách
+单元	đơn vị; bài học (trong sách)
+担任	đảm nhiệm; giữ chức; làm
+大臣	đại thần; bộ trưởng
+大吃一惊	vô cùng kinh ngạc
+大地	mặt đất; đại địa; đất mẹ
+大厦	toà nhà lớn; cao ốc
+大熊猫	gấu trúc lớn
+大爷	bác; ông (gọi người lớn tuổi)
+打工	làm thêm; làm thuê
+大妈	bác gái; cô (gọi phụ nữ lớn tuổi)
+代价	cái giá phải trả; giá
+导师	người hướng dẫn; cố vấn
+地道	chuẩn; đích thực; chính cống
+地域	khu vực; vùng; miền
+当面	trực tiếp; ngay trước mặt
+档	hồ sơ; ngăn kéo; hạng
+导演	đạo diễn; dàn dựng (phim, kịch)
+到	đến; tới; đạt tới
+倒是	ngược lại; thực ra; lại là
+倒车	chuyển xe; đổi tuyến
+道理	lý lẽ; lẽ phải; nguyên lý
+地区	khu vực; vùng
+的	của; (trợ từ định ngữ)
+得	trợ từ bổ ngữ (mức độ, kết quả)
+灯光	ánh đèn; ánh sáng
+底	đáy; nền tảng; cuối (tháng, năm)
+底下	bên dưới; dưới; sau đó
+第	thứ; tiền tố chỉ số thứ tự
+点心	bánh ngọt; dimsum; món ăn nhẹ
+电车	xe điện; xe buýt điện
+电台	đài phát thanh; trạm phát sóng
+店	cửa hàng; tiệm; quán trọ
+东方	phương đông; hướng đông
+得知	biết được; hay tin
+点燃	châm lửa; đốt cháy
+多亏	may nhờ; nhờ có
+恶劣	tồi tệ; xấu; khắc nghiệt
+队	đội; nhóm; hàng
+多元	đa dạng; đa nguyên; nhiều mặt
+二手	đã qua sử dụng; cũ
+发表	đăng; công bố; phát biểu
+发出	phát ra; gửi đi; ban hành
+发射	phóng; bắn; phát ra
+法官	thẩm phán; quan tòa
+反问	hỏi lại; câu hỏi tu từ
+放心	yên tâm; an tâm
+飞行	bay; chuyến bay
+丰富	phong phú; dồi dào; làm phong phú
+风度	phong thái; dáng vẻ
+扶	đỡ; dìu; giúp đỡ
+幅	bức (tranh); khổ; chiều rộng
+父亲	cha; bố
+负担	gánh nặng; gánh vác
+盖	che; đậy; nắp; xây
+干	làm; làm việc; tài giỏi
+干燥	khô; khô ráo; khô khan
+高	cao; lớn
+刚	vừa mới; vừa; cứng
+分别	lần lượt; riêng biệt; chia tay
+革命	cách mạng; nổi dậy
+跟	với; cùng; theo sau
+工程	công trình; dự án kỹ thuật
+工夫	thời gian; công sức; tài nghệ
+公安	công an; an ninh công cộng
+股	cổ phần; phần; luồng
+股票	cổ phiếu
+挂	treo; móc; gác máy
+汉语	tiếng Hán; tiếng Trung
+国情	tình hình đặc thù của quốc gia
+过节	đón lễ tết; ăn lễ
+海岸	bờ biển; ven biển
+规矩	quy tắc; phép tắc; đúng mực
+鼓舞	cổ vũ; khích lệ; phấn chấn
+官员	quan chức; cán bộ nhà nước
+国会	quốc hội; nghị viện
+过渡	chuyển tiếp; quá độ; tạm thời
+过去	quá khứ; trước đây; đi qua
+海关	hải quan
+含义	hàm ý; ý nghĩa
+好处	lợi ích; ưu điểm
+好事	việc tốt; việc thiện
+好运	may mắn; vận may
+好学	ham học; chăm học
+红包	bao lì xì; tiền thưởng
+红色	màu đỏ; cách mạng
+后	sau; phía sau; hoàng hậu
+话	lời nói; câu chuyện; tiếng
+话筒	micro; ống nghe điện thoại
+缓解	làm dịu; giảm bớt
+灰	tro; bụi; màu xám
+回	về; quay lại; lần
+活动	hoạt động; vận động; di chuyển
+或	hoặc; có lẽ
+获	giành được; đạt được; bắt giữ
+机关	cơ quan; bộ máy; cơ chế
+基因	gen
+及	và; đến; kịp
+激烈	gay gắt; dữ dội; quyết liệt
+急诊	cấp cứu; khám bệnh khẩn cấp
+纪录片	phim tài liệu
+纪录	kỷ lục; ghi chép; biên bản
+纪念	kỷ niệm; tưởng niệm; kỷ vật
+好容易	mãi mới; vất vả lắm mới
+会长	hội trưởng; chủ tịch hội
+季	mùa; quý
+季节	mùa
+季军	giải ba; hạng ba
+加以	tiến hành; hơn nữa
+加重	làm nặng thêm; trầm trọng hơn
+夹	kẹp; kẹp vào giữa
+茄子	cà tím
+家常	chuyện nhà; thường ngày
+家家户户	mọi nhà; nhà nhà
+家长	phụ huynh; người giám hộ
+价	giá; giá cả; hóa trị
+嫁	lấy chồng; gả
+剪	cắt bằng kéo; tỉa
+见	thấy; gặp
+健全	hoàn thiện; vững mạnh; lành lặn
+讲座	buổi thuyết trình; bài giảng
+奖牌	huy chương
+酱	tương; sốt đặc
+交警	cảnh sát giao thông
+浇	tưới; rót
+焦点	tiêu điểm; trọng tâm
+角	góc; sừng; hào (tiền)
+较	tương đối; khá; so với
+教授	giáo sư; giảng dạy
+教训	bài học; răn dạy; mắng
+接收	tiếp nhận; nhận
+接受	chấp nhận; tiếp nhận; đồng ý
+接下来	tiếp theo; sau đó
+接着	tiếp theo; sau đó; tiếp tục
+节	tiết (học); đốt; ngày lễ
+解	cởi; tháo; giải
+解除	dỡ bỏ; hủy bỏ; xóa bỏ
+解答	giải đáp; trả lời
+戒	cai; bỏ; răn
+届	khóa; kỳ; lần
+界	ranh giới; giới (lĩnh vực)
+借鉴	học hỏi kinh nghiệm; tham khảo
+进	vào; tiến lên; tiến bộ
+进度	tiến độ
+进而	rồi tiếp đó; từ đó
+紧密	chặt chẽ; khăng khít
+仅	chỉ; vừa đủ
+仅仅	chỉ; chỉ là; vẻn vẹn
+减	giảm; trừ; bớt
+既然	đã... thì; vì đã
+交代	bàn giao; dặn dò; khai báo
+经典	kinh điển; cổ điển; điển hình
+截止	hết hạn; dừng; kết thúc
+近期	gần đây; sắp tới
+经营	kinh doanh; điều hành; quản lý
+精	tinh túy; tinh xảo; thành thạo
+景	cảnh; phong cảnh; tình cảnh
+竞争	cạnh tranh; ganh đua
+久	lâu; lâu dài
+旧	cũ; trước đây
+就	thì; ngay; chỉ
+局	cục; ván (cờ); tình thế
+剧本	kịch bản
+捐	quyên góp; hiến tặng; đóng góp
+卡	thẻ; kẹt; chặn
+开展	triển khai; tiến hành; mở rộng
+考	thi; kiểm tra
+克	gam; chế ngự; khắc phục
+克服	khắc phục; vượt qua
+酷	ngầu; tàn khốc; khắc nghiệt
+块	đồng (tiền); miếng; cục
+夸	khen; khoe khoang
+来	đến; tới; lại đây
+距	cách; khoảng cách
+酒精	cồn; ethanol
+离职	nghỉ việc; từ chức
+理科	khoa học tự nhiên
+录制	ghi âm; ghi hình
+路况	tình trạng đường xá
+老	già; lâu năm; cũ
+录	ghi; ghi chép; ghi âm
+麦克风	micro
+联网	kết nối mạng; lên mạng
+淋	dầm (mưa); dội; rưới
+联手	bắt tay hợp tác
+联想	liên tưởng; gợi nhớ
+领袖	lãnh tụ; thủ lĩnh
+礼貌	lịch sự; lễ phép
+里	bên trong; trong
+理	lý lẽ; xử lý; để ý
+理论	lý thuyết; lý luận; tranh cãi
+理想	lý tưởng; mơ ước
+临时	tạm thời; vào phút chót
+论文	luận văn; bài báo khoa học
+没	không; chưa; không có
+没事儿	không sao; rảnh rỗi
+蓝	xanh lam; màu xanh dương
+烂	thối; nát; nhừ
+联赛	giải đấu; giải vô địch
+冷气	khí lạnh; máy lạnh; điều hòa
+乱	lộn xộn; rối; loạn
+毛	lông; hào (1/10 tệ); tóc
+力度	cường độ; mức độ; sức mạnh
+流行	thịnh hành; phổ biến; lan truyền
+连忙	vội vàng; vội
+粒	hạt; viên (lượng từ)
+礼拜	tuần; Chủ nhật; lễ bái
+落实	triển khai; thực hiện
+零下	dưới không độ; âm (nhiệt độ)
+玫瑰	hoa hồng
+美观	đẹp mắt; bắt mắt
+弥补	bù đắp; bù; khắc phục
+密集	dày đặc; tập trung
+勉强	miễn cưỡng; gượng ép; tạm đủ
+面部	mặt; khuôn mặt
+民俗	phong tục dân gian
+命名	đặt tên; đặt danh hiệu
+摩托车	xe máy; mô tô
+目录	mục lục; danh mục; thư mục
+嗯	ừ; ừm (đáp lại)
+浓厚	đậm; nồng; dày (sương, mây)
+哦	ồ; ờ (chợt hiểu ra)
+欧洲	châu Âu
+排放	thải ra; xả (khí thải, nước thải)
+排练	diễn tập; tập dượt
+媒体	truyền thông; phương tiện truyền thông
+美	đẹp; tốt; hài lòng
+们	hậu tố số nhiều (chỉ người)
+蒙	che phủ; chịu (ơn); mù mịt
+梦	giấc mơ; mơ
+梦见	mơ thấy
+梦想	ước mơ; mơ ước
+迷	mê; người hâm mộ; lạc
+密	dày; kín; thân mật; bí mật
+密切	chặt chẽ; mật thiết; gần gũi
+棉	bông; cotton
+面积	diện tích
+面临	đối mặt với; đứng trước
+面子	thể diện; sĩ diện; bề mặt
+民警	cảnh sát nhân dân
+民意	ý kiến của dân; dư luận
+民族	dân tộc
+名	tên; nổi tiếng; người (lượng từ)
+明白	hiểu; rõ ràng; hiển nhiên
+摩托	xe máy; mô tô
+木头	khúc gỗ; gỗ; đần độn
+哪	nào; cái nào; đâu
+那会儿	lúc đó; hồi đó
+奶	sữa; vú
+呢	trợ từ nghi vấn; trợ từ nhấn mạnh
+年代	thập niên; thời đại; kỷ nguyên
+年度	năm (học, tài chính); hằng năm
+年龄	tuổi; tuổi tác
+您	ngài; ông/bà (kính trọng)
+牛	bò; trâu bò; (lóng) đỉnh
+门票	vé vào cửa
+门诊	khám ngoại trú; phòng khám
+派	cử; phái đi; trường phái
+盘	đĩa; khay; ván (cờ)
+判	phán xét; xét xử; phân biệt
+旁	bên cạnh; khác
+配送	giao hàng; phân phối
+疲劳	mệt mỏi; kiệt sức
+朴素	giản dị; mộc mạc
+启示	gợi mở; bài học rút ra
+千家万户	muôn nhà; mọi gia đình
+亲情	tình thân; tình cảm gia đình
+清淡	thanh đạm; ít dầu mỡ; ế ẩm
+求救	cầu cứu; kêu cứu
+球队	đội bóng; đội thể thao
+请进	mời vào
+皮球	quả bóng; bóng cao su
+配合	phối hợp; hợp tác; kết hợp
+培养	bồi dưỡng; đào tạo; nuôi dưỡng
+脾气	tính khí; tính nết; nóng tính
+品质	phẩm chất; chất lượng
+平时	ngày thường; lúc bình thường
+平坦	bằng phẳng
+期中	giữa kỳ
+葡萄酒	rượu vang; rượu nho
+频道	kênh (truyền hình); tần số
+骗子	kẻ lừa đảo; kẻ gian
+破产	phá sản
+破坏	phá hoại; phá hủy; làm hỏng
+期望	kỳ vọng; hy vọng
+气候	khí hậu; cục diện
+气象	khí tượng; phong thái
+气体	chất khí; khí
+器官	cơ quan (cơ thể); bộ phận
+汽车	ô tô; xe hơi
+恰好	vừa vặn; đúng lúc; vừa khéo
+千万	nhất thiết; nhất định; mười triệu
+签订	ký kết
+悄悄	lặng lẽ; lén lút
+前来	đến (trang trọng)
+亲人	người thân
+轻易	dễ dàng; tùy tiện
+球星	ngôi sao bóng; cầu thủ nổi tiếng
+球迷	người hâm mộ bóng đá
+骑车	đi xe đạp; đi xe máy
+企图	mưu toan; ý đồ
+启发	gợi mở; khai sáng
+品	hàng hóa; phẩm chất; nếm thử
+泼	hắt; tạt; đổ
+区别	sự khác biệt; phân biệt
+渠道	kênh; phương tiện; mương
+全场	cả hội trường; toàn sân
+全身	cả người; toàn thân
+确定	xác định; chắc chắn
+确立	thiết lập; xác lập
+群	nhóm; đàn; bầy
+群体	nhóm; cộng đồng; tập thể
+绕	đi vòng; quấn; xoay quanh
+热爱	yêu tha thiết; say mê
+人家	người ta; người khác; hộ gia đình
+人间	nhân gian; cõi đời; thế gian
+人口	dân số; số người; nhân khẩu
+日	ngày; mặt trời
+融合	hòa quyện; kết hợp
+入门	nhập môn; bắt đầu học
+入选	được chọn; trúng tuyển
+入学	nhập học; vào trường
+若	nếu; giả như
+弱	yếu; yếu ớt; kém
+赛场	sân thi đấu; đấu trường
+色	màu; màu sắc; vẻ mặt
+杀	giết; sát hại
+山	núi; đồi
+闪	lóe; chớp; né tránh
+扇	quạt; cánh (cửa)
+赏	thưởng thức; ban thưởng
+上	trên; lên; đi lên
+上班族	dân văn phòng; người đi làm
+上当	bị lừa
+上市	ra mắt; niêm yết
+上衣	áo; áo ngoài
+上门	đến tận nhà; ghé thăm
+身份	danh tính; thân phận; tư cách
+身上	trên người; trong người
+深处	chỗ sâu; nơi sâu thẳm
+少	ít; thiếu; mất
+杀毒	diệt virus; khử trùng
+扫	quét; quét dọn; quét mã
+人生	đời người; cuộc đời
+社	hội; tổ chức; xã
+深远	sâu xa; sâu rộng; lâu dài
+升温	nóng lên; tăng nhiệt; leo thang
+声调	thanh điệu; giọng điệu
+神话	thần thoại; truyền thuyết
+升	lên; thăng chức; lít
+升级	nâng cấp; lên cấp
+升值	tăng giá trị; lên giá
+生词	từ mới
+生命	sự sống; sinh mệnh
+圣诞节	Giáng Sinh; lễ Noel
+时光	thời gian; năm tháng
+时事	thời sự; tình hình hiện tại
+市	thành phố; chợ
+使得	khiến cho; làm cho
+室	phòng; buồng
+拾	nhặt lên; mười (viết hoa)
+受到	nhận được; bị; được
+首相	thủ tướng
+帅哥	anh chàng đẹp trai; soái ca
+爽	sảng khoái; dễ chịu; thẳng thắn
+水平	trình độ; mức độ
+实话	lời nói thật; sự thật
+实质	thực chất; bản chất
+食用	ăn được; dùng làm thức ăn
+事务	công việc; công vụ
+试用	dùng thử; thử việc
+适度	vừa phải; có chừng mực
+识别	nhận biết; nhận dạng; phân biệt
+顺便	nhân tiện; tiện thể
+帅	đẹp trai; nguyên soái
+鼠	chuột
+省	tiết kiệm; tỉnh; bỏ bớt
+时期	thời kỳ; giai đoạn
+四季	bốn mùa (xuân, hạ, thu, đông)
+塑造	tạo dựng; khắc họa; nặn tượng
+汤圆	bánh trôi nước; viên bột nếp
+铜	đồng (kim loại)
+淘汰	đào thải; loại bỏ
+台	đài; bục; lượng từ cho máy
+台风	bão; phong thái sân khấu
+太	quá; rất; cực kỳ
+套	bộ; bọc; vỏ bọc
+提	xách; nâng lên; nhắc đến
+挺	khá; rất; thẳng
+通用	dùng chung; thông dụng
+同胞	đồng bào; anh chị em ruột
+透	xuyên qua; thấm; thấu
+所	nơi; chỗ; cái mà
+趟	lượng từ cho chuyến, lượt
+踏实	chắc chắn; yên tâm
+抬头	ngẩng đầu; ngóc đầu dậy
+特征	đặc điểm; nét đặc trưng
+推	đẩy; từ chối; đề cử
+推动	thúc đẩy; khuyến khích
+退休	nghỉ hưu
+退票	trả vé; hoàn vé
+退出	rút khỏi; thoát ra; đăng xuất
+托	nâng bằng tay; nhờ; ủy thác
+哇	ôi; oa (tiếng khóc)
+外	ngoài; bên ngoài; nước ngoài
+外部	bên ngoài; phía ngoài
+外地	nơi khác; tỉnh khác
+外国	nước ngoài
+外汇	ngoại hối; ngoại tệ
+外科	ngoại khoa; khoa phẫu thuật
+外面	bên ngoài; bề ngoài
+外文	tiếng nước ngoài; ngoại ngữ
+完了	xong rồi; hết rồi; tiêu rồi
+完善	hoàn thiện; hoàn chỉnh; cải thiện
+维修	bảo trì; sửa chữa
+尾巴	đuôi
+委托	ủy thác; nhờ; ủy nhiệm
+卫星	vệ tinh
+位	vị (lượng từ); vị trí; chỗ
+闻	ngửi; nghe thấy; tin tức
+污染	ô nhiễm; làm ô nhiễm
+武术	võ thuật
+误	nhầm; sai lầm; lỡ
+戏	kịch; tuồng; trò
+戏曲	kịch truyền thống Trung Quốc
+系	khoa (đại học); hệ; buộc
+细	mảnh; nhỏ; tỉ mỉ
+西餐	món ăn phương Tây
+未成年人	người vị thành niên
+外公	ông ngoại
+外婆	bà ngoại
+物体	vật thể; vật
+网址	địa chỉ web; URL
+卫生	vệ sinh; sạch sẽ
+吸取	rút ra (bài học); tiếp thu
+闲	rảnh rỗi; nhàn rỗi
+显示	hiển thị; cho thấy
+现场	hiện trường; tại chỗ
+线路	đường dây; mạch điện; tuyến đường
+羡慕	ngưỡng mộ; mong được như
+乡村	nông thôn; làng quê
+相差	chênh lệch; khác nhau
+相处	chung sống; hòa hợp
+相机	máy ảnh
+相应	tương ứng; phù hợp
+享受	tận hưởng; hưởng thụ
+响	kêu; vang lên; to (âm thanh)
+响声	tiếng động; tiếng vang
+向导	người dẫn đường; hướng dẫn viên
+项	mục; khoản; điều
+橡皮	cục tẩy; cao su
+消防	phòng cháy chữa cháy
+消费	tiêu dùng; tiêu thụ
+消耗	tiêu hao; tiêu thụ; làm cạn kiệt
+销量	doanh số; lượng bán ra
+小于	nhỏ hơn
+效应	hiệu ứng
+校长	hiệu trưởng
+笑脸	gương mặt tươi cười; mặt cười
+协会	hiệp hội; hội
+携带	mang theo; đem theo
+心爱	yêu quý; thân yêu
+心灵	tâm hồn; tâm trí; tinh thần
+心态	tâm thế; thái độ; tâm lý
+心疼	xót; đau lòng; tiếc
+心愿	điều ước; tâm nguyện
+心中	trong lòng; trong tâm trí
+新	mới; vừa mới
+新颖	mới lạ; độc đáo
+信	thư; tin; tin tưởng
+信赖	tin cậy; tin tưởng
+星星	ngôi sao; sao
+行	được; ổn; đi
+形容	miêu tả; mô tả
+形势	tình thế; tình hình
+形象	hình ảnh; hình tượng; sinh động
+性	tính chất; giới tính; tính cách
+性格	tính cách; tính tình
+性价比	chất lượng so với giá
+性能	tính năng; hiệu năng
+胸	ngực; lồng ngực
+胸部	ngực; vùng ngực
+熊	gấu
+修	sửa chữa; tu sửa; xây dựng
+修车	sửa xe
+修养	tu dưỡng; rèn luyện bản thân
+需	cần; yêu cầu
+需求	nhu cầu; yêu cầu
+叙述	kể lại; thuật lại; tường thuật
+学会	học được; thành thạo
+学历	trình độ học vấn; bằng cấp
+血	máu
+血管	mạch máu
+压岁钱	tiền mừng tuổi
+压缩	nén; thu gọn
+牙齿	răng
+亚洲	châu Á
+烟	khói; thuốc lá
+心里	trong lòng; trong tâm trí
+线索	manh mối; đầu mối
+兴趣	hứng thú; sở thích
+选修	học tự chọn; môn tự chọn
+严	nghiêm khắc; nghiêm ngặt; chặt
+严肃	nghiêm túc; nghiêm trang
+样	kiểu; dạng; hình dáng
+野外	ngoài trời; vùng hoang dã
+业	ngành; nghề nghiệp; công việc
+衣食住行	ăn mặc ở đi lại; nhu cầu cơ bản
+婴儿	trẻ sơ sinh; em bé
+印象	ấn tượng; dấu ấn trong tâm trí
+以为	nghĩ rằng; cứ tưởng; cho rằng
+用心	chăm chú; để tâm; cẩn thận
+一行	đoàn; nhóm người đi cùng
+演出	biểu diễn; buổi biểu diễn
+演员	diễn viên
+一块儿	cùng nhau; một khối
+引进	du nhập; đưa vào; nhập khẩu
+依法	theo luật; đúng pháp luật
+应聘	ứng tuyển; nhận lời mời làm việc
+用力	dùng sức; gắng sức
+用人	dùng người; tuyển người
+用餐	dùng bữa; ăn cơm
+淹没	nhấn chìm; làm ngập; lấn át
+依靠	dựa vào; nương tựa; chỗ dựa
+一旦	một khi; nếu như
+阴影	bóng; bóng tối; ám ảnh
+影片	bộ phim; phim
+悠久	lâu đời; lâu dài
+余额	số dư (tài khoản, hóa đơn)
+与其	thay vì; thà... còn hơn
+浴室	phòng tắm
+预料	dự đoán; lường trước
+原材料	nguyên vật liệu; nguyên liệu thô
+则	thì; nhưng; quy tắc
+粘	dính; nhớt; dán
+招待	tiếp đãi; chiêu đãi
+优势	ưu thế; lợi thế; thế mạnh
+幽默	hài hước; dí dỏm
+于	ở; tại; vào; hơn
+语音	phát âm; ngữ âm; giọng nói
+元旦	Tết Dương lịch; mùng 1 tháng 1
+元素	yếu tố; nguyên tố
+员	thành viên; nhân viên
+园	vườn; công viên
+原则	nguyên tắc; quy tắc
+圆满	viên mãn; trọn vẹn; hoàn hảo
+院	sân; viện (cơ quan)
+院长	viện trưởng; hiệu trưởng (đại học)
+愿	mong muốn; nguyện
+约定	thỏa thuận; hẹn ước; giao ước
+越	càng... càng...; vượt qua
+晕	chóng mặt; choáng; ngất
+云	mây; đám mây
+运行	vận hành; chạy; hoạt động
+在	ở; tại; đang
+在乎	để ý; quan tâm
+咱	chúng ta (gồm cả người nghe)
+咱们	chúng ta (gồm cả người nghe)
+糟	tệ; hỏng; bã
+赠	tặng; biếu
+扎	đâm; chích; chọc
+招	vẫy; tuyển; gây ra
+长短	chiều dài; dài ngắn; hay dở
+再说	hơn nữa; để sau hãy nói
+掌握	nắm vững; nắm bắt; làm chủ
+遇	gặp; gặp gỡ; đối xử
+增	tăng; tăng thêm
+怨	oán; trách; oán hận
+招收	tuyển; tuyển sinh; tuyển dụng
+找	tìm; tìm kiếm; thối tiền
+折	bẻ gãy; gấp; giảm giá
+者	người; kẻ (hậu tố chỉ người)
+着	trợ từ chỉ trạng thái tiếp diễn
+著作	tác phẩm; sách; công trình
+真相	sự thật; chân tướng
+真正	thật sự; đích thực; chân chính
+阵	cơn; trận; đợt
+镇	thị trấn; trấn áp; làm lạnh
+征求	trưng cầu; xin (ý kiến)
+挣	kiếm (tiền); vùng vẫy thoát
+整	nguyên; cả; chỉnh sửa
+整体	toàn bộ; tổng thể
+正当	đúng lúc; đang lúc
+证	chứng minh; giấy chứng nhận
+证明	chứng minh; giấy chứng nhận
+支	cây (lượng từ); chống đỡ; chi nhánh
+知识	kiến thức; tri thức
+直接	trực tiếp; thẳng; thẳng thắn
+值	giá trị; đáng; trực (ca)
+制度	chế độ; hệ thống; thiết chế
+中华	Trung Hoa
+中级	trung cấp; cấp trung
+中药	thuốc Đông y; thuốc bắc
+忠心	lòng trung thành; trung thành
+终身	suốt đời; cả đời; chung thân
+钟	đồng hồ; chuông; giờ
+重大	trọng đại; to lớn; quan trọng
+周	tuần; vòng; chu vi
+周年	tròn năm; ngày kỷ niệm
+珠宝	trang sức; châu báu; đá quý
+逐步	từng bước; dần dần
+主持	chủ trì; dẫn chương trình
+主导	dẫn dắt; chủ đạo; chi phối
+主动	chủ động; tự giác; tích cực
+主流	dòng chính; xu hướng chủ đạo
+主体	phần chính; chủ thể
+主意	ý kiến; chủ kiến; ý tưởng
+主张	chủ trương; đề xướng; quan điểm
+之	của (văn viết); nó; anh ấy
+之所以	sở dĩ; sở dĩ là vì
+脂肪	chất béo; mỡ
+诸多	rất nhiều; nhiều
+州	bang; châu; tỉnh
+只好	đành phải; buộc phải
+只见	chỉ thấy; bỗng thấy
+只有	chỉ có; chỉ khi
+这	này; đây
+这些	những cái này; những ... này
+正在	đang
+直播	phát trực tiếp; livestream
+诸位	các vị; quý vị
+种	loại; giống; hạt
+专门	chuyên; chuyên biệt; đặc biệt
+专题	chuyên đề; chủ đề chuyên biệt
+转机	đổi chuyến bay; bước ngoặt tốt
+转告	chuyển lời; nhắn lại
+抓紧	nắm chắc; tranh thủ; gấp rút
+装	lắp; cho vào; giả vờ
+装置	thiết bị; lắp đặt; hệ thống
+资格	tư cách; điều kiện; thâm niên
+资料	tài liệu; dữ liệu; thông tin
+仔细	kỹ lưỡng; cẩn thận; tỉ mỉ
+字典	từ điển chữ Hán; tự điển
+字幕	phụ đề
+自我	bản thân; tự mình; cái tôi
+总共	tổng cộng; tất cả; cả thảy
+总计	tổng cộng; cộng lại
+总监	giám đốc (bộ phận)
+总体	tổng thể; toàn bộ; chung
+粽子	bánh ú (nếp gói lá)
+走廊	hành lang; lối đi
+阻挡	ngăn cản; cản trở; chặn
+最后	cuối cùng; sau cùng
+最佳	tốt nhất; tối ưu; xuất sắc nhất
+最近	gần đây; mới đây; gần nhất
+左右	khoảng; trên dưới; trái phải
+作为	với tư cách; coi như; hành động
+作用	tác dụng; ảnh hưởng; vai trò
+作家	nhà văn; tác giả
+座	tòa (lượng từ); chỗ ngồi
+最初	ban đầu; lúc đầu; đầu tiên
+准	chuẩn; chính xác; cho phép
+自	từ; tự; bản thân
+足	đủ; đầy đủ; chân
+总	luôn; tổng; dù sao
+做梦	nằm mơ; mơ; mơ tưởng

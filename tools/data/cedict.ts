@@ -28,14 +28,15 @@ export function parseCedict(text: string): Map<string, CedictEntry[]> {
 /** Drops cross-reference noise: "個|个[ge4]" → "个", "[Bao1]" → "". */
 function clean(sense: string): string {
   return sense
-    .replace(/([^\s\[\]/|]+\|)?([^\s\[\]/|]+)\[[^\]]*\]/g, '$2')
+    // "(" and ":" end the traditional form, so "(LT:張|张[zhang1])" keeps its "(LT:" and is dropped as a classifier.
+    .replace(/([^\s\[\]/|(:]+\|)?([^\s\[\]/|(:]+)\[[^\]]*\]/g, '$2')
     .replace(/\[[^\]]*\]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 // No \b after Vietnamese words: JS treats "ọ" as a non-word char, so /họ\b/ would match "học".
-const NOISE = /^(LT:|Lượng từ:|biến thể|cách viết cũ|dạng cổ|họ \[|họ$|viết tắt|xem \S*\p{Script=Han}|như \p{Script=Han}|cũng viết|tên riêng|phiên âm)/iu;
+const NOISE = /^(LT:|Lượng từ:|biến thể|cách viết cũ|dạng cổ|họ \[|họ$|viết tắt|xem \S*\p{Script=Han}|như \p{Script=Han}|cũng viết|cũng đọc|tên riêng|phiên âm)/iu;
 const REFERENCE = /(?:xem|biến thể[^[\]/]*? của|như|cũng viết là)\s+(?:[^\s[\]|/]+\|)?([^\s[\]|/]+)\[([^\]]+)\]/;
 
 /** For stub entries ("xem 幹嘛|干嘛[gan4 ma2]"), the simplified target and its pinyin. */
@@ -56,7 +57,9 @@ function usableSenses(senses: string[]): string[] {
     if (!s || NOISE.test(s)) continue;
     const unwrapped = /^\(([^()]*)\)$/.test(s) ? s.slice(1, -1) : s;
     for (const part of unwrapped.split(/;\s*/)) {
-      const p = part.trim();
+      // Classifier lists ("CL:個|个[ge4]" → "个", "(LT: 场个)") are not meanings.
+      const p = part.replace(/\s*\((LT|Lượng từ):[^)]*\)/g, '').trim();
+      if (/^[\p{Script=Han},，、\s]+$/u.test(p)) continue;
       const key = p.toLowerCase();
       if (p && !seen.has(key)) { seen.add(key); items.push(p); }
     }
