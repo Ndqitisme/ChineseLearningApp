@@ -2,118 +2,83 @@
 
 # TieuMai - Chinese Learning (Tiểu Mai 小梅)
 
-Ứng dụng desktop mã nguồn mở giúp người Việt làm quen với từ vựng tiếng Trung thông dụng trong đời sống, ăn uống và công việc mà không cần mở app ra học.
+Ứng dụng desktop mã nguồn mở giúp người Việt học từ vựng tiếng Trung thông dụng trong đời sống, ăn uống và công việc.
 
-Một trợ lý 3D đứng ở cạnh màn hình. Bong bóng bên cạnh cô luôn hiện một từ, gồm chữ Hán, pinyin tô màu theo thanh điệu, nghĩa tiếng Việt và âm Hán Việt (nếu đó là từ Hán Việt thật). Khi muốn học chủ động, mở cửa sổ chính để luyện đoán nghĩa, viết theo thứ tự nét, luyện thanh điệu và ôn tập theo lịch lặp lại ngắt quãng.
+Một trợ lý đứng ở cạnh màn hình và luôn hiện một từ: chữ Hán, pinyin tô màu theo thanh điệu, nghĩa tiếng Việt và âm Hán Việt. Cửa sổ chính có các bài luyện và lịch ôn tập.
 
 <p align="center"><img src="docs/assistant.png" alt="Trợ lý Tiểu Mai" width="640" /></p>
 
 ## Tính năng
 
-- **Trợ lý chạy nền.** Mỗi từ ở lại khoảng 18 giây rồi đổi sang từ mới; khung bong bóng không tắt đi bật lại. Trợ lý tự ẩn khi có ứng dụng toàn màn hình, ngủ khi máy không được dùng hoặc trong giờ yên lặng. Phần trong suốt của cửa sổ cho chuột đi xuyên qua. Có thể kéo trợ lý tới bất kỳ đâu, thả gần mép thì nó tự bám vào mép.
-- **Từ vựng:** 2.486 từ, gồm HSK 3.0 cấp 1–3 và 22 chủ đề (682 từ, 648 câu ví dụ).
-- **Luyện tập:**
-  - Đoán nghĩa.
-  - Viết chữ theo thứ tự nét, có hoạt hình mẫu và gợi ý nét.
-  - Ghép câu: sắp xếp các từ thành câu có nghĩa, hoặc ghép câu trả lời cho một câu hỏi. Điểm (thang 100) tính theo số từ đúng thứ tự so với câu chuẩn.
-  - Luyện thanh điệu: thu âm, đo cao độ và so với đường thanh chuẩn.
-  - Ôn tập theo lịch FSRS, sổ tay từ.
-  - Tra cứu theo chữ Hán, pinyin (có hoặc không dấu), nghĩa tiếng Việt hoặc Hán Việt.
-- **Pinyin khi rê chuột:** rê chuột lên bất kỳ chữ Hán nào trong app để xem pinyin.
+- **Trợ lý chạy nền:** tự ẩn khi có ứng dụng toàn màn hình, ngủ khi máy không được dùng hoặc trong giờ yên lặng. Kéo được tới bất kỳ đâu trên màn hình.
+- **Từ vựng:** HSK 3.0 cấp 1–6 theo hai bộ từ (bản 2021 và bản 2025), cùng 22 chủ đề có câu ví dụ. Mặc định mở HSK 1–3; HSK 4–6 mở thêm trong app.
+- **Luyện tập:** đoán nghĩa, chọn mặt chữ, nghe chọn chữ, viết theo thứ tự nét, ghép câu, luyện thanh điệu (thu âm và so cao độ).
+- **Ôn tập** theo lịch FSRS, **sổ tay** từ đã lưu.
+- **Tra cứu** theo chữ Hán, pinyin (có hoặc không dấu), nghĩa tiếng Việt hoặc âm Hán Việt.
+- **Pinyin khi rê chuột** lên chữ Hán bất kỳ trong app.
 - **Giao diện:** 5 theme, mỗi theme có bản sáng và tối; chỉnh được màu và CSS.
-- **Giọng đọc (tuỳ chọn, không kèm sẵn):** giọng zh-CN của hệ điều hành, API chuyển văn bản thành giọng nói (kiểu OpenAI `/v1/audio/speech`, Azure Speech hoặc URL tuỳ chỉnh), hoặc gói giọng MP3 cục bộ.
+- **Giọng đọc (tuỳ chọn):** giọng zh-CN của hệ điều hành, API chuyển văn bản thành giọng nói (kiểu OpenAI, Azure Speech hoặc URL tuỳ chỉnh), hoặc gói giọng MP3 cục bộ.
 
-## Nền tảng
+Số từ mỗi cấp HSK:
 
-[Tauri 2](https://tauri.app) (Rust + WebView của hệ điều hành), Svelte 5, TypeScript, Vite.
+| Bộ từ | HSK 1 | HSK 2 | HSK 3 | HSK 4 | HSK 5 | HSK 6 |
+|---|---|---|---|---|---|---|
+| Bản 2021 | 506 | 750 | 953 | 972 | 1.059 | 1.123 |
+| Bản 2025 | 294 | 197 | 487 | 972 | 1.547 | 1.684 |
+
+## Tải về
+
+Bộ cài cho Windows, macOS và Linux được đăng ở trang [Releases](https://github.com/Ndqitisme/ChineseLearningApp/releases).
 
 - Windows 10/11: đã kiểm trên máy thật.
 - macOS, Linux: build qua GitHub Actions, chưa kiểm trên máy thật.
-- Android, iOS: chưa hỗ trợ.
 
-## Bắt đầu
+## Build từ mã nguồn
 
 Yêu cầu:
 
-- Node.js 22+ và pnpm.
+- Node.js 22.18+ và pnpm.
 - Rust stable.
-- Windows: WebView2 (có sẵn trên Windows 10/11).
+- Windows: WebView2 (có sẵn trên Windows 10/11). Có thể dùng toolchain `x86_64-pc-windows-gnu` thay cho Visual Studio Build Tools.
 - Linux: các gói hệ thống liệt kê trong `.github/workflows/build.yml`.
 
 ```bash
 pnpm install
 pnpm data:fetch     # tải nguồn dữ liệu (ghim theo commit, kiểm sha256)
-pnpm data:build     # tạo src/generated/dataset.json và public/strokes/
+pnpm data:build     # tạo dữ liệu từ vựng và dữ liệu nét chữ
 pnpm tauri dev      # chạy ở chế độ phát triển
+pnpm tauri build    # tạo bộ cài
 ```
+
+Các lệnh khác:
 
 | Lệnh | Việc |
 |---|---|
-| `pnpm tauri build` | Tạo bộ cài |
 | `pnpm check` | Kiểm kiểu TypeScript/Svelte |
-| `pnpm test` | Test logic: lịch hiện từ, thanh điệu, vị trí trợ lý |
+| `pnpm test` | Chạy unit test |
+| `pnpm data:fonts` | Cắt font theo bộ chữ đang dùng (cần Python có `fonttools` và `brotli`) |
 | `pnpm perf` | Đo CPU/RAM của app đang chạy (Windows) |
+| `pnpm skin:check`, `skin:render`, `skin:pack`, `skin:save` | Kiểm tư thế, render và đóng gói sprite nhân vật (cần Blender 4.5 LTS và MPFB) |
 
-Trên Windows có thể dùng toolchain Rust `x86_64-pc-windows-gnu` (MinGW-w64) thay cho Visual Studio Build Tools. Thư viện Rust chỉ build dạng `rlib`; lý do ghi trong `src-tauri/Cargo.toml`.
+Cấu trúc chính: `src/main/` (cửa sổ chính), `src/pet/` (cửa sổ trợ lý), `src/lib/` (dùng chung), `src-tauri/` (Rust), `data/` (dữ liệu biên tập tay), `tools/` (pipeline dữ liệu, dựng nhân vật, gói giọng).
 
-## Cấu trúc thư mục
+## Dữ liệu và giấy phép
 
-```
-src/main/          cửa sổ chính: trang học, luyện tập, tra cứu, cài đặt
-src/pet/           cửa sổ trợ lý: bong bóng, vị trí trên màn hình, lịch hiện từ
-src/lib/           dùng chung: dữ liệu, pinyin, FSRS, thanh điệu, theme, giọng đọc, sprite
-src-tauri/         Rust: cửa sổ trong suốt, cho chuột đi xuyên, khay hệ thống, gọi TTS qua HTTP
-data/              dữ liệu biên tập tay: chủ đề, Hán Việt, sửa nghĩa và pinyin
-tools/data/        pipeline dữ liệu từ vựng
-tools/skins/       dựng nhân vật (Blender + MakeHuman) và đóng gói sprite
-tools/logo/        tạo logo và icon
-tools/voicepack/   tạo gói giọng cục bộ (sherpa-onnx + Kokoro)
-tools/perf/        đo CPU/RAM
-docs/PLAN.md       thiết kế, nguồn dữ liệu, quyết định kỹ thuật
-```
-
-## Dữ liệu từ vựng
-
-| Bước | Lệnh | Kết quả |
+| Nguồn | Dùng cho | Giấy phép |
 |---|---|---|
-| Tải nguồn | `pnpm data:fetch` | `.cache/sources/` |
-| Ghép và kiểm từ vựng | `pnpm data:build` | `src/generated/dataset.json`, `public/strokes/`, báo cáo trong `.cache/reports/` |
-| Cắt font theo bộ chữ đang dùng | `pnpm data:fonts` | `public/fonts/` (cần Python có `fonttools` và `brotli`) |
+| [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) | Danh sách từ HSK 3.0 | MIT |
+| [CVDICT](https://github.com/ph0ngp/CVDICT) | Nghĩa tiếng Việt | CC BY-SA 4.0 |
+| [hanviet-pinyin-wordlist](https://github.com/ph0ngp/hanviet-pinyin-wordlist) | Âm Hán Việt cho chữ HSK 4–6 | MIT |
+| [hanzi-writer-data](https://github.com/chanind/hanzi-writer-data) | Thứ tự nét | Arphic Public License |
+| `data/` | Chủ đề, câu ví dụ, nghĩa ngắn, bảng Hán Việt HSK 1–3 (biên soạn cho dự án) | CC BY-SA 4.0 |
 
-**Nguồn dữ liệu:**
+Nghĩa ngắn, câu ví dụ và âm Hán Việt một phần do AI viết và soát, chưa có người bản ngữ duyệt lại. Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật và cùng nghĩa (学生 học sinh, 电话 điện thoại); khi chưa chắc thì ẩn.
 
-| Nguồn | Dùng cho |
-|---|---|
-| [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) | Danh sách từ HSK |
-| [CVDICT](https://github.com/ph0ngp/CVDICT) | Nghĩa tiếng Việt |
-| [hanzi-writer-data](https://github.com/chanind/hanzi-writer-data) | Thứ tự nét |
-| `data/` | Chủ đề, câu ví dụ, bảng Hán Việt (biên soạn riêng cho dự án) |
+Nhân vật trợ lý được dựng bằng MakeHuman (MPFB2 trong Blender) và render sẵn thành sprite sheet; app không dùng engine 3D lúc chạy.
 
-Mọi chỉnh sửa nội dung nằm trong `data/`:
+## Đóng góp
 
-| File | Nội dung |
-|---|---|
-| `topics/*.json` | Các chủ đề |
-| `hanviet/chars.tsv` | Âm Hán Việt theo cặp chữ và pinyin |
-| `hanviet/word-verdicts.tsv` | Từ nào được hiện dòng Hán Việt |
-| `gloss-overrides.tsv` | Sửa nghĩa |
-| `hsk-pinyin-overrides.tsv` | Sửa pinyin |
-| `sentences/qa.json` | Câu hỏi và câu trả lời cho bài Ghép câu; dấu cách trong câu trả lời là ranh giới giữa các thẻ từ, `alt` là các cách sắp khác cũng đúng |
-
-Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật trong tiếng Việt và cùng nghĩa (学生 học sinh, 电话 điện thoại). Từ phiên âm (咖啡) và kiểu ghép âm từng chữ (没关系) không hiện. `pnpm data:build` báo lỗi khi một từ thiếu pinyin, thiếu nghĩa hoặc chưa được duyệt Hán Việt.
-
-## Nhân vật trợ lý
-
-Nhân vật được dựng bằng MakeHuman (extension MPFB2 trong Blender), đặt tư thế bằng script, render sẵn thành sprite sheet (`public/skins/assistant/`). Lúc chạy, app chỉ đổi khung ảnh và không có engine 3D. Cách render lại:
-
-1. Cài Blender 4.5 LTS và extension MPFB. Cài các gói tài sản `makehuman_system_assets`, `shirts02`, `skirts02` và `glasses01`.
-2. Chạy `pnpm skin:check` để kiểm toàn bộ tư thế: điểm đích tay, giới hạn gập cổ tay, tay xuyên thân/quần áo và chân xuyên váy. Báo cáo nằm ở `.cache/render3d/reference-v3/validation.json`.
-3. Chạy `pnpm skin:render`, rồi `pnpm skin:pack`. Packer yêu cầu báo cáo kiểm tra đạt và cùng phiên bản mã với ảnh render. Script tự tìm Blender portable trong `.cache/sources/mh/`, Blender trong PATH hoặc biến `BLENDER_EXE`; Python/Pillow có thể dùng môi trường `.cache/venv/`.
-4. `pnpm skin:save` lưu mô hình, texture đóng gói và timeline có đánh dấu từng động tác vào `output/character/tieumai-reference.blend`.
-
-Lệnh kiểm nhanh: `python tools/skins/run.py frames rest wave_8 think_10`; `python tools/skins/run.py check rest hair_06 happy_09`. Kiểm nhanh không thay thế báo cáo toàn bộ. Tạo trang xem thử cục bộ: `.cache/venv/Scripts/python tools/skins/review.py`, rồi mở `output/character/review.html`.
-
-Trang phục bản tham chiếu gồm áo trắng ngắn, nơ đen, váy ôm kẻ xám và kính gọng bạc; hình học/vật liệu ở `tools/skins/makehuman/reference_style.py`. Đây là mô hình dựng theo đặc điểm ảnh, chưa phải bản sao chân dung chính xác. Ảnh cá nhân và file Blender chỉ lưu cục bộ trong thư mục output bị loại khỏi Git.
+Sửa nội dung từ vựng trong `data/` (chủ đề, âm Hán Việt, sửa nghĩa, sửa pinyin), rồi chạy `pnpm data:build` để kiểm. Báo lỗi và góp ý qua GitHub Issues hoặc Pull Request.
 
 ## Giấy phép
 
@@ -123,6 +88,7 @@ Trang phục bản tham chiếu gồm áo trắng ngắn, nơ đen, váy ôm k�
 | Dữ liệu từ vựng (`data/`, dữ liệu sinh ra) | CC BY-SA 4.0 |
 | Dữ liệu nét chữ | Arphic Public License |
 | Font | SIL OFL 1.1 |
+| Icon (`public/icons/`, tạo bằng AI cho dự án) | CC0 1.0 |
 | Nhân vật | Tài sản MakeHuman CC0; áo (Elvaerwyn) theo CC-BY; váy kẻ, nơ và kính dựng mới theo MIT |
 
-Chi tiết và ghi công: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), và trang **Giới thiệu** trong app.
+Chi tiết và ghi công: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) và trang **Giới thiệu** trong app.

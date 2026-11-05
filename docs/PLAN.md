@@ -208,7 +208,7 @@ Một bộ lắng nghe `pointermove` gắn ở `document`, giới hạn theo `re
 ### 5.1 Lộ diện thụ động (trợ lý)
 
 - Nhóm từ đưa vào trợ lý gồm các chủ đề và cấp HSK đang bật, xếp theo thứ tự chủ đề rồi tần suất.
-- Luôn giữ một **nhóm mới** khoảng 6 từ. Mỗi từ mới được chiếu khoảng 5 lần với khoảng cách giãn dần (sau 1, 3, 7, 15 lượt). Đủ số lần thì từ chuyển sang "đã quen" và một từ mới được kéo vào nhóm.
+- Luôn giữ một **nhóm mới** khoảng 6 từ. Mỗi từ mới được chiếu khoảng 5 lần với khoảng cách giãn dần (sau 1, 3, 8, 20 lượt). Đủ số lần thì từ chuyển sang "đã quen" và một từ mới được kéo vào nhóm.
 - Mỗi lượt chọn theo trọng số: khoảng 60% từ nhóm mới, khoảng 25% từ đã quen lâu chưa gặp, khoảng 15% thẻ FSRS đến hạn. Bỏ qua từ đã bấm "biết rồi", nhưng thỉnh thoảng vẫn nhắc lại với tỉ lệ thấp.
 - Không lặp lại một từ trong 5 lượt liên tiếp.
 - Logic này là hàm thuần, có test riêng.
