@@ -24,7 +24,7 @@
   <p class="lead">Nếu bạn muốn ủng hộ tác giả để có kinh phí làm thêm những dự án phi lợi nhuận có ích cho cộng đồng trong tương lai.</p>
 
   <figure class="card qr">
-    <img src="/support/bank-qr.jpg" alt="Mã VietQR tài khoản VietinBank 106875866606" width="1096" height="1337" />
+    <img src="/support/bank-qr.jpg" alt="Mã VietQR tài khoản VietinBank 106875866606" width="1096" height="1237" />
     <figcaption>
       <div class="section-title">Số tài khoản ngân hàng</div>
       <div class="row acct">
