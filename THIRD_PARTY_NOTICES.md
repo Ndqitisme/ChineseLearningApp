@@ -2,10 +2,8 @@
 
 | Component | Used for | License | Source |
 |---|---|---|---|
-| MakeHuman / MPFB2 system assets — base body, `young_caucasian_female` skin, `ponytail01` hair, `eyebrow001`, `eyelashes02`, `shoes04`, eyes, teeth, tongue, expression targets | Assistant character, built in Blender and pre-rendered to 2D frames; hair and brows tinted, skin warmed, lips tinted, brown eyes, socks removed | CC0 — details in `public/skins/assistant/CREDITS.txt` | https://static.makehumancommunity.org/assets/assetpacks.html |
-| `toigo_round_glasses_leopard` by MargaretToigo | Original variant's glasses; hidden in the reference variant, replaced by original silver wire geometry | CC0 | https://static.makehumancommunity.org/assets/assetpacks/glasses01.html |
-| `elvs_male_shirt_untucked_bd1` by Elvaerwyn | Character's shirt; short sleeves, asymmetric cropped hem, white cotton material | CC-BY (version not stated by the pack) | https://static.makehumancommunity.org/assets/assetpacks/shirts02.html |
-| `mtknife_pleated_mini_skirt` by MTKnife | Original variant's skirt; replaced by original fitted tartan geometry in the reference variant | CC-BY (version not stated by the pack) | https://static.makehumancommunity.org/assets/assetpacks/skirts02.html |
+| Assistant character artwork (Tiểu Mai) | Source drawings in `tools/skins/ai2d/`, rig parts atlas in `public/skins/assistant/` | Generated for this project with the image tool in OpenAI Codex; released under CC0 1.0 | — |
+| MediaPipe Face Landmarker model (`face_landmarker.task`, float16 v1) | Likeness check in the character tools (`tools/skins/ai2d/harness/`); not shipped in the app | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker |
 | App icon and logo artwork | Icon, tray icon, logo | Generated for this project with the image tool in OpenAI Codex; name banner drawn by `tools/logo/compose.py` with Nunito (SIL OFL 1.1) | — |
 | CVDICT | Vietnamese meanings | CC BY-SA 4.0 | https://github.com/ph0ngp/CVDICT |
 | CC-CEDICT | Basis of CVDICT; pinyin cross-check | CC BY-SA 4.0 | https://cc-cedict.org/wiki/ |

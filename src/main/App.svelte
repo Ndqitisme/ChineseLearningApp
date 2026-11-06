@@ -7,8 +7,8 @@
   import { EVENTS } from '../lib/ipc.ts';
   import { initProgress } from '../lib/progress.svelte.ts';
   import { settings, updateSettings } from '../lib/settings.svelte.ts';
-  import Sprite, { SpritePlayer } from '../lib/sprite/Sprite.svelte';
-  import { loadSkin, type Skin } from '../lib/sprite/skins.ts';
+  import Rig from '../lib/rig/Rig.svelte';
+  import { FRAME } from '../lib/rig/load.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
   import TitleBar from './components/TitleBar.svelte';
@@ -32,8 +32,7 @@
   import { reviewQueueIds } from './review-queue.ts';
 
   let ready = $state(false);
-  let skin = $state<Skin | null>(null);
-  const avatar = new SpritePlayer();
+  let avatar = $state<ReturnType<typeof Rig>>();
 
   const dueCount = $derived(reviewQueueIds().length);
 
@@ -61,13 +60,10 @@
   onMount(() => {
     const unlisten = listen<string>(EVENTS.navigate, ({ payload }) => go(payload));
     (async () => {
-      const [loaded] = await Promise.all([loadSkin(), initProgress()]);
-      skin = loaded;
-      avatar.setSkin(loaded);
+      await initProgress();
       applyTheme();
       ready = true;
       await getCurrentWindow().show();
-      avatar.play('wave');
     })();
     return () => { unlisten.then((f) => f()); };
   });
@@ -78,8 +74,8 @@
   {#if ready}
     <div class="body">
       <nav class="side">
-        <button class="me" onclick={() => avatar.play('happy')} aria-label="Tiểu Mai">
-          {#if skin}<div class="avatar"><Sprite {skin} scale={170 / skin.frameH} player={avatar} /></div>{/if}
+        <button class="me" onclick={() => avatar?.emit('known')} aria-label="Tiểu Mai">
+          <div class="avatar"><Rig bind:this={avatar} scale={170 / FRAME.h} onready={() => avatar?.emit('appStart')} /></div>
         </button>
         {#each NAV as item (item.path)}
           <a href="#{item.path}" class:on={active === item.name}>
@@ -141,7 +137,7 @@
     justify-content: center;
     box-shadow: var(--shadow);
   }
-  /* Head-and-shoulders crop of the full-body sprite. */
+  /* Head-and-shoulders crop of the full-body rig. */
   .avatar { height: 92px; overflow: hidden; }
   .side a {
     display: flex;

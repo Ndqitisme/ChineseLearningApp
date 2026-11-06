@@ -5,8 +5,7 @@
   import { isOpen, settings } from '../../lib/settings.svelte.ts';
 
   const SOURCES = [
-    { name: 'MakeHuman / MPFB2', what: 'Nhân vật trợ lý (cơ thể, da, tóc, giày, biểu cảm), render sẵn thành ảnh', license: 'CC0', url: 'https://static.makehumancommunity.org/assets/assetpacks.html' },
-    { name: 'Áo sơ mi “elvs_male_shirt_untucked_bd1” — Elvaerwyn', what: 'Áo của nhân vật', license: 'CC-BY', url: 'https://static.makehumancommunity.org/assets/assetpacks/shirts02.html' },
+    { name: 'Nhân vật Tiểu Mai', what: 'Bản vẽ nhân vật do AI tạo riêng cho app', license: 'CC0 1.0', url: 'https://creativecommons.org/publicdomain/zero/1.0/' },
     { name: 'CVDICT', what: 'Nghĩa tiếng Việt', license: 'CC BY-SA 4.0', url: 'https://github.com/ph0ngp/CVDICT' },
     { name: 'CC-CEDICT', what: 'Nền của CVDICT, đối chiếu pinyin', license: 'CC BY-SA 4.0', url: 'https://cc-cedict.org/wiki/' },
     { name: 'complete-hsk-vocabulary', what: 'Danh sách từ HSK 3.0 (bản 2021, cấp new-1…new-6; bản 2025, cấp newest-1…newest-6)', license: 'MIT', url: 'https://github.com/drkameleon/complete-hsk-vocabulary' },
@@ -36,6 +35,7 @@
       <li>Dữ liệu nét chữ: Arphic Public License</li>
       <li>Font: SIL OFL 1.1</li>
       <li>Icon: CC0 1.0</li>
+      <li>Nhân vật: CC0 1.0</li>
     </ul>
   </div>
 

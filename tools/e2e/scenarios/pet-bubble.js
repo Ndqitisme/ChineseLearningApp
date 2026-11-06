@@ -14,8 +14,10 @@ export default async function (t) {
     t.assert(word, `bubble word ${first} is not in the dataset`);
     await t.waitFor(pet, '.bubble .vi', word.vi);
     t.assert((await t.calls(pet, 'plugin:window|show')).length === 1, 'pet window was not shown');
+    // The character rig has loaded its atlas and started its draw loop (WebGL).
+    await t.waitFor(pet, '.rig[data-ready]');
     const rects = await pet.evaluate(() => window.__e2e.hitRects);
-    t.assert(rects?.length >= 2, `click-through rects for sprite and bubble: ${JSON.stringify(rects)}`);
+    t.assert(rects?.length >= 2, `click-through rects for the character and the bubble: ${JSON.stringify(rects)}`);
   });
 
   await t.step('exposure is recorded', async () => {

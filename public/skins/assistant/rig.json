@@ -1,0 +1,1992 @@
+{
+ "about": "Tieu Mai layered 2D rig. Built by tools/skins/ai2d/rig/build_rig.mjs from the art and key-pose parts and motion-spec.json; drawn by src/lib/rig.",
+ "licence": "Art CC0-1.0 (generated for this project); code MIT",
+ "frame": {
+  "w": 139,
+  "h": 340,
+  "artOffsetY": 9
+ },
+ "atlas": {
+  "file": "atlas.webp",
+  "size": [
+   1024,
+   1024
+  ],
+  "partsPx": 283754,
+  "fill": 0.2706
+ },
+ "parts": {
+  "backHair": {
+   "rect": [
+    760,
+    155,
+    25,
+    30
+   ],
+   "pos": [
+    60.74,
+    52.81
+   ],
+   "z": 0,
+   "group": "head"
+  },
+  "face.mouth.smile": {
+   "rect": [
+    545,
+    288,
+    45,
+    26
+   ],
+   "pos": [
+    43.09,
+    46.93
+   ],
+   "z": 18,
+   "group": "head"
+  },
+  "face.mouth.talk": {
+   "rect": [
+    594,
+    288,
+    37,
+    22
+   ],
+   "pos": [
+    45.05,
+    48.45
+   ],
+   "z": 18,
+   "group": "head"
+  },
+  "frontHair": {
+   "rect": [
+    907,
+    285,
+    89,
+    92
+   ],
+   "pos": [
+    32.41,
+    16.42
+   ],
+   "z": 17,
+   "group": "head"
+  },
+  "head": {
+   "rect": [
+    548,
+    159,
+    93,
+    125
+   ],
+   "pos": [
+    31.54,
+    9.45
+   ],
+   "z": 16,
+   "group": "head"
+  },
+  "head.closed": {
+   "rect": [
+    448,
+    176,
+    93,
+    125
+   ],
+   "pos": [
+    31.54,
+    9.45
+   ],
+   "z": 16,
+   "group": "head"
+  },
+  "leftArm.drag": {
+   "rect": [
+    48,
+    2,
+    67,
+    246
+   ],
+   "pos": [
+    77.96,
+    71.55
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     97.9,
+     131.99
+    ],
+    "W": [
+     105.18,
+     172.86
+    ],
+    "T": [
+     103.44,
+     192.68
+    ]
+   }
+  },
+  "leftArm.front": {
+   "rect": [
+    261,
+    210,
+    84,
+    122
+   ],
+   "pos": [
+    49.63,
+    71.55
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     84.93,
+     124.72
+    ],
+    "W": [
+     72.72,
+     108.38
+    ],
+    "T": [
+     51.78,
+     106.19
+    ]
+   }
+  },
+  "leftArm.happy": {
+   "rect": [
+    48,
+    252,
+    44,
+    118
+   ],
+   "pos": [
+    77.08,
+    64.8
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     87.55,
+     117.1
+    ],
+    "W": [
+     91.47,
+     81.14
+    ],
+    "T": [
+     91.46,
+     69.59
+    ]
+   }
+  },
+  "leftArm.hipfront": {
+   "rect": [
+    791,
+    153,
+    112,
+    135
+   ],
+   "pos": [
+    43.53,
+    73.08
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     94.52,
+     121.89
+    ],
+    "W": [
+     76,
+     130.17
+    ],
+    "T": [
+     52.68,
+     127.99
+    ]
+   }
+  },
+  "leftArm.hipoff": {
+   "rect": [
+    378,
+    2,
+    66,
+    194
+   ],
+   "pos": [
+    79.7,
+    79.4
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     108.25,
+     116.01
+    ],
+    "W": [
+     104.54,
+     150.25
+    ],
+    "T": [
+     96.26,
+     173.8
+    ]
+   }
+  },
+  "leftArm.land": {
+   "rect": [
+    261,
+    2,
+    113,
+    204
+   ],
+   "pos": [
+    77.96,
+    71.34
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     99.03,
+     127.96
+    ],
+    "W": [
+     114.25,
+     153.22
+    ],
+    "T": [
+     127.85,
+     169.85
+    ]
+   }
+  },
+  "leftArm.rest": {
+   "rect": [
+    691,
+    2,
+    96,
+    149
+   ],
+   "pos": [
+    71.42,
+    71.12
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     116.09,
+     110.56
+    ],
+    "W": [
+     90.59,
+     138.89
+    ],
+    "T": [
+     74.03,
+     136.71
+    ]
+   }
+  },
+  "leftArm.talk": {
+   "rect": [
+    119,
+    223,
+    99,
+    121
+   ],
+   "pos": [
+    74.47,
+    72.43
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     83.2,
+     124.73
+    ],
+    "W": [
+     99.55,
+     124.73
+    ],
+    "T": [
+     121.36,
+     126.91
+    ]
+   }
+  },
+  "leftArm.think": {
+   "rect": [
+    349,
+    210,
+    74,
+    122
+   ],
+   "pos": [
+    54.42,
+    57.17
+   ],
+   "z": 16.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     83.19,
+     112.3
+    ],
+    "W": [
+     66.4,
+     76.78
+    ],
+    "T": [
+     58.11,
+     60.44
+    ]
+   }
+  },
+  "leftArm.tuck": {
+   "rect": [
+    861,
+    2,
+    56,
+    142
+   ],
+   "pos": [
+    72.07,
+    34.07
+   ],
+   "z": 17.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     94.09,
+     98.58
+    ],
+    "W": [
+     78.82,
+     54.99
+    ],
+    "T": [
+     75.98,
+     36.47
+    ]
+   }
+  },
+  "leftArm.tuckmid": {
+   "rect": [
+    691,
+    155,
+    65,
+    133
+   ],
+   "pos": [
+    67.28,
+    48.24
+   ],
+   "z": 17.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     93.21,
+     108.6
+    ],
+    "W": [
+     74.9,
+     69.81
+    ],
+    "T": [
+     69.24,
+     50.2
+    ]
+   }
+  },
+  "leftArm.wave_up": {
+   "rect": [
+    921,
+    145,
+    75,
+    136
+   ],
+   "pos": [
+    80.35,
+    34.73
+   ],
+   "z": 13.5,
+   "group": "leftArm",
+   "bones": {
+    "S": [
+     87.98,
+     83.32
+    ],
+    "E": [
+     112.63,
+     96.4
+    ],
+    "W": [
+     107.17,
+     61.76
+    ],
+    "T": [
+     106.73,
+     38.66
+    ]
+   }
+  },
+  "leftShin": {
+   "rect": [
+    448,
+    2,
+    46,
+    170
+   ],
+   "pos": [
+    63.36,
+    222.35
+   ],
+   "z": 4,
+   "group": "leftShin"
+  },
+  "leftShoe": {
+   "rect": [
+    645,
+    159,
+    40,
+    80
+   ],
+   "pos": [
+    65.75,
+    295.57
+   ],
+   "z": 6,
+   "group": "leftShoe"
+  },
+  "leftThigh": {
+   "rect": [
+    791,
+    2,
+    66,
+    147
+   ],
+   "pos": [
+    60.74,
+    170.27
+   ],
+   "z": 5,
+   "group": "leftThigh"
+  },
+  "neck": {
+   "rect": [
+    2,
+    264,
+    39,
+    52
+   ],
+   "pos": [
+    44.83,
+    53.03
+   ],
+   "z": 7,
+   "group": "neck"
+  },
+  "pelvis": {
+   "rect": [
+    548,
+    2,
+    139,
+    153
+   ],
+   "pos": [
+    26.09,
+    113.83
+   ],
+   "z": 8,
+   "group": "pelvis"
+  },
+  "rightArm.rest": {
+   "rect": [
+    2,
+    2,
+    42,
+    258
+   ],
+   "pos": [
+    10.18,
+    69.81
+   ],
+   "z": 10.5,
+   "group": "rightArm",
+   "bones": {
+    "S": [
+     26.96,
+     78.97
+    ],
+    "E": [
+     21.08,
+     128
+    ],
+    "W": [
+     13.45,
+     174.85
+    ],
+    "T": [
+     17.81,
+     196.64
+    ]
+   }
+  },
+  "rightShin": {
+   "rect": [
+    498,
+    2,
+    46,
+    170
+   ],
+   "pos": [
+    31.54,
+    222.35
+   ],
+   "z": 1,
+   "group": "rightShin"
+  },
+  "rightShoe": {
+   "rect": [
+    645,
+    243,
+    40,
+    80
+   ],
+   "pos": [
+    32.19,
+    295.57
+   ],
+   "z": 3,
+   "group": "rightShoe"
+  },
+  "rightThigh": {
+   "rect": [
+    921,
+    2,
+    63,
+    139
+   ],
+   "pos": [
+    26.09,
+    173.98
+   ],
+   "z": 2,
+   "group": "rightThigh"
+  },
+  "torso.noLeftSleeve": {
+   "rect": [
+    119,
+    2,
+    138,
+    217
+   ],
+   "pos": [
+    23.69,
+    43.22
+   ],
+   "z": 9,
+   "group": "torso"
+  }
+ },
+ "joints": {
+  "hips": [
+   59,
+   171.58
+  ],
+  "waist": [
+   54,
+   120.76
+  ],
+  "neck": [
+   54,
+   72.09
+  ],
+  "head": [
+   54,
+   61.91
+  ],
+  "leftShoulder": [
+   87.98,
+   83.32
+  ],
+  "leftElbow": [
+   116.09,
+   110.56
+  ],
+  "leftWrist": [
+   90.59,
+   138.89
+  ],
+  "leftHandTip": [
+   74.03,
+   136.71
+  ],
+  "rightShoulder": [
+   26.96,
+   78.97
+  ],
+  "rightElbow": [
+   21.08,
+   128
+  ],
+  "rightWrist": [
+   13.45,
+   174.85
+  ],
+  "rightHandTip": [
+   17.81,
+   196.64
+  ],
+  "leftHip": [
+   67.93,
+   171.58
+  ],
+  "leftKnee": [
+   73.34,
+   232.6
+  ],
+  "leftAnkle": [
+   74.27,
+   301.24
+  ],
+  "leftToe": [
+   75.12,
+   332.84
+  ],
+  "rightHip": [
+   50.06,
+   171.58
+  ],
+  "rightKnee": [
+   44.42,
+   232.6
+  ],
+  "rightAnkle": [
+   43.11,
+   301.24
+  ],
+  "rightToe": [
+   42.54,
+   332.84
+  ]
+ },
+ "chains": {
+  "leftArm.drag": {
+   "part": "leftArm.drag",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      97.9,
+      131.99
+     ]
+    ],
+    [
+     [
+      97.9,
+      131.99
+     ],
+     [
+      105.18,
+      172.86
+     ]
+    ],
+    [
+     [
+      105.18,
+      172.86
+     ],
+     [
+      103.44,
+      192.68
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.front": {
+   "part": "leftArm.front",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      84.93,
+      124.72
+     ]
+    ],
+    [
+     [
+      84.93,
+      124.72
+     ],
+     [
+      72.72,
+      108.38
+     ]
+    ],
+    [
+     [
+      72.72,
+      108.38
+     ],
+     [
+      51.78,
+      106.19
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.happy": {
+   "part": "leftArm.happy",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      87.55,
+      117.1
+     ]
+    ],
+    [
+     [
+      87.55,
+      117.1
+     ],
+     [
+      91.47,
+      81.14
+     ]
+    ],
+    [
+     [
+      91.47,
+      81.14
+     ],
+     [
+      91.46,
+      69.59
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.hipfront": {
+   "part": "leftArm.hipfront",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      94.52,
+      121.89
+     ]
+    ],
+    [
+     [
+      94.52,
+      121.89
+     ],
+     [
+      76,
+      130.17
+     ]
+    ],
+    [
+     [
+      76,
+      130.17
+     ],
+     [
+      52.68,
+      127.99
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.hipoff": {
+   "part": "leftArm.hipoff",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      108.25,
+      116.01
+     ]
+    ],
+    [
+     [
+      108.25,
+      116.01
+     ],
+     [
+      104.54,
+      150.25
+     ]
+    ],
+    [
+     [
+      104.54,
+      150.25
+     ],
+     [
+      96.26,
+      173.8
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.land": {
+   "part": "leftArm.land",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      99.03,
+      127.96
+     ]
+    ],
+    [
+     [
+      99.03,
+      127.96
+     ],
+     [
+      114.25,
+      153.22
+     ]
+    ],
+    [
+     [
+      114.25,
+      153.22
+     ],
+     [
+      127.85,
+      169.85
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.rest": {
+   "part": "leftArm.rest",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      116.09,
+      110.56
+     ]
+    ],
+    [
+     [
+      116.09,
+      110.56
+     ],
+     [
+      90.59,
+      138.89
+     ]
+    ],
+    [
+     [
+      90.59,
+      138.89
+     ],
+     [
+      74.03,
+      136.71
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.talk": {
+   "part": "leftArm.talk",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      83.2,
+      124.73
+     ]
+    ],
+    [
+     [
+      83.2,
+      124.73
+     ],
+     [
+      99.55,
+      124.73
+     ]
+    ],
+    [
+     [
+      99.55,
+      124.73
+     ],
+     [
+      121.36,
+      126.91
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "leftArm.think": {
+   "part": "leftArm.think",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      83.19,
+      112.3
+     ]
+    ],
+    [
+     [
+      83.19,
+      112.3
+     ],
+     [
+      66.4,
+      76.78
+     ]
+    ],
+    [
+     [
+      66.4,
+      76.78
+     ],
+     [
+      58.11,
+      60.44
+     ]
+    ]
+   ],
+   "z": 16.5
+  },
+  "leftArm.tuck": {
+   "part": "leftArm.tuck",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      94.09,
+      98.58
+     ]
+    ],
+    [
+     [
+      94.09,
+      98.58
+     ],
+     [
+      78.82,
+      54.99
+     ]
+    ],
+    [
+     [
+      78.82,
+      54.99
+     ],
+     [
+      75.98,
+      36.47
+     ]
+    ]
+   ],
+   "z": 17.5
+  },
+  "leftArm.tuckmid": {
+   "part": "leftArm.tuckmid",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      93.21,
+      108.6
+     ]
+    ],
+    [
+     [
+      93.21,
+      108.6
+     ],
+     [
+      74.9,
+      69.81
+     ]
+    ],
+    [
+     [
+      74.9,
+      69.81
+     ],
+     [
+      69.24,
+      50.2
+     ]
+    ]
+   ],
+   "z": 17.5
+  },
+  "leftArm.wave_up": {
+   "part": "leftArm.wave_up",
+   "bones": [
+    [
+     [
+      87.98,
+      83.32
+     ],
+     [
+      112.63,
+      96.4
+     ]
+    ],
+    [
+     [
+      112.63,
+      96.4
+     ],
+     [
+      107.17,
+      61.76
+     ]
+    ],
+    [
+     [
+      107.17,
+      61.76
+     ],
+     [
+      106.73,
+      38.66
+     ]
+    ]
+   ],
+   "z": 13.5
+  },
+  "rightArm.rest": {
+   "part": "rightArm.rest",
+   "bones": [
+    [
+     [
+      26.96,
+      78.97
+     ],
+     [
+      21.08,
+      128
+     ]
+    ],
+    [
+     [
+      21.08,
+      128
+     ],
+     [
+      13.45,
+      174.85
+     ]
+    ],
+    [
+     [
+      13.45,
+      174.85
+     ],
+     [
+      17.81,
+      196.64
+     ]
+    ]
+   ],
+   "z": 10.5
+  },
+  "leftLeg": {
+   "parts": [
+    "leftShin",
+    "leftThigh",
+    "leftShoe"
+   ],
+   "bones": [
+    [
+     [
+      67.93,
+      171.58
+     ],
+     [
+      73.34,
+      232.6
+     ]
+    ],
+    [
+     [
+      73.34,
+      232.6
+     ],
+     [
+      74.27,
+      301.24
+     ]
+    ],
+    [
+     [
+      74.27,
+      301.24
+     ],
+     [
+      75.12,
+      332.84
+     ]
+    ]
+   ],
+   "z": 5
+  },
+  "rightLeg": {
+   "parts": [
+    "rightShin",
+    "rightThigh",
+    "rightShoe"
+   ],
+   "bones": [
+    [
+     [
+      50.06,
+      171.58
+     ],
+     [
+      44.42,
+      232.6
+     ]
+    ],
+    [
+     [
+      44.42,
+      232.6
+     ],
+     [
+      43.11,
+      301.24
+     ]
+    ],
+    [
+     [
+      43.11,
+      301.24
+     ],
+     [
+      42.54,
+      332.84
+     ]
+    ]
+   ],
+   "z": 2
+  }
+ },
+ "leftArm": {
+  "keys": {
+   "rest": {
+    "part": "leftArm.rest",
+    "anchor": [
+     "rest"
+    ],
+    "costScale": 2,
+    "chain": "leftArm.rest",
+    "art": {
+     "upper": {
+      "angle": 44.1,
+      "len": 39.14
+     },
+     "forearm": {
+      "angle": 131.99,
+      "len": 38.12
+     },
+     "hand": {
+      "angle": -172.5,
+      "len": 16.7
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 52.63,
+      "ratio": 0.8697
+     },
+     "leftForearm": {
+      "angle": 142.31,
+      "ratio": 0.8285
+     },
+     "leftHand": {
+      "angle": 107.9,
+      "ratio": 0.7518
+     }
+    }
+   },
+   "raise": {
+    "part": "leftArm.wave_up",
+    "anchor": [
+     "wave",
+     "oneShot",
+     560
+    ],
+    "upperOffsetDeg": 6,
+    "maxBendDeg": [
+     45,
+     12
+    ],
+    "costScale": 0.55,
+    "chain": "leftArm.wave_up",
+    "art": {
+     "upper": {
+      "angle": 27.95,
+      "len": 27.91
+     },
+     "forearm": {
+      "angle": -98.96,
+      "len": 35.07
+     },
+     "hand": {
+      "angle": -91.09,
+      "len": 23.1
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 53.78,
+      "ratio": 0.9974
+     },
+     "leftForearm": {
+      "angle": -89.05,
+      "ratio": 0.7469
+     },
+     "leftHand": {
+      "angle": -89.05,
+      "ratio": 0.7469
+     }
+    }
+   },
+   "think": {
+    "part": "leftArm.think",
+    "anchor": [
+     "think",
+     "loop",
+     0
+    ],
+    "costScale": 2,
+    "maxBendDeg": [
+     30,
+     30
+    ],
+    "chain": "leftArm.think",
+    "art": {
+     "upper": {
+      "angle": 99.39,
+      "len": 29.37
+     },
+     "forearm": {
+      "angle": -115.3,
+      "len": 39.29
+     },
+     "hand": {
+      "angle": -116.9,
+      "len": 18.32
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 76.85,
+      "ratio": 0.5444
+     },
+     "leftForearm": {
+      "angle": -119.48,
+      "ratio": 0.955
+     },
+     "leftHand": {
+      "angle": -121.36,
+      "ratio": 0.9956
+     }
+    }
+   },
+   "tuck": {
+    "part": "leftArm.tuck",
+    "anchor": [
+     "hairTuck",
+     "oneShot",
+     1300
+    ],
+    "maxBendDeg": [
+     18,
+     25
+    ],
+    "chain": "leftArm.tuck",
+    "art": {
+     "upper": {
+      "angle": 68.18,
+      "len": 16.44
+     },
+     "forearm": {
+      "angle": -109.31,
+      "len": 46.19
+     },
+     "hand": {
+      "angle": -98.72,
+      "len": 18.74
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": -24.24,
+      "ratio": 0.8791
+     },
+     "leftForearm": {
+      "angle": -169.69,
+      "ratio": 0.9487
+     },
+     "leftHand": {
+      "angle": -133.22,
+      "ratio": 0.8633
+     }
+    }
+   },
+   "tuckmid": {
+    "part": "leftArm.tuckmid",
+    "anchor": [
+     "hairTuck",
+     "oneShot",
+     740
+    ],
+    "maxBendDeg": [
+     18,
+     25
+    ],
+    "upperCost": 0.5,
+    "chain": "leftArm.tuckmid",
+    "art": {
+     "upper": {
+      "angle": 78.31,
+      "len": 25.82
+     },
+     "forearm": {
+      "angle": -115.27,
+      "len": 42.89
+     },
+     "hand": {
+      "angle": -106.1,
+      "len": 20.41
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 81.52,
+      "ratio": 0.8143
+     },
+     "leftForearm": {
+      "angle": -105.34,
+      "ratio": 0.9963
+     },
+     "leftHand": {
+      "angle": -110.84,
+      "ratio": 0.9781
+     }
+    }
+   },
+   "front": {
+    "part": "leftArm.front",
+    "anchor": [
+     "think",
+     "enter",
+     470
+    ],
+    "maxBendDeg": [
+     25,
+     30
+    ],
+    "upperCost": 0.7,
+    "costScale": 1.5,
+    "chain": "leftArm.front",
+    "art": {
+     "upper": {
+      "angle": 94.21,
+      "len": 41.51
+     },
+     "forearm": {
+      "angle": -126.77,
+      "len": 20.4
+     },
+     "hand": {
+      "angle": -174.03,
+      "len": 21.05
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 90.23,
+      "ratio": 0.9805
+     },
+     "leftForearm": {
+      "angle": -117.91,
+      "ratio": 0.6442
+     },
+     "leftHand": {
+      "angle": -177.04,
+      "ratio": 0.9175
+     }
+    }
+   },
+   "hipfront": {
+    "part": "leftArm.hipfront",
+    "anchor": [
+     "think",
+     "enter",
+     330
+    ],
+    "maxBendDeg": [
+     25,
+     30
+    ],
+    "chain": "leftArm.hipfront",
+    "art": {
+     "upper": {
+      "angle": 80.38,
+      "len": 39.12
+     },
+     "forearm": {
+      "angle": 155.91,
+      "len": 20.29
+     },
+     "hand": {
+      "angle": -174.66,
+      "len": 23.42
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 75.73,
+      "ratio": 0.9478
+     },
+     "leftForearm": {
+      "angle": 168.87,
+      "ratio": 0.4483
+     },
+     "leftHand": {
+      "angle": 135.75,
+      "ratio": 0.6433
+     }
+    }
+   },
+   "hipoff": {
+    "part": "leftArm.hipoff",
+    "anchor": [
+     "wave",
+     "oneShot",
+     240
+    ],
+    "maxBendDeg": [
+     25,
+     30
+    ],
+    "chain": "leftArm.hipoff",
+    "art": {
+     "upper": {
+      "angle": 58.2,
+      "len": 38.46
+     },
+     "forearm": {
+      "angle": 96.18,
+      "len": 34.44
+     },
+     "hand": {
+      "angle": 109.37,
+      "len": 24.96
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 50.26,
+      "ratio": 0.8867
+     },
+     "leftForearm": {
+      "angle": 126.76,
+      "ratio": 0.5982
+     },
+     "leftHand": {
+      "angle": 86.22,
+      "ratio": 0.5495
+     }
+    }
+   },
+   "talk": {
+    "part": "leftArm.talk",
+    "anchor": [
+     "talk",
+     "loop",
+     0
+    ],
+    "upperOffsetDeg": 6,
+    "chain": "leftArm.talk",
+    "art": {
+     "upper": {
+      "angle": 96.58,
+      "len": 41.68
+     },
+     "forearm": {
+      "angle": 0,
+      "len": 16.35
+     },
+     "hand": {
+      "angle": 5.71,
+      "len": 21.92
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 71.65,
+      "ratio": 0.9906
+     },
+     "leftForearm": {
+      "angle": -39.71,
+      "ratio": 0.3983
+     },
+     "leftHand": {
+      "angle": -8.07,
+      "ratio": 0.4523
+     }
+    }
+   },
+   "happy": {
+    "part": "leftArm.happy",
+    "anchor": [
+     "happy",
+     "oneShot",
+     1100
+    ],
+    "maxBendDeg": [
+     12,
+     20
+    ],
+    "chain": "leftArm.happy",
+    "art": {
+     "upper": {
+      "angle": 90.73,
+      "len": 33.78
+     },
+     "forearm": {
+      "angle": -83.78,
+      "len": 36.17
+     },
+     "hand": {
+      "angle": -90.05,
+      "len": 11.55
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 70.61,
+      "ratio": 0.9949
+     },
+     "leftForearm": {
+      "angle": -102.82,
+      "ratio": 0.8097
+     },
+     "leftHand": {
+      "angle": -110.06,
+      "ratio": 0.8272
+     }
+    }
+   },
+   "hang": {
+    "part": "leftArm.drag",
+    "anchor": [
+     "drag",
+     "loop",
+     0
+    ],
+    "maxBendDeg": [
+     28,
+     30
+    ],
+    "chain": "leftArm.drag",
+    "art": {
+     "upper": {
+      "angle": 78.48,
+      "len": 49.67
+     },
+     "forearm": {
+      "angle": 79.9,
+      "len": 41.51
+     },
+     "hand": {
+      "angle": 95.02,
+      "len": 19.9
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 73.2,
+      "ratio": 0.976
+     },
+     "leftForearm": {
+      "angle": 86.2,
+      "ratio": 0.9269
+     },
+     "leftHand": {
+      "angle": 88.12,
+      "ratio": 0.9707
+     }
+    }
+   },
+   "sleep": {
+    "part": "leftArm.drag",
+    "anchor": [
+     "sleep",
+     "loop",
+     0
+    ],
+    "chain": "leftArm.drag",
+    "art": {
+     "upper": {
+      "angle": 78.48,
+      "len": 49.67
+     },
+     "forearm": {
+      "angle": 79.9,
+      "len": 41.51
+     },
+     "hand": {
+      "angle": 95.02,
+      "len": 19.9
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 80.73,
+      "ratio": 0.9862
+     },
+     "leftForearm": {
+      "angle": 87.93,
+      "ratio": 0.9828
+     },
+     "leftHand": {
+      "angle": 92.99,
+      "ratio": 0.9849
+     }
+    }
+   },
+   "land": {
+    "part": "leftArm.land",
+    "anchor": [
+     "drag",
+     "exit",
+     200
+    ],
+    "costScale": 1.4,
+    "chain": "leftArm.land",
+    "art": {
+     "upper": {
+      "angle": 76.1,
+      "len": 45.99
+     },
+     "forearm": {
+      "angle": 58.93,
+      "len": 29.49
+     },
+     "hand": {
+      "angle": 50.72,
+      "len": 21.48
+     }
+    },
+    "spec": {
+     "leftUpperArm": {
+      "angle": 64.81,
+      "ratio": 0.9355
+     },
+     "leftForearm": {
+      "angle": 94.35,
+      "ratio": 0.83
+     },
+     "leftHand": {
+      "angle": 95.6,
+      "ratio": 0.8559
+     }
+    }
+   }
+  },
+  "clipKeys": {
+   "idle": [
+    "rest"
+   ],
+   "blink": [
+    "rest"
+   ],
+   "breathe": [
+    "rest"
+   ],
+   "look": [
+    "rest"
+   ],
+   "notice": [
+    "rest"
+   ],
+   "nod": [
+    "rest"
+   ],
+   "hairTuck": [
+    "rest",
+    "hipfront",
+    "front",
+    "tuckmid",
+    "tuck"
+   ],
+   "think": [
+    "rest",
+    "hipfront",
+    "front",
+    "think"
+   ],
+   "talk": [
+    "rest",
+    "hipoff",
+    "hang",
+    "talk"
+   ],
+   "happy": [
+    "rest",
+    "hipfront",
+    "front",
+    "happy"
+   ],
+   "wave": [
+    "rest",
+    "hipoff",
+    "hang",
+    "raise"
+   ],
+   "drag": [
+    "rest",
+    "hipoff",
+    "hang",
+    "land"
+   ],
+   "drag.enter": [
+    "rest",
+    "hipoff",
+    "hang"
+   ],
+   "sleep": [
+    "rest",
+    "hipoff",
+    "sleep"
+   ]
+  },
+  "choose": "spec",
+  "weightPower": 3,
+  "fadeMs": 70,
+  "hysteresisDeg": 8,
+  "maxBendDeg": [
+   45,
+   40
+  ],
+  "note": "Shepard weights 1/d^weightPower by distance d to each key anchor (angles; exactly 1 at an anchor); angle and length offsets art - spec are blended by weight. The drawing shown is the one the pose bends least (upper-arm turn + elbow and wrist bend change from its own configuration, 8 deg hysteresis), and no drawing bends more than maxBendDeg at the elbow and wrist (skinning folds beyond that); when the drawing changes it swaps at once on the same posed bones (a cross-fade shows two arms). fadeMs is used only by the seeded cross-fade render (render.mjs --xfade) that the doubled-limb rule must catch. costScale > 1 makes a drawing give way sooner (the hip drawing leaves as the hand leaves the hip)."
+ },
+ "head": {
+  "front": {
+   "layers": [
+    "backHair",
+    "head",
+    "frontHair"
+   ],
+   "closed": "head.closed",
+   "eyes": [
+    [
+     47.202,
+     40.161
+    ],
+    [
+     60.512,
+     39.932
+    ]
+   ]
+  },
+  "views": [],
+  "maxTurnDeg": [
+   16,
+   14
+  ],
+  "warp": {
+   "sx": 14,
+   "sy": 18,
+   "cx": 53.86,
+   "cy": 40.05,
+   "R": 14.72,
+   "Rv": 14.72,
+   "chinY": 62.37,
+   "chinW": 10,
+   "note": "p -> p + (R sin yaw, Rv sin pitch) g(p) k(y): g a Gaussian bump about the eye midpoint (cx, cy) of widths (sx, sy), k = clamp((chinY - y) / chinW, 0, 1) so the jaw stays on the neck; R = Rv = half the face width at the eye row. Glasses, eyes, nose and mouth share the warp, so the glasses stay on the eyes."
+  }
+ },
+ "face": {
+  "eyesClosed": {
+   "expr": "blink",
+   "min": 0.5
+  },
+  "smile": {
+   "expr": "happy",
+   "min": 0.35,
+   "part": "face.mouth.smile"
+  },
+  "talk": {
+   "exprs": [
+    "aa",
+    "ih",
+    "ou",
+    "ee",
+    "oh"
+   ],
+   "min": 0.2,
+   "part": "face.mouth.talk"
+  }
+ },
+ "secondary": {
+  "frontHair": {
+   "anchorY": 26.42,
+   "depth": 30,
+   "k": 120,
+   "damp": 9,
+   "gain": 0.9,
+   "maxPx": 1.5
+  },
+  "backHair": {
+   "anchorY": 52.81,
+   "depth": 16,
+   "k": 90,
+   "damp": 7,
+   "gain": 1,
+   "maxPx": 1.5
+  },
+  "pelvis": {
+   "anchorY": 177.58,
+   "depth": 40,
+   "k": 140,
+   "damp": 10,
+   "gain": 0.7,
+   "maxPx": 1.2
+  },
+  "bow": {
+   "part": "torso.noLeftSleeve",
+   "box": [
+    45,
+    78.09,
+    63,
+    112.09
+   ],
+   "anchorY": 80.09,
+   "depth": 30,
+   "k": 160,
+   "damp": 10,
+   "gain": 0.8,
+   "maxPx": 1.2
+  }
+ },
+ "stretch": {
+  "min": 0.75,
+  "max": 1.25,
+  "minLeftArm": [
+   0.7,
+   0.5,
+   0.7
+  ],
+  "note": "a drawing is stretched along its bone by at most 25 %; beyond that it is clamped and counted. The left arm may shorten further (upper arm, forearm, hand) where the spec projects it end-on: every raise passes the forearm through pointing at the camera (projected ratio 0.10-0.30); below half length a drawing reads as collapsed, so the cross-fade to the next key covers that stretch."
+ },
+ "kArt": 0.86
+}

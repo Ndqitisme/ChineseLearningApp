@@ -10,9 +10,9 @@
   import { initProgress, progress, saveProgress, today } from '../lib/progress.svelte.ts';
   import { pickNext, recordExposure } from '../lib/scheduler.ts';
   import { openWord, settings, updateSettings } from '../lib/settings.svelte.ts';
-  import { speak, speechAvailable } from '../lib/speech/index.ts';
-  import { displayScale, loadSkin, type Skin } from '../lib/sprite/skins.ts';
-  import Sprite, { SpritePlayer } from '../lib/sprite/Sprite.svelte';
+  import { onSpeech, speak, speechAvailable } from '../lib/speech/index.ts';
+  import Rig from '../lib/rig/Rig.svelte';
+  import { FRAME, displayScale, loadRig, type HitRect } from '../lib/rig/load.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
@@ -20,7 +20,16 @@
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
 
   const win = getCurrentWindow();
-  const player = new SpritePlayer();
+  // The rig plays the motion spec's state machine; every app event below is one of spec.stateMachine.events.
+  let rig = $state<ReturnType<typeof Rig>>();
+  const emit = (name: string, data?: object) => rig?.emit(name, data);
+  // The rig mounts a tick after `ready`, so the start event goes out once it exists (it queues until drawn).
+  let appStarted = false;
+  $effect(() => { if (rig && !appStarted) { appStarted = true; rig.emit('appStart'); } });
+  // True while the rig draws: the character's click-through rect is reported only then, so a canvas that
+  // failed or lost its context never blocks clicks to what is underneath.
+  let drawing = $state(false);
+  $effect(() => { if (!settings.petCharacter) drawing = false; });
 
   let ready = $state(false);
   let anchor = $state<Anchor>({ h: 'right' });
@@ -39,8 +48,9 @@
   let bubbleEl = $state<HTMLElement>();
   let menuEl = $state<HTMLElement>();
 
-  let skin = $state<Skin | null>(null);
-  const spriteScale = $derived(skin ? displayScale(skin, settings.petScale) : 1);
+  /** Visible character box inside the frame, known once rig.json has loaded. */
+  let hit = $state<HitRect>({ x: 0, y: 0, w: 1, h: 1 });
+  const spriteScale = $derived(displayScale(settings.petScale));
   // With the character hidden, the window holds only the bubble. The "sprite" then becomes a
   // zero-height strip along the window bottom, so placement and snapping keep working unchanged.
   const BUBBLE_ONLY_W = 290;
@@ -48,11 +58,11 @@
   let bubbleRoom = $state(BASE_BUBBLE_ROOM);
   const spriteCss = $derived(
     !settings.petCharacter ? { w: BUBBLE_ONLY_W, h: 0 }
-    : skin ? { w: Math.round(skin.frameW * spriteScale), h: Math.round(skin.frameH * spriteScale) }
-    : { w: 150, h: 300 },
+    : { w: Math.round(FRAME.w * spriteScale), h: Math.round(FRAME.h * spriteScale) },
   );
-  // Side-facing art is mirrored so she always looks toward the middle of the screen.
-  const mirror = $derived(!!skin && ((skin.facing === 'left' && anchor.h === 'left') || (skin.facing === 'right' && anchor.h === 'right')));
+  // The art faces the image right; on the right edge it is mirrored so she looks toward the middle of the screen.
+  const mirror = $derived(anchor.h === 'right');
+  const visible = $derived(settings.petEnabled && !(busy && settings.hideOnFullscreen));
   const winCss = $derived(settings.petCharacter ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
   const slotInset = $derived(settings.petCharacter ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: 4, top: 4 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
@@ -113,9 +123,8 @@
   async function reportHitRects() {
     await tick();
     const rects = [];
-    if (spriteEl) {
+    if (spriteEl && drawing) {
       const r = spriteEl.getBoundingClientRect();
-      const hit = skin?.hit ?? { x: 0, y: 0, w: 1, h: 1 };
       const hx = mirror ? 1 - hit.x - hit.w : hit.x;
       rects.push({ x: r.x + r.width * hx, y: r.y + r.height * hit.y, w: r.width * hit.w, h: r.height * hit.h });
     }
@@ -127,7 +136,7 @@
     await ipc.setHitRects(rects);
   }
   $effect(() => {
-    void [ready, skin, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
+    void [ready, drawing, hit, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
     reportHitRects();
   });
   $effect(() => {
@@ -145,6 +154,13 @@
   $effect(() => {
     // A bubble removed under the cursor never gets pointerleave; don't let the flag stick.
     if (!bubble) hoveringBubble = false;
+  });
+  let menuWas = false;
+  $effect(() => {
+    // Open from the context menu; closed by an item, a blur or a drag start. She glances at the menu meanwhile.
+    if (menuOpen === menuWas) return;
+    menuWas = menuOpen;
+    emit(menuOpen ? 'menuOpen' : 'menuClose');
   });
 
   // ------------------------------------------------------------------ scheduler loop
@@ -169,28 +185,29 @@
     return from <= to ? m >= from && m < to : m >= from || m < to;
   }
 
-  function goSleep() {
+  /** Sleep is a state the rig holds until userBack; it is sent once, never while already asleep. */
+  function goSleep(why: 'longIdle' | 'quietHours') {
     if (sleeping) return;
     sleeping = true;
     closeBubble();
-    player.play('sleep');
+    emit(why);
   }
   function wake() {
     if (!sleeping) return;
     sleeping = false;
-    player.play('happy');
+    emit('userBack');
   }
 
   async function loop() {
     if (!settings.petEnabled) return; // re-armed by the effect below when re-enabled
     if (progress.pausedUntil > Date.now() || inQuietHours()) {
-      goSleep();
+      goSleep('quietHours');
       return scheduleTick(30_000);
     }
     const sys = await ipc.systemState().catch(() => ({ busy: false, idleSecs: 0 }));
     if (sys.busy || busy) return scheduleTick(5_000);
     if (settings.idlePauseMin > 0 && sys.idleSecs > settings.idlePauseMin * 60) {
-      goSleep();
+      goSleep('longIdle');
       return scheduleTick(3_000);
     }
     wake();
@@ -226,14 +243,16 @@
     recent = [...recent.slice(-9), pick.id];
 
     // Guess mode: she ponders (chin on hand) while the learner tries to recall the meaning.
-    player.play(revealed ? 'talk' : 'think');
+    emit(revealed ? 'wordShownRevealed' : 'wordShownGuess');
     clearTimeout(revealTimer);
     if (!revealed) revealTimer = setTimeout(reveal, 2600);
     if (settings.speech.autoplayInPet && speechAvailable()) speak(word.hanzi).catch(() => {});
   }
 
   function reveal() {
-    if (bubble && !bubble.revealed) bubble = { ...bubble, revealed: true };
+    if (!bubble || bubble.revealed) return;
+    bubble = { ...bubble, revealed: true };
+    emit('reveal');
   }
 
   function closeBubble() {
@@ -243,7 +262,9 @@
   }
 
   function nextNow() {
+    // While asleep the rig treats this as a userBack (wake, then wave); otherwise it is nothing.
     sleeping = false;
+    emit('nextNow');
     advance();
   }
 
@@ -259,7 +280,6 @@
 
   // ------------------------------------------------------------------ pointer: click vs drag
   let down: { x: number; y: number } | null = null;
-  let lastWave = 0;
 
   // Drag starts from the character or from any part of the bubble that is not a button.
   function onDragDown(e: PointerEvent) {
@@ -273,10 +293,10 @@
     down = null;
     dragging = true;
     movedSinceDrag = false;
-    player.play('drag');
+    emit('dragStart');
     win.startDragging().finally(() => {
       // If the OS drag ended without moving the window, no Moved event will clear the flag.
-      setTimeout(() => { if (dragging && !movedSinceDrag) { dragging = false; player.play('idle'); } }, 1200);
+      setTimeout(() => { if (dragging && !movedSinceDrag) { dragging = false; emit('dragEnd'); } }, 1200);
     });
   }
   function onSpriteUp() {
@@ -285,25 +305,12 @@
     resume();
   }
   function resume() {
+    emit('click');
     if (sleeping) { progress.pausedUntil = 0; saveProgress('pausedUntil'); wake(); }
     nextNow();
   }
   function onSpriteEnter() {
-    if (sleeping || dragging || player.current !== 'idle' || Date.now() - lastWave < 15_000) return;
-    lastWave = Date.now();
-    player.play('wave');
-  }
-
-  // ------------------------------------------------------------------ idle micro-animations
-  let idleTimer: ReturnType<typeof setTimeout> | undefined;
-  function idleLoop() {
-    idleTimer = setTimeout(() => {
-      if (!sleeping && !dragging && player.current === 'idle') {
-        const r = Math.random();
-        player.play(r < 0.55 ? 'blink' : r < 0.75 ? 'breathe' : r < 0.9 ? 'look' : 'wink');
-      }
-      idleLoop();
-    }, 3000 + Math.random() * 4000);
+    emit('hoverEnter');
   }
 
   // ------------------------------------------------------------------ menu actions
@@ -311,7 +318,7 @@
     progress.pausedUntil = minutes ? Date.now() + minutes * 60_000 : 0;
     await saveProgress('pausedUntil');
     menuOpen = false;
-    if (minutes) goSleep();
+    if (minutes) goSleep('quietHours');
     else { wake(); nextNow(); }
   }
   async function hidePet() {
@@ -324,19 +331,25 @@
   }
 
   // ------------------------------------------------------------------ lifecycle
-  let shown = false;
+  let shown = false, hiddenBefore = false;
   $effect(() => {
     // The only place that shows/hides the window: assistant toggled (here, tray, settings) or a
     // fullscreen app appearing/leaving. Re-showing always restarts the scheduler loop.
     if (!ready) return;
-    const visible = settings.petEnabled && !(busy && settings.hideOnFullscreen);
     if (visible) {
-      if (!shown) { shown = true; win.show(); scheduleTick(1500); }
+      if (!shown) {
+        shown = true;
+        win.show();
+        scheduleTick(1500);
+        if (hiddenBefore) emit('fullscreenShow');
+      }
     } else if (shown) {
       shown = false;
+      hiddenBefore = true;
       clearTimeout(tickTimer);
       closeBubble();
       win.hide();
+      emit('fullscreenHide');
     }
   });
 
@@ -362,15 +375,14 @@
   onMount(() => {
     const unlisten: Promise<() => void>[] = [];
     (async () => {
-      const [loaded] = await Promise.all([loadSkin(), initProgress()]);
-      skin = loaded;
-      player.setSkin(loaded);
+      await initProgress();
       applyTheme();
       await restorePlacement();
       lastWin = `${winCss.w}x${winCss.h}`;
       ready = true;
-      idleLoop();
     })();
+    loadRig().then((a) => (hit = a.hit), () => {});
+    const unlistenSpeech = onSpeech((phase, token) => emit(phase === 'start' ? 'speakStart' : 'speakEnd', { token }));
 
     let moveTimer: ReturnType<typeof setTimeout> | undefined;
     unlisten.push(win.onMoved(() => {
@@ -379,7 +391,7 @@
       clearTimeout(moveTimer);
       moveTimer = setTimeout(async () => {
         await settle();
-        if (dragging) { dragging = false; player.play('idle'); }
+        if (dragging) { dragging = false; emit('dragEnd'); }
       }, 250);
     }));
     unlisten.push(win.onScaleChanged(() => settle()));
@@ -398,10 +410,10 @@
 
     return () => {
       unlisten.forEach((u) => u.then((f) => f()));
+      unlistenSpeech();
       window.removeEventListener('blur', onBlur);
       clearTimeout(tickTimer);
       clearTimeout(swapTimer);
-      clearTimeout(idleTimer);
     };
   });
 </script>
@@ -433,10 +445,10 @@
         onsetupvoice={() => ipc.openMain('/settings/voice')}
         onhandledown={onDragDown}
         onhandlemove={onDragMove}
-        onknown={() => { if (bubble) patchExposure(bubble.word.id, { known: true }); nextNow(); player.play('happy'); }}
+        onknown={() => { if (bubble) patchExposure(bubble.word.id, { known: true }); emit('known'); nextNow(); }}
         onstar={() => bubble && patchExposure(bubble.word.id, { starred: !starred })}
         onreveal={reveal}
-        onhover={(inside) => (hoveringBubble = inside)}
+        onhover={(inside) => { hoveringBubble = inside; if (inside) emit('hoverBubble'); }}
       />
       {:else if !sleeping}
         <button class="nap" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
@@ -485,7 +497,7 @@
     onpointerenter={onSpriteEnter}
     oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
   >
-    {#if ready && skin}<Sprite {skin} scale={spriteScale} {player} {mirror} />{/if}
+    {#if ready}<Rig bind:this={rig} scale={spriteScale} {mirror} hidden={!visible} onready={() => { drawing = true; if (sleeping) emit('longIdle'); }} onlost={() => (drawing = false)} />{/if}
     {#if sleeping}<span class="zzz" aria-hidden="true">z<small>z</small></span>{/if}
   </div>
   {/if}
