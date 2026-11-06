@@ -1,6 +1,6 @@
 # Lộ trình tính năng học nhanh
 
-> Lộ trình sau v1, tổng hợp từ 14 phương pháp học nhanh và 28 nguồn đã đọc. Thiết kế chung: [PLAN.md](PLAN.md).
+> Tính năng tiếp theo, theo thứ tự ưu tiên. Thiết kế chung: [PLAN.md](PLAN.md).
 
 ## 0. Mục tiêu
 
@@ -54,7 +54,7 @@ Công sức: **S** = dưới một ngày, một hai file; **M** = một đến h
 
 ### 2.3 Cảnh báo "bẫy Hán Việt"
 
-- **Giá trị:** với người Việt, Hán Việt là cầu nối lớn nhất, và cũng là chỗ hiểu sai nặng nhất: 困难 là "khó khăn" chứ không phải "khốn nạn", 工作 là "làm việc" chứ không phải "công tác", 表情 không phải "biểu tình". App đã chỉ hiện Hán Việt khi cùng nghĩa [đo, PLAN mục 9], nhưng chưa nói gì khi một từ hay bị hiểu nhầm.
+- **Giá trị:** với người Việt, Hán Việt là cầu nối lớn nhất, và cũng là chỗ hiểu sai nặng nhất: 困难 là "khó khăn" chứ không phải "khốn nạn", 工作 là "làm việc" chứ không phải "công tác", 表情 không phải "biểu tình". App đã chỉ hiện Hán Việt khi cùng nghĩa [đo, PLAN mục 8], nhưng chưa nói gì khi một từ hay bị hiểu nhầm.
 - **Bằng chứng:** bài khảo sát lỗi chuyển di của sinh viên (Lê Văn Trung 2012, Tạp chí Khoa học ĐHSP TP.HCM số 35) và danh sách từ "giống mà khác" ở [Sino-Vietnamese vocabulary](https://en.wikipedia.org/wiki/Sino-Vietnamese_vocabulary). Là mô tả, không phải thử nghiệm đối chứng.
 - **Thiết kế:** file tay `data/hanviet/false-friends.tsv` gồm `hanzi`, `hanviet`, `nghĩa dễ nhầm`, `nghĩa thật`, `nguồn`. `tools/data/build.ts` gắn vào từ thành trường tuỳ chọn `Word.trap?: { vi: string }` và báo lỗi nếu chữ không có trong dữ liệu hoặc ô trống. Hiện một chip "Dễ nhầm" trên `src/main/pages/Word.svelte` và ở mặt sau thẻ ôn. Bắt đầu với 20–40 dòng, mỗi dòng có người kiểm. Theo luật "chưa chắc thì ẩn".
 - **Công sức:** M (phần lớn là biên soạn và duyệt dữ liệu).
@@ -73,7 +73,7 @@ Công sức: **S** = dưới một ngày, một hai file; **M** = một đến h
 - **Bằng chứng:** trung bình. Meta-analysis về cảm nhận thanh tiếng Trung, 18 nghiên cứu, thanh 2 và 3 khó nhất (Cui & Zhao 2025); một nghiên cứu nhỏ trên 44 người học nói tiếng Việt: nhóm học có cử chỉ có hoạt động vỏ não trước trán trái mạnh hơn, và hoạt động đó đi cùng độ chính xác phân biệt biến thanh cao hơn; phần tóm tắt không báo khác biệt hành vi giữa hai nhóm (Cui et al. 2026). Quy tắc biến thanh 3-3, 不, 一 ở [Standard Chinese phonology](https://en.wikipedia.org/wiki/Standard_Chinese_phonology).
 - **Thiết kế:** không thêm file dữ liệu. Tạo cặp lúc chạy: nhóm các từ có cùng `searchKey` nhưng khác thanh, ưu tiên cặp khác nhau ở thanh 2/3. Phát một từ, người học chọn từ nào vừa nghe. Đặt thành một phần trong `src/main/pages/Tones.svelte` (hoặc chế độ mới trong `Quiz.svelte` nếu gọn hơn khi làm). Bước sau: hàm thuần `spokenTones(word)` trong `src/lib/pinyin.ts` cho biến thanh 3-3, 不, 一, hiện "đọc thực tế" trên trang từ, có vitest.
 - **Công sức:** M.
-- **Rủi ro:** cần giọng đọc; máy dev chưa có giọng zh-CN [đo, PLAN M6], nên nhiều người dùng sẽ không có tiếng. Giọng hệ thống đọc chữ đơn có thể sai thanh. Số cặp thật trong HSK 1–3 có thể ít [đoán]; đếm bằng script trước khi làm giao diện.
+- **Rủi ro:** cần giọng đọc; máy dev đầu tiên không có giọng zh-CN [đo], nên nhiều người dùng sẽ không có tiếng. Giọng hệ thống đọc chữ đơn có thể sai thanh. Số cặp thật trong HSK 1–3 có thể ít [đoán]; đếm bằng script trước khi làm giao diện.
 - **Ca kiểm thử:**
   1. Không có giọng: thẻ chế độ mờ đi và dẫn tới Cài đặt, giống "Nghe chọn chữ"; không có trang trắng.
   2. Có giọng: mỗi câu phát đúng một từ, nút nghe lại chạy.
