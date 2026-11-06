@@ -1,0 +1,14 @@
+# Frozen consistency checker. Do not edit any file listed below. Verify first (from the repo root):
+#   cd tools/skins/ai2d/consistency && grep -E '^[0-9a-f]{64}  ' FROZEN | sha256sum -c
+# Checker command (from the repo root; see README.txt):
+#   tools/skins/ai2d/.venv/Scripts/python.exe -I tools/skins/ai2d/consistency/consistency.py --frames <DIR> --out <OUT>
+# Proof: tools/skins/ai2d/.venv/Scripts/python.exe -I tools/skins/ai2d/consistency/prove.py   (writes proof.json; exit 0 = every seed caught, the clean fixture reports exactly its known defects)
+# Depends on the frozen likeness harness (tools/skins/ai2d/harness/likeness.py sha256 8d07d6f5f15b709edd0bc553513b84740e8e53dc9749ec258e1eadd12b8c4791) and the venv tools/skins/ai2d/.venv, made from tools/skins/ai2d/harness/requirements.lock.
+#
+4e73050cffca74fddc3589555413d687f25d32a705a7e96d2b05e483d7f7d352  consistency.py
+d6b6735467e5ea7350e2f3d593f420f0d64a12587c7b12d7fac1d50c0e6d906b  prove.py
+49e4175277f79c90be7d5552f07a3a2d5d0391911d83161bf28c90089a946ffb  README.txt
+ae7698dd34ec0af458c13370c588e3554768081da305d2955e51b57ca1da6991  CREDITS.md
+ad534134c8879e2fa38a0e74f519921c770b4fcede366fcfe40b2a78c3f64e5b  fixtures/make_r1_frames.py
+6878b0abb3adcb25d1140eacabfc96e01bdab221a42cec4342917dbd7d3a75fc  fixtures/wave_key_4x.png
+97af26069ef98239eb92f59f629d97e072674de3327eed2680ed65b960fa0933  fixtures/r1_clean/manifest.json

@@ -1,0 +1,12 @@
+Use your built-in image generation tool to EDIT IMAGE 1 (exactly one generation).
+
+You get two images, both 1024x1024 and framed the same way. IMAGE 1 is a crop of a character illustration, from her chin down to the top of her skirt: a young woman in a white short-sleeved school shirt with a black bow. IMAGE 2 is only a pose guide: a greyed copy of the same crop with coloured bone lines for her LEFT arm (orange = upper arm, yellow = forearm, lime = hand) and white joint dots. Take from IMAGE 2 only WHERE that arm goes. Never copy the lines, dots or grey into the result.
+
+EDIT: Change only her LEFT arm (the arm on the RIGHT side of the image, which now rests with the hand on the hip). She has let the arm go loose and it now hangs relaxed beside her body: the elbow is a little out from her side near x 627, y 517, softly bent, and the forearm hangs down so the wrist is near x 579, y 736 and the middle fingertip near x 560, y 867, with a clear strip of green background between the arm and her side. The hand is relaxed, fingers loosely together and gently curved, palm turned toward her body. A calm, neutral standing pose.
+
+Draw the whole arm as ONE continuous limb in the illustration's own style: the short white sleeve on the upper arm, a smooth natural elbow, a smooth wrist, and a complete hand with exactly five fingers (thumb included), every finger whole, none cut, merged or extra. The sleeve sits on the upper arm and follows it. Where the hand used to rest, draw the shirt and the waistband cleanly as they continue.
+
+Keep EVERYTHING else identical to IMAGE 1: the 1024x1024 canvas, framing and scale, the chin, neck, collar and black bow, the shirt, her RIGHT arm (left side of the image), the flat solid chroma-green background, the lighting, colours and the semi-realistic anime illustration style.
+
+
+Save the result as a PNG in the current working directory named exactly hipoff.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

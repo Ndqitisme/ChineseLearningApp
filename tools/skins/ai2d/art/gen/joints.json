@@ -1,0 +1,220 @@
+{
+ "_about": "Joint sites in each source image's own pixels (1024x1536), read by eye off work/grid_*.png and work/g2_*.png (2x zooms, 10 px grid), +-5 px. S shoulder, E elbow, W wrist, T hand tip (middle fingertip or knuckle line of a fist). Keys register to master within 0.5 px (ECC affine on skirt and legs, work/reg_probe.py), so S is the same body point in all of them. Rest legs are not stored here: run.py step_legs derives them from rest_r1.leftLeg through the same shear and mirror that build the new stance.",
+ "rest": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    781,
+    480
+   ],
+   "W": [
+    664,
+    610
+   ],
+   "T": [
+    588,
+    600
+   ]
+  },
+  "rightArm": {
+   "S": [
+    372,
+    335
+   ],
+   "E": [
+    345,
+    560
+   ],
+   "W": [
+    310,
+    775
+   ],
+   "T": [
+    330,
+    875
+   ]
+  }
+ },
+ "sleep": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    655,
+    565
+   ],
+   "W": [
+    695,
+    770
+   ],
+   "T": [
+    700,
+    850
+   ]
+  }
+ },
+ "tuck": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    680,
+    425
+   ],
+   "W": [
+    610,
+    225
+   ],
+   "T": [
+    597,
+    140
+   ]
+  }
+ },
+ "think": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    630,
+    488
+   ],
+   "W": [
+    553,
+    325
+   ],
+   "T": [
+    515,
+    250
+   ]
+  }
+ },
+ "talk": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    630,
+    545
+   ],
+   "W": [
+    705,
+    545
+   ],
+   "T": [
+    805,
+    555
+   ]
+  }
+ },
+ "happy": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    650,
+    510
+   ],
+   "W": [
+    668,
+    345
+   ],
+   "T": [
+    668,
+    292
+   ]
+  }
+ },
+ "raise": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    735,
+    488
+   ],
+   "W": [
+    815,
+    348
+   ],
+   "T": [
+    868,
+    262
+   ]
+  }
+ },
+ "wave": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    765,
+    415
+   ],
+   "W": [
+    740,
+    256
+   ],
+   "T": [
+    738,
+    150
+   ]
+  }
+ },
+ "rest_r1": {
+  "_about": "run-1 master legs (before the new stance); used only to split the old legs",
+  "rightLeg": {
+   "H": [
+    425,
+    760
+   ],
+   "K": [
+    455,
+    1060
+   ],
+   "A": [
+    325,
+    1320
+   ],
+   "T": [
+    315,
+    1478
+   ]
+  },
+  "leftLeg": {
+   "H": [
+    560,
+    760
+   ],
+   "K": [
+    575,
+    1040
+   ],
+   "A": [
+    565,
+    1355
+   ],
+   "T": [
+    560,
+    1500
+   ]
+  }
+ }
+}

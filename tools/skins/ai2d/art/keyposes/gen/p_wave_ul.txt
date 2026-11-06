@@ -1,0 +1,11 @@
+Use your built-in image generation tool to EDIT IMAGE 1 (exactly one generation).
+
+You get two images. IMAGE 1 is the character illustration to EDIT. IMAGE 2 is only a pose guide in the same 1024x1536 framing: a rough grey 3D mannequin with coloured bone lines. Take from IMAGE 2 only WHERE the limbs go, read from the coloured lines and white joint dots (orange/yellow/lime = her LEFT arm: upper arm, forearm, hand; blue = her RIGHT arm; green/cyan = her LEFT leg; orange-red/red = her RIGHT leg). Ignore the mannequin's grey shapes, torn surfaces, face and proportions. Never copy the lines, dots or grey surfaces into the result.
+
+EDIT: Change only her LEFT arm (the arm on the RIGHT side of the image, which now rests with the hand on the hip). She waves hello: the upper arm goes out to the side from the shoulder with the elbow at about chest height (near x 760, y 420 on the 1024x1536 canvas), and the forearm points up and leans INWARD toward her head, so the wrist is near x 712, y 265 and the middle fingertip near x 684, y 178. Open palm facing the viewer, fingers together and relaxed, thumb visible. The hand stays clearly apart from her hair and head, with green between them.
+
+Draw the whole arm as ONE continuous limb in the illustration's own style: the short white sleeve on the upper arm, a smooth natural elbow, a smooth wrist, and a complete hand with exactly five fingers (thumb included), every finger whole with its nail, none cut, merged or extra. The sleeve sits on the upper arm and follows it; the shirt's side under the arm is drawn cleanly with no loose flap. The arm and hand stay fully inside the canvas with a clear margin of green on every side.
+
+Keep EVERYTHING else identical to IMAGE 1: canvas 1024x1536, framing and scale, the head, face, expression, hair and glasses exactly as they are, the cropped white shirt and black bow, the plaid skirt, the legs, socks and sneakers, her RIGHT arm (left side of the image) hanging relaxed, the flat solid chroma-green background, the lighting, colours and the semi-realistic anime illustration style.
+
+Save the result as a PNG in the current working directory named exactly wave_ul.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

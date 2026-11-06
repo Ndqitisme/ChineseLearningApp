@@ -1,0 +1,25 @@
+{
+ "bones": {
+  "S": [
+   105.47,
+   3.05
+  ],
+  "E": [
+   118.55,
+   80.18
+  ],
+  "W": [
+   81.51,
+   96.74
+  ],
+  "T": [
+   34.87,
+   92.39
+  ]
+ },
+ "restPos1x": [
+  35.244,
+  72.796
+ ],
+ "note": "round-6 hipfront drawing (U2 check r5 C5-1: waist slab cut with straight edges), rebuilt by the round-6 cut"
+}

@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="icon" href="data:,"><title>rig live</title>
+<style>html,body{margin:0;background:#ddd}canvas{display:block;width:139px;height:340px}</style></head><body>
+<canvas id="c"></canvas>
+<script type="module">
+// The live pet: RigPlayer + Timeline (the reference scheduler) + startLoop, at devicePixelRatio 2.
+// Idle: the held frame plus events: blinks, the spec's idle schedule (breath, weight shift,
+// glance) and the app's idle ticks every 25-45 s (Timeline pre-rolls them). The harness drives phases through window.*.
+import { RigPlayer, Timeline, startLoop } from '/lib/rig-player.js';
+const [rig, spec] = await Promise.all([fetch('/out/rig.json').then((r) => r.json()), fetch('/motion/motion-spec.json').then((r) => r.json())]);
+const atlas = await createImageBitmap(await (await fetch('/out/atlas.webp')).blob(), { premultiplyAlpha: 'premultiply' });
+const player = new RigPlayer({ rig, spec, atlas, canvas: document.getElementById('c'), scale: 2 });
+const tl = new Timeline(spec, { seed: 7 });
+let draws = 0, drawMs = [];
+const origPaint = player.paint.bind(player);
+player.paint = (items) => { const t0 = performance.now(); origPaint(items); drawMs.push(performance.now() - t0); };
+// during clips: loop ticks per second (the rate the pose is evaluated, presented when it changed) and presents per second
+let actN = 0, actMs = 0, lastAct = null, presN = 0;
+const loop = startLoop(player, tl, {
+  onTick: (t, info) => { if (info.clip !== 'idle') { if (lastAct !== null && t - lastAct < 150) { actN++; actMs += t - lastAct; } lastAct = t; } else lastAct = null; },
+  onFrame: (t, info) => { draws++; if (info.clip !== 'idle') presN++; } });
+window.activeFps = () => { const r = actMs ? (1000 * actN) / actMs : 0, p = actMs ? (1000 * presN) / actMs : 0; actN = 0; actMs = 0; presN = 0; return { tick: +r.toFixed(2), present: +p.toFixed(2) }; };
+const emit = (n, d) => { tl.emit(loop.t(), n, d); loop.poke(); };
+let tickTimer = null;
+window.draws = () => draws;
+window.drawStats = () => { const s = [...drawMs].sort((x, y) => x - y); drawMs = []; return { n: s.length, p50: s[Math.floor(s.length / 2)] ?? 0, p95: s[Math.floor(s.length * 0.95)] ?? 0, max: s[s.length - 1] ?? 0 }; };
+window.emit = emit;
+window.gestures = () => { const seq = [['appStart'], ['known'], ['wordShownRevealed'], ['speakStart', { token: 1 }], ['dragStart']]; let i = 0;
+  const go = () => { const [n, d] = seq[i % seq.length]; emit(n, d); if (n === 'dragStart') setTimeout(() => emit('dragEnd'), 1500); if (n === 'speakStart') setTimeout(() => emit('speakEnd', { token: 1 }), 2000); i++; tickTimer = setTimeout(go, 2700); }; go(); };
+window.sleepNow = () => { clearTimeout(tickTimer); emit('longIdle'); };
+window.setHidden = (h) => loop.setHidden(h);
+window.visibility = () => document.visibilityState;
+window.compTexBytes = () => player.compTexSize[0] * player.compTexSize[1] * 4;
+window.ready = true;
+</script></body></html>

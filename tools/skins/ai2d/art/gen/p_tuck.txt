@@ -1,0 +1,9 @@
+Use your built-in image generation tool to EDIT the attached image (exactly one generation).
+
+EDIT: Change only her LEFT arm (the arm on the RIGHT side of the image, which currently rests with the hand on the hip). Pose it tucking hair behind her ear: the elbow drops down and out to the side at about rib height, a hand-width away from the body; the forearm points straight up from the elbow, in front of the shoulder; the fingertips touch the hair just behind her left ear (the ear on the image-right side of her head), back of the hand toward the viewer, fingers together and gently curved. The hand stays beside the head and does not cover her eye, glasses, cheek or mouth.
+
+The short white sleeve follows the arm naturally. Draw the whole arm and the whole hand clearly, with every finger visible; the arm and hand must not be hidden behind anything.
+
+Keep EVERYTHING else identical to the attached image: canvas size 1024x1536, framing and scale, the head, face, expression, hair and glasses exactly as they are, the cropped white shirt and black bow, the plaid skirt, the legs and their pose, socks and sneakers, her RIGHT arm (left side of the image) hanging relaxed by her side, the flat solid chroma-green background, the lighting and the semi-realistic anime style.
+
+Save the result as a PNG in the current working directory named exactly tuck.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

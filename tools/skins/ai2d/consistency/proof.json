@@ -1,0 +1,822 @@
+{
+ "checker_sha256": "2a47f797f3fccb32dc9ac00431a2f2d948dd50873d77f5374d3ae07611dbef4c",
+ "seeds": {
+  "neck_seam_opaque": {
+   "intended": "seam",
+   "caught": true,
+   "seed_frame_fails": [
+    "holdout",
+    "likeness_peak",
+    "seam"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "worst_new_line_px": 158,
+    "fail_bands": [
+     "neck"
+    ],
+    "pass": false
+   }
+  },
+  "neck_seam_alpha": {
+   "intended": "see_through",
+   "caught": true,
+   "seed_frame_fails": [
+    "holdout",
+    "likeness_peak",
+    "see_through"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "components": [
+     {
+      "px": 309,
+      "at": [
+       205.5,
+       270.6
+      ],
+      "allowed": false
+     }
+    ],
+    "pass": false
+   }
+  },
+  "ghost_hand": {
+   "intended": "ghost",
+   "caught": true,
+   "seed_frame_fails": [
+    "ghost",
+    "holdout",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "components": [
+     {
+      "px_4x": 460,
+      "at": [
+       151.5,
+       388.6
+      ]
+     },
+     {
+      "px_4x": 224,
+      "at": [
+       168.2,
+       416.1
+      ]
+     }
+    ],
+    "pass": false
+   }
+  },
+  "hue_shift": {
+   "intended": "holdout",
+   "caught": true,
+   "seed_frame_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout"
+   ],
+   "evidence": {
+    "rows": [
+     {
+      "id": "holdout.hair.bright",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       31.3,
+       9.2,
+       70.3
+      ],
+      "cand_LCh": [
+       32.4,
+       9.5,
+       87.8
+      ],
+      "dL": 1.12,
+      "dC": 0.3,
+      "dh": 17.5,
+      "hue_checked": true,
+      "px": [
+       2162,
+       2135
+      ]
+     },
+     {
+      "id": "holdout.hair.place",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       28.1,
+       9.1,
+       73.6
+      ],
+      "cand_LCh": [
+       23.8,
+       7.2,
+       93.7
+      ],
+      "dL": -4.3,
+      "dC": -1.81,
+      "dh": 20.1,
+      "hue_checked": true,
+      "px": [
+       4131,
+       4593
+      ]
+     },
+     {
+      "id": "holdout.skin.bright",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       68.3,
+       13.0,
+       45.3
+      ],
+      "cand_LCh": [
+       67.7,
+       12.3,
+       63.6
+      ],
+      "dL": -0.61,
+      "dC": -0.68,
+      "dh": 18.3,
+      "hue_checked": true,
+      "px": [
+       2851,
+       3185
+      ]
+     },
+     {
+      "id": "holdout.skin.place",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       62.1,
+       13.7,
+       50.7
+      ],
+      "cand_LCh": [
+       65.1,
+       13.3,
+       67.3
+      ],
+      "dL": 2.96,
+      "dC": -0.4,
+      "dh": 16.7,
+      "hue_checked": true,
+      "px": [
+       2426,
+       3061
+      ]
+     },
+     {
+      "id": "holdout.iris.bright",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       22.6,
+       7.4,
+       87.1
+      ],
+      "cand_LCh": [
+       27.4,
+       4.1,
+       61.4
+      ],
+      "dL": 4.8,
+      "dC": -3.23,
+      "dh": -25.7,
+      "hue_checked": false,
+      "px": [
+       657,
+       812
+      ]
+     },
+     {
+      "id": "holdout.lips.bright",
+      "ran": true,
+      "pass": false,
+      "ref_LCh": [
+       56.5,
+       18.8,
+       53.3
+      ],
+      "cand_LCh": [
+       54.1,
+       18.1,
+       67.4
+      ],
+      "dL": -2.42,
+      "dC": -0.66,
+      "dh": 14.1,
+      "hue_checked": true,
+      "px": [
+       3124,
+       3130
+      ]
+     }
+    ],
+    "pass": false
+   },
+   "likeness_seed": {
+    "ran": true,
+    "pass": false,
+    "exit": 1,
+    "metrics_ran": 12,
+    "failed_ids": [
+     "palette.hair",
+     "palette.skin",
+     "palette.lips"
+    ],
+    "not_run": [],
+    "cand_mode": "mesh (UNVALIDATED)",
+    "metrics": ".cache\\team\\r2\\consistency\\runs\\seed_hue_shift\\likeness\\seed_0000\\metrics.json"
+   }
+  },
+  "swapped_head": {
+   "intended": "head_ssim",
+   "caught": true,
+   "seed_frame_fails": [
+    "head_ssim",
+    "holdout",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout"
+   ],
+   "evidence": {
+    "ssim": 0.8529,
+    "rot_deg": -0.13,
+    "shift": [
+     -0.8,
+     0.5
+    ],
+    "ecc_ok": true,
+    "head_view": false,
+    "pass": false
+   },
+   "likeness_seed": {
+    "ran": true,
+    "pass": false,
+    "exit": 1,
+    "metrics_ran": 12,
+    "failed_ids": [
+     "palette.hair",
+     "palette.skin",
+     "palette.iris",
+     "palette.lips"
+    ],
+    "not_run": [],
+    "cand_mode": "mesh",
+    "metrics": ".cache\\team\\r2\\consistency\\runs\\seed_swapped_head\\likeness\\seed_0000\\metrics.json"
+   }
+  },
+  "hole": {
+   "intended": "holes",
+   "caught": true,
+   "seed_frame_fails": [
+    "holdout",
+    "holes",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "4x": [
+     {
+      "px": 639,
+      "at": [
+       257.4,
+       223.5
+      ],
+      "allowed": true
+     },
+     {
+      "px": 24,
+      "at": [
+       136.0,
+       216.8
+      ],
+      "allowed": true
+     },
+     {
+      "px": 12400,
+      "at": [
+       338.9,
+       471.1
+      ],
+      "allowed": true
+     },
+     {
+      "px": 317,
+      "at": [
+       250.0,
+       640.0
+      ],
+      "allowed": false
+     },
+     {
+      "px": 70,
+      "at": [
+       55.2,
+       760.1
+      ],
+      "allowed": true
+     },
+     {
+      "px": 24,
+      "at": [
+       80.5,
+       1250.3
+      ],
+      "allowed": true
+     }
+    ],
+    "1x": [
+     {
+      "px": 29,
+      "at": [
+       255.2,
+       219.4
+      ],
+      "allowed": true
+     },
+     {
+      "px": 736,
+      "at": [
+       337.5,
+       468.2
+      ],
+      "allowed": true
+     },
+     {
+      "px": 14,
+      "at": [
+       249.1,
+       638.0
+      ],
+      "allowed": false
+     }
+    ],
+    "pass": false
+   }
+  },
+  "island": {
+   "intended": "islands",
+   "caught": true,
+   "seed_frame_fails": [
+    "ghost",
+    "holdout",
+    "islands",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "4x": [
+     {
+      "px": 576,
+      "at": [
+       481.5,
+       891.5
+      ]
+     }
+    ],
+    "1x": [
+     {
+      "px": 42,
+      "at": [
+       480.0,
+       890.0
+      ]
+     }
+    ],
+    "pass": false
+   }
+  },
+  "truncated_limb": {
+   "intended": "limbs",
+   "caught": true,
+   "seed_frame_fails": [
+    "holdout",
+    "islands",
+    "likeness_peak",
+    "limbs"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "leftUpperArm": {
+     "ratio": 0.755,
+     "rung": 1,
+     "in_ladder": true,
+     "rungs": [
+      1,
+      0.64
+     ],
+     "end_on": false,
+     "cover": 1.0,
+     "cover_distal": 1.0,
+     "pass_": true
+    },
+    "leftForearm": {
+     "ratio": 0.945,
+     "rung": 1,
+     "in_ladder": true,
+     "rungs": [
+      1,
+      0.64,
+      0.41,
+      0.26
+     ],
+     "end_on": true,
+     "cover": 0.333,
+     "cover_distal": 0.0,
+     "pass_": false
+    },
+    "pass": false
+   }
+  },
+  "halo": {
+   "intended": "halo",
+   "caught": true,
+   "seed_frame_fails": [
+    "halo",
+    "holdout",
+    "likeness_peak",
+    "see_through"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "edge_px": 11609,
+    "light_on_dark": {
+     "px": 4109,
+     "frac": 0.3539
+    },
+    "dark_on_light": {
+     "px": 182,
+     "frac": 0.0157
+    },
+    "worst_frac": 0.3539,
+    "pass": false
+   }
+  },
+  "agree_mismatch": {
+   "intended": "agree_4x_1x",
+   "caught": true,
+   "seed_frame_fails": [
+    "agree_4x_1x",
+    "holdout",
+    "likeness_peak"
+   ],
+   "rest_fails": [
+    "holdout",
+    "likeness_peak"
+   ],
+   "evidence": {
+    "mean_abs": 6.92,
+    "pass": false
+   }
+  }
+ },
+ "ok": true,
+ "clean": {
+  "fails": [
+   [
+    "idle",
+    "holdout"
+   ],
+   [
+    "idle",
+    "see_through"
+   ],
+   [
+    "rest",
+    "holdout"
+   ],
+   [
+    "wave",
+    "holdout"
+   ],
+   [
+    "wave",
+    "limbs"
+   ],
+   [
+    "wave",
+    "see_through"
+   ]
+  ],
+  "unexpected": [],
+  "summary": {
+   "rest": {
+    "pass": false,
+    "frames_failed": 1,
+    "by_check": {
+     "holdout": [
+      0
+     ]
+    },
+    "likeness": true
+   },
+   "idle": {
+    "pass": false,
+    "frames_failed": 48,
+    "by_check": {
+     "holdout": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ],
+     "see_through": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      17,
+      18,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      42,
+      43,
+      44,
+      47
+     ]
+    },
+    "likeness": true
+   },
+   "wave": {
+    "pass": false,
+    "frames_failed": 21,
+    "by_check": {
+     "holdout": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+     ],
+     "see_through": [
+      5,
+      15
+     ],
+     "limbs": [
+      2,
+      18
+     ]
+    },
+    "likeness": true
+   }
+  },
+  "frames_failed": {
+   "rest": {
+    "holdout": [
+     0
+    ]
+   },
+   "idle": {
+    "holdout": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     43,
+     44,
+     45,
+     46,
+     47
+    ],
+    "see_through": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     17,
+     18,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     42,
+     43,
+     44,
+     47
+    ]
+   },
+   "wave": {
+    "holdout": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ],
+    "see_through": [
+     5,
+     15
+    ],
+    "limbs": [
+     2,
+     18
+    ]
+   }
+  },
+  "r1_defects_reported": {
+   "wave forearm over sleeve (2, 18)": true,
+   "wave elbow seam (5, 15)": true,
+   "idle neck seam (any frame)": true,
+   "iris hold-out (rest)": true
+  }
+ }
+}

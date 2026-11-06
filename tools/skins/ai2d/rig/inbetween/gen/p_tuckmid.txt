@@ -1,0 +1,12 @@
+Use your built-in image generation tool to EDIT IMAGE 1 (exactly one generation).
+
+You get two images. IMAGE 1 is the character illustration to EDIT. IMAGE 2 is only a pose guide in the same 1024x1536 framing: a greyed copy of the figure with coloured bone lines for her LEFT arm (orange = upper arm, yellow = forearm, lime = hand) and white joint dots. Take from IMAGE 2 only WHERE that arm goes. Never copy the lines, dots or grey into the result.
+
+EDIT: Change only her LEFT arm (the arm on the RIGHT side of the image, which now rests with the hand on the hip). She raises her hand toward her hair beside her left ear: the elbow comes forward and a little out at the height of her lower chest, near x 694, y 468 on the 1024x1536 canvas (the upper arm is seen shortened because the elbow points toward the viewer), and the forearm rises steeply so the wrist is beside her neck above the collar near x 618, y 342 and the middle fingertip near x 602, y 272, just below her ear, beside the jaw and the thin face-framing strand. The hand is relaxed, fingers together and slightly curved, palm turned toward her face, about to tuck the strand behind the ear. The hand does not cover the face, the eyes or the glasses.
+
+Draw the whole arm as ONE continuous limb in the illustration's own style: the short white sleeve on the upper arm, a smooth natural elbow, a smooth wrist, and a complete hand with exactly five fingers (thumb included), every finger whole, none cut, merged or extra. The sleeve sits on the upper arm and follows it; the shirt's side under the arm is drawn cleanly with no loose flap. Where the hip and waist were hidden by the hand before, draw the shirt hem, bare waist and skirt cleanly as they continue.
+
+Keep EVERYTHING else identical to IMAGE 1: canvas 1024x1536, framing and scale, the head, face, expression, hair and glasses exactly as they are, the cropped white shirt and black bow, the plaid skirt, the legs, socks and sneakers, her RIGHT arm (left side of the image) hanging relaxed, the flat solid chroma-green background, the lighting, colours and the semi-realistic anime illustration style.
+
+
+Save the result as a PNG in the current working directory named exactly tuckmid.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

@@ -1,0 +1,2987 @@
+{
+ "spec": "fixtures/bad-spec.json",
+ "violations": [
+  {
+   "rule": "rest",
+   "where": "rightLowerArm",
+   "msg": "relaxed right elbow is bent 38.6 deg (> 25): reads as held, not hanging"
+  },
+  {
+   "rule": "rest",
+   "where": "leftLowerLeg",
+   "msg": "rest knee flex 18 deg outside 1-10: straight but relaxed, not locked or bent"
+  },
+  {
+   "rule": "rest",
+   "where": "leftFoot",
+   "msg": "toes turned out -16.8 deg (want 2-20)"
+  },
+  {
+   "rule": "balance",
+   "where": "rest",
+   "msg": "centre of mass 7.4 cm from the middle between the feet (> 3): weight on one leg"
+  },
+  {
+   "rule": "balance",
+   "where": "rest",
+   "msg": "pelvis tilted -6.0 deg (> 3): the rest stance is level, weight on both feet"
+  },
+  {
+   "rule": "footFloat",
+   "where": "rest.leftFoot",
+   "msg": "toe 1.1 cm above the ground: both feet planted"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "rest.leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial of the hip-ankle line (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "rest.rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "contact",
+   "where": "rest.leftHandTip",
+   "msg": "fingertip 8.6 cm from the pelvis surface (allowed -0.5..1 cm)"
+  },
+  {
+   "rule": "contact",
+   "where": "idle @0ms",
+   "msg": "fingertip leaves the hip during idle (8.6 cm)"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "idle.rampMs",
+   "msg": "idle weight ramp 0 ms (< 250): the pose steps when a clip starts or ends"
+  },
+  {
+   "rule": "penetration",
+   "where": "blink @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "blink @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "blink @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "blink @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "blink @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "blink @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "penetration",
+   "where": "blink @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.55 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "blink @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "blink @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "blink @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "blink @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "blink @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "breathe @3100ms",
+   "msg": "pose jumps 0.47 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "breathe @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "breathe @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "breathe @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "breathe @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "breathe @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "frameFit",
+   "where": "breathe @400ms",
+   "msg": "rightLowerArm at (6.9, 126.1) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @717ms leftMidHand",
+   "msg": "inside the pelvis (ellipse value 0.80 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @750ms leftHandTip",
+   "msg": "inside the pelvis (ellipse value 0.76 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.51 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "breathe @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "breathe @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @717ms leftMidHand",
+   "msg": "inside the pelvis (ellipse value 0.80 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @750ms leftHandTip",
+   "msg": "inside the pelvis (ellipse value 0.76 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "breathe @2017ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "breathe @2033ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "breathe @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "breathe @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "breathe @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "breathe @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @733ms leftMidHand",
+   "msg": "inside the pelvis (ellipse value 0.79 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "breathe @750ms leftHandTip",
+   "msg": "inside the pelvis (ellipse value 0.77 < 0.8)"
+  },
+  {
+   "rule": "rightSilhouette",
+   "where": "breathe @1350ms rightLowerArm",
+   "msg": "1.5 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "restEnds",
+   "where": "look @2650ms bone:head",
+   "msg": "ends at [0,10,0], not rest"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "look @2650ms",
+   "msg": "pose jumps 10.01 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "look @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "look @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "look @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "look @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "look @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "look @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "gazeRange",
+   "where": "look @83ms",
+   "msg": "gaze -31.1,-0.4 beyond 30/25"
+  },
+  {
+   "rule": "layerViews",
+   "where": "look @100ms head",
+   "msg": "turned to yaw 14.4 / pitch 4.1 deg; nearest view is 5.6 / 4.1 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "frameFit",
+   "where": "look @533ms",
+   "msg": "rightLowerArm at (6.9, 126.1) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "look @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "look @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "look @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "look @2017ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "look @2033ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "look @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "look @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "look @0ms",
+   "msg": "centre of mass 3.9 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "look @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "look @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "look @2650ms",
+   "msg": "only 0 in-between frame(s) at 30 fps before rest (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "look @2650ms",
+   "msg": "arrives at rest at full speed at 30 fps: no ease out"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "hairTuck @2700ms",
+   "msg": "pose jumps 1.17 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "hairTuck @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "hairTuck @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "hairTuck @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "hairTuck @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "hairTuck @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "hairTuck @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "velocity",
+   "where": "hairTuck @17ms head",
+   "msg": "1218 deg/s > 350"
+  },
+  {
+   "rule": "layerViews",
+   "where": "hairTuck @33ms head",
+   "msg": "turned to yaw 56.7 / pitch 7.5 deg; nearest view is 36.7 / 7.5 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "hairTuck @267ms leftForearm",
+   "msg": "projected length 64 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "frameFit",
+   "where": "hairTuck @1083ms",
+   "msg": "rightLowerArm at (6.9, 124.9) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "hairTuck @1167ms leftHand",
+   "msg": "projected length 75 % (away from the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "penetration",
+   "where": "hairTuck @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.55 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "hairTuck @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "hairTuck @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "hairTuck @17ms head",
+   "msg": "1218 deg/s > 350"
+  },
+  {
+   "rule": "footPlant",
+   "where": "hairTuck @2017ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "hairTuck @2033ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "hairTuck @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "hairTuck @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "hairTuck @0ms",
+   "msg": "centre of mass 3.9 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "hairTuck @17ms head",
+   "msg": "1218 deg/s > 350"
+  },
+  {
+   "rule": "footPlant",
+   "where": "hairTuck @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "hairTuck @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @33ms head",
+   "msg": "40.0 deg between two shown frames at 30 fps (> 30)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "hairTuck @0ms",
+   "msg": "only 0 in-between frame(s) at 30 fps before the first pose (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "hairTuck @0ms",
+   "msg": "leaves rest at full speed at 30 fps: no ease in"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "think.enter @0ms",
+   "msg": "pose jumps 0.46 deg between idle-only and the section at its rest end (idle phase 500 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "think.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "think.enter @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "think.enter @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "think.enter @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "think.enter @233ms leftForearm",
+   "msg": "projected length 74 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "think.enter @433ms head",
+   "msg": "turned to yaw 14.7 / pitch 4.0 deg; nearest view is 5.3 / 4.0 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "think.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "think.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "hinge",
+   "where": "think.loop @0ms leftLowerArm.x",
+   "msg": "30.0 deg: the elbow is a hinge, X/Z must stay within -5,5 (twist belongs in upperArm.x or hand.x)"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "think.loop @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "think.loop @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "think.loop @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "think.loop @0ms head",
+   "msg": "turned to yaw 9.2 / pitch 8.9 deg; nearest view is 10.8 / 8.9 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "frozenHold",
+   "where": "think.loop @0ms",
+   "msg": "nothing moves more than 0.3 deg for 600 ms even with the idle layer"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "frozenHold",
+   "where": "think.loop @0ms",
+   "msg": "nothing moves more than 0.3 deg for 600 ms even with the idle layer"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "frozenHold",
+   "where": "think.loop @0ms",
+   "msg": "nothing moves more than 0.3 deg for 600 ms even with the idle layer"
+  },
+  {
+   "rule": "frozenHold",
+   "where": "think.loop @0ms",
+   "msg": "authored tracks stand still for over 900 ms; add a drift key so the hold lives"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "think.exit @1100ms",
+   "msg": "pose jumps 1.65 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "think.exit @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "think.exit @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "think.exit @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "think.exit @0ms head",
+   "msg": "turned to yaw 9.2 / pitch 8.9 deg; nearest view is 10.8 / 8.9 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "think.exit @500ms leftForearm",
+   "msg": "projected length 71 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "balance",
+   "where": "think.exit @600ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "think.exit @600ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "think.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.53 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "think.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "think.exit @600ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "talk.enter @0ms",
+   "msg": "pose jumps 0.46 deg between idle-only and the section at its rest end (idle phase 500 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "talk.enter @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "talk.enter @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.enter @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.enter @400ms leftForearm",
+   "msg": "projected length 61 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "talk.enter @500ms head",
+   "msg": "turned to yaw 25.4 / pitch 9.3 deg; nearest view is 5.4 / 9.3 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "frameFit",
+   "where": "talk.enter @633ms",
+   "msg": "leftHandTip at (133.2, 115.4) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.enter @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.enter @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.enter @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.enter @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.48 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.loop @0ms",
+   "msg": "centre of mass 3.1 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "talk.loop @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "talk.loop @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "frameFit",
+   "where": "talk.loop @0ms",
+   "msg": "leftHandTip at (133.7, 116.2) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.loop @0ms leftForearm",
+   "msg": "projected length 41 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.loop @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "talk.loop @0ms head",
+   "msg": "turned to yaw 34.2 / pitch 10.5 deg; nearest view is 14.2 / 9.5 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.57 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.loop @0ms",
+   "msg": "centre of mass 3.3 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.loop @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.loop @0ms",
+   "msg": "centre of mass 3.3 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.loop @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.loop @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "talk.exit @750ms",
+   "msg": "pose jumps 0.94 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.48 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.exit @0ms",
+   "msg": "centre of mass 3.1 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "talk.exit @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "talk.exit @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "frameFit",
+   "where": "talk.exit @0ms",
+   "msg": "leftHandTip at (133.7, 116.2) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.exit @0ms leftForearm",
+   "msg": "projected length 41 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "talk.exit @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "talk.exit @0ms head",
+   "msg": "turned to yaw 26.1 / pitch 9.8 deg; nearest view is 6.1 / 9.8 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.57 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.exit @0ms",
+   "msg": "centre of mass 3.3 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "talk.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "talk.exit @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "talk.exit @0ms",
+   "msg": "centre of mass 3.3 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.exit @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "talk.exit @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "structure",
+   "where": "wave bone:head",
+   "msg": "key times not increasing at index 2"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "wave @2650ms",
+   "msg": "pose jumps 1.26 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "wave @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "wave @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "wave @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "wave @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "wave @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "wave @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "wave @200ms leftForearm",
+   "msg": "projected length 73 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "leftArmOnly",
+   "where": "wave @267ms rightUpperArm",
+   "msg": "right arm moves 10.4 deg from rest (> 10); gestures use the left arm"
+  },
+  {
+   "rule": "fingerRange",
+   "where": "wave @500ms fingers.left",
+   "msg": "1.08,0.36,0.07 outside -0.2..1"
+  },
+  {
+   "rule": "frameFit",
+   "where": "wave @783ms",
+   "msg": "leftHandTip at (136.4, 36.9) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "wave @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.52 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "wave @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "wave @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "wave @2017ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "wave @2033ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "wave @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "wave @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "wave @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "wave @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "wave @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "happy @2200ms",
+   "msg": "pose jumps 1.92 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "happy @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "happy @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "happy @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "happy @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "happy @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "happy @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "leftFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot toe 0.8 cm below the ground"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @83ms",
+   "msg": "leftFoot toe 0.9 cm below the ground"
+  },
+  {
+   "rule": "exprRange",
+   "where": "happy @267ms happy",
+   "msg": "weight 1.11 outside 0..1"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "happy @267ms leftForearm",
+   "msg": "projected length 64 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "frameFit",
+   "where": "happy @433ms",
+   "msg": "rightLowerArm at (6.6, 126.4) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "happy @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.54 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "happy @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "happy @0ms",
+   "msg": "centre of mass 3.7 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "leftFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot toe 0.8 cm below the ground"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @83ms",
+   "msg": "leftFoot toe 0.9 cm below the ground"
+  },
+  {
+   "rule": "rightSilhouette",
+   "where": "happy @500ms rightLowerArm",
+   "msg": "1.6 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "happy @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "happy @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "happy @0ms",
+   "msg": "centre of mass 3.7 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "leftFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot toe 0.8 cm below the ground"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @50ms",
+   "msg": "rightFoot heel 0.8 cm below where it stands"
+  },
+  {
+   "rule": "footPlant",
+   "where": "happy @83ms",
+   "msg": "leftFoot toe 0.9 cm below the ground"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "drag.enter @0ms",
+   "msg": "pose jumps 0.46 deg between idle-only and the section at its rest end (idle phase 500 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "drag.enter @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "drag.enter @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "drag.enter @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "frameFit",
+   "where": "drag.enter @67ms",
+   "msg": "headTop at (57.7, 6.4) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightFoot",
+   "msg": "1.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightToes",
+   "msg": "2.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @150ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.09 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.54 < 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightFoot",
+   "msg": "1.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightToes",
+   "msg": "2.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @150ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.04 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightFoot",
+   "msg": "1.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.enter @117ms rightToes",
+   "msg": "2.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.enter @150ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightLowerLeg",
+   "msg": "15.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightFoot",
+   "msg": "44.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightToes",
+   "msg": "49.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.13 < 0.8)"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "drag.loop @0ms leftKnee",
+   "msg": "knee turned in 25.2 deg / 3.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "drag.loop @0ms rightUpperArm",
+   "msg": "rotation about the bone 87.6 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "frameFit",
+   "where": "drag.loop @0ms",
+   "msg": "head at (53.7, -2.9) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "drag.loop @0ms leftShoe",
+   "msg": "projected length 28 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "drag.loop @433ms leftShin",
+   "msg": "projected length 75 % (away from the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "drag.loop @567ms head",
+   "msg": "turned to yaw 25.0 / pitch -1.9 deg; nearest view is 5.0 / 1.9 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightLowerLeg",
+   "msg": "15.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightFoot",
+   "msg": "44.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightToes",
+   "msg": "49.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.09 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightLowerLeg",
+   "msg": "15.0 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightFoot",
+   "msg": "44.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.loop @0ms rightToes",
+   "msg": "49.7 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.loop @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.12 < 0.8)"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "drag.exit @800ms",
+   "msg": "pose jumps 1.04 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightFoot",
+   "msg": "3.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightToes",
+   "msg": "3.9 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.13 < 0.8)"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "drag.exit @0ms leftKnee",
+   "msg": "knee turned in 25.2 deg / 3.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "drag.exit @0ms rightUpperArm",
+   "msg": "rotation about the bone 87.6 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "frameFit",
+   "where": "drag.exit @0ms",
+   "msg": "head at (53.7, -2.9) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "drag.exit @0ms leftShoe",
+   "msg": "projected length 28 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @167ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "drag.exit @167ms",
+   "msg": "centre of mass 3.4 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftFoot slides 1.3 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftToes slides 1.4 cm (> 1.2)"
+  },
+  {
+   "rule": "jointRange",
+   "where": "drag.exit @250ms leftFoot.x",
+   "msg": "-31.1 outside human range -30,50"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @250ms",
+   "msg": "leftFoot heel 0.8 cm up while planted (> 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightFoot",
+   "msg": "3.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightToes",
+   "msg": "3.9 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.09 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @167ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "drag.exit @167ms",
+   "msg": "centre of mass 3.5 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftFoot slides 1.3 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftToes slides 1.4 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @250ms",
+   "msg": "leftFoot heel 0.8 cm up while planted (> 0.8)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightFoot",
+   "msg": "3.1 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "edgeSilhouette",
+   "where": "drag.exit @0ms rightToes",
+   "msg": "3.9 cm past the rest silhouette edge (tolerance 1.5 cm)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.08 < 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "drag.exit @0ms rightMidHand",
+   "msg": "inside the pelvis (ellipse value 0.12 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @167ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "drag.exit @167ms",
+   "msg": "centre of mass 3.4 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftFoot slides 1.3 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "drag.exit @200ms",
+   "msg": "leftToes slides 1.4 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "drag.exit @250ms",
+   "msg": "leftFoot heel 0.8 cm up while planted (> 0.8)"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "sleep.enter @0ms",
+   "msg": "pose jumps 0.46 deg between idle-only and the section at its rest end (idle phase 500 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "sleep.enter @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "sleep.enter @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "sleep.enter @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "sleep.enter @1133ms head",
+   "msg": "turned to yaw 14.8 / pitch 12.9 deg; nearest view is 5.2 / 7.1 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1483ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1500ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.56 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.enter @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1483ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1500ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.enter @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.enter @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.enter @0ms",
+   "msg": "centre of mass 3.7 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1233ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.enter @1250ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.enter @2000ms",
+   "msg": "leftFoot heel 0.8 cm up while planted (> 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.56 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftToes slides 2.8 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot toe 1.7 cm above the ground while planted"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "sleep.loop @0ms leftKnee",
+   "msg": "knee turned in 25.4 deg / 3.8 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "sleep.loop @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "sleep.loop @0ms leftShoe",
+   "msg": "projected length 7 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "sleep.loop @0ms head",
+   "msg": "turned to yaw 10.7 / pitch 25.3 deg; nearest view is 9.3 / 5.3 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.loop @4400ms",
+   "msg": "leftFoot heel 0.8 cm up while planted (> 0.8)"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.68 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftToes slides 2.8 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot toe 1.7 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.loop @1767ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.loop @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.loop @0ms",
+   "msg": "leftToes slides 2.9 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.loop @0ms",
+   "msg": "leftFoot toe 1.8 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.loop @1450ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "sleep.exit @1500ms",
+   "msg": "pose jumps 2.18 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.56 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftToes slides 2.8 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot toe 1.7 cm above the ground while planted"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "sleep.exit @0ms leftKnee",
+   "msg": "knee turned in 25.4 deg / 3.8 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "sleep.exit @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "sleep.exit @0ms leftShoe",
+   "msg": "projected length 7 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "layerViews",
+   "where": "sleep.exit @0ms head",
+   "msg": "turned to yaw 10.7 / pitch 25.3 deg; nearest view is 9.3 / 5.3 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.exit @133ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "frameFit",
+   "where": "sleep.exit @217ms",
+   "msg": "rightLowerArm at (6.8, 126.6) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "sleep.exit @800ms leftForearm",
+   "msg": "projected length 74 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.68 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftToes slides 2.8 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot toe 1.7 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.exit @133ms",
+   "msg": "centre of mass 3.0 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "penetration",
+   "where": "sleep.exit @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot slides 2.7 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "sleep.exit @0ms",
+   "msg": "leftToes slides 2.9 cm (> 1.2)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "sleep.exit @0ms",
+   "msg": "leftFoot toe 1.8 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "sleep.exit @133ms",
+   "msg": "centre of mass 3.1 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "notice @1600ms",
+   "msg": "pose jumps 0.71 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "notice @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "notice @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "notice @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "notice @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "notice @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "notice @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "velocity",
+   "where": "notice @17ms head",
+   "msg": "609 deg/s > 350"
+  },
+  {
+   "rule": "layerViews",
+   "where": "notice @33ms head",
+   "msg": "turned to yaw 36.6 / pitch 6.5 deg; nearest view is 16.6 / 6.5 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "frameFit",
+   "where": "notice @683ms",
+   "msg": "rightLowerArm at (6.9, 125.9) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "notice @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "notice @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "notice @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "notice @17ms head",
+   "msg": "609 deg/s > 350"
+  },
+  {
+   "rule": "penetration",
+   "where": "notice @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "notice @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "notice @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "notice @17ms head",
+   "msg": "609 deg/s > 350"
+  },
+  {
+   "rule": "footPlant",
+   "where": "notice @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "notice @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "notice @0ms",
+   "msg": "only 0 in-between frame(s) at 30 fps before the first pose (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "notice @0ms",
+   "msg": "leaves rest at full speed at 30 fps: no ease in"
+  },
+  {
+   "rule": "layerSeam",
+   "where": "nod @900ms",
+   "msg": "pose jumps 0.40 deg between idle-only and the section at its rest end (idle phase 0 ms); ramp the idle weight"
+  },
+  {
+   "rule": "penetration",
+   "where": "nod @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.49 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "nod @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "nod @0ms",
+   "msg": "centre of mass 3.6 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "kneeIn",
+   "where": "nod @0ms leftKnee",
+   "msg": "knee turned in 25.1 deg / 2.6 cm medial (allowed 12 deg / 1.5 cm)"
+  },
+  {
+   "rule": "twist",
+   "where": "nod @0ms rightUpperArm",
+   "msg": "rotation about the bone 85.2 deg (+ internal) outside -90..70"
+  },
+  {
+   "rule": "layerForeshorten",
+   "where": "nod @0ms leftShoe",
+   "msg": "projected length 8 % (toward the camera): no drawing within 25 %, a rotate-only layer would show it at the wrong length"
+  },
+  {
+   "rule": "velocity",
+   "where": "nod @183ms head",
+   "msg": "437 deg/s > 350"
+  },
+  {
+   "rule": "layerViews",
+   "where": "nod @200ms head",
+   "msg": "turned to yaw 14.1 / pitch 27.9 deg; nearest view is 5.9 / 7.9 deg away (allowed 5 / 10): the turn would not show"
+  },
+  {
+   "rule": "jointRange",
+   "where": "nod @217ms head.x",
+   "msg": "35.5 outside human range -35,35"
+  },
+  {
+   "rule": "frameFit",
+   "where": "nod @800ms",
+   "msg": "rightLowerArm at (6.9, 126.1) px plus a 7.4 px skin margin leaves the 139x340 frame"
+  },
+  {
+   "rule": "penetration",
+   "where": "nod @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.58 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "nod @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "nod @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "nod @183ms head",
+   "msg": "437 deg/s > 350"
+  },
+  {
+   "rule": "penetration",
+   "where": "nod @0ms rightHand",
+   "msg": "inside the pelvis (ellipse value 0.50 < 0.8)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "nod @0ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "nod @0ms",
+   "msg": "centre of mass 3.8 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "velocity",
+   "where": "nod @183ms head",
+   "msg": "437 deg/s > 350"
+  },
+  {
+   "rule": "footPlant",
+   "where": "nod @417ms",
+   "msg": "leftToes slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "nod @433ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "heldFrame",
+   "where": "idle.layers",
+   "msg": "always-on idle layers breath: the standing frame is never held (idle must be a held frame plus events)"
+  },
+  {
+   "rule": "footFloat",
+   "where": "idle @2533ms",
+   "msg": "leftFoot toe 1.1 cm above the ground while planted"
+  },
+  {
+   "rule": "balance",
+   "where": "idle @2533ms",
+   "msg": "centre of mass 3.7 cm outside the support between the feet (> 3): she would tip over"
+  },
+  {
+   "rule": "footPlant",
+   "where": "idle @3533ms",
+   "msg": "leftFoot slides 1.2 cm (> 1.2)"
+  },
+  {
+   "rule": "footPlant",
+   "where": "idle @3533ms",
+   "msg": "leftToes slides 1.3 cm (> 1.2)"
+  },
+  {
+   "rule": "heldFrame",
+   "where": "idle @33ms",
+   "msg": "between events the idle pose differs from rest: the held frame changes (idle must be a held frame plus events)"
+  },
+  {
+   "rule": "idleEvents",
+   "where": "idle budget",
+   "msg": "standing idle presents about 6.12 fps (max 5): over the CPU guide"
+  },
+  {
+   "rule": "seam",
+   "where": "think enter->loop leftLowerArm",
+   "msg": "jumps 30.0 deg"
+  },
+  {
+   "rule": "seam",
+   "where": "think loop->exit leftLowerArm",
+   "msg": "jumps 30.0 deg"
+  },
+  {
+   "rule": "seam",
+   "where": "talk enter->loop head",
+   "msg": "jumps 8.0 deg"
+  },
+  {
+   "rule": "seam",
+   "where": "talk loop end->loop start head",
+   "msg": "jumps 8.0 deg"
+  },
+  {
+   "rule": "seam",
+   "where": "drag enter->loop rightUpperLeg",
+   "msg": "jumps 35.0 deg"
+  },
+  {
+   "rule": "seam",
+   "where": "drag loop->exit rightUpperLeg",
+   "msg": "jumps 35.0 deg"
+  },
+  {
+   "rule": "coverage",
+   "where": "breathe",
+   "msg": "agreed action has no clip"
+  },
+  {
+   "rule": "stateMachine",
+   "where": "dragEnd",
+   "msg": "required app event is not bound"
+  },
+  {
+   "rule": "implemented",
+   "where": "hoverEnter.greet",
+   "msg": "the spec declares this but src/lib/rig/behaviour.js does not implement it: a porter would ship a rule nobody runs"
+  },
+  {
+   "rule": "stateMachine",
+   "where": "dragStart",
+   "msg": "holds until \"dragEnd\", which is not an event"
+  },
+  {
+   "rule": "stateMachine",
+   "where": "idleTick",
+   "msg": "clip \"lookx\" does not exist"
+  },
+  {
+   "rule": "queueExpiry",
+   "where": "interrupt.queue.expiryMs",
+   "msg": "2000 ms < 4150 ms (longest one-shot or locked chain): a queued word would expire before the gesture ends"
+  },
+  {
+   "rule": "sourceRefs",
+   "where": "speakStart",
+   "msg": "src/lib/speech/index.ts:244 does not exist"
+  },
+  {
+   "rule": "sourceRefs",
+   "where": "speakStart",
+   "msg": "cites index.ts:225 without a verified \"at\" entry (file, line, text)"
+  },
+  {
+   "rule": "lipSync",
+   "where": "talk.loop expr aa",
+   "msg": "the talk body clip carries visemes: they would move the mouth whether or not speech plays (queued talk, speechless talk)"
+  },
+  {
+   "rule": "lipSync",
+   "where": "talk.loop expr ih",
+   "msg": "the talk body clip carries visemes: they would move the mouth whether or not speech plays (queued talk, speechless talk)"
+  },
+  {
+   "rule": "lipSync",
+   "where": "talk.loop expr ou",
+   "msg": "the talk body clip carries visemes: they would move the mouth whether or not speech plays (queued talk, speechless talk)"
+  },
+  {
+   "rule": "lipSync",
+   "where": "talk.loop expr ee",
+   "msg": "the talk body clip carries visemes: they would move the mouth whether or not speech plays (queued talk, speechless talk)"
+  },
+  {
+   "rule": "lipSync",
+   "where": "stateMachine.mouth",
+   "msg": "no viseme layer gated by speaking"
+  },
+  {
+   "rule": "lipSync",
+   "where": "clickNoBubble",
+   "msg": "mouth viseme 0.23 at 2600 ms with no speech playing"
+  },
+  {
+   "rule": "lipSync",
+   "where": "clickWithBubble",
+   "msg": "mouth viseme 0.23 at 3200 ms with no speech playing"
+  },
+  {
+   "rule": "behaviour",
+   "where": "userBack",
+   "msg": "talk never starts after wave starts"
+  },
+  {
+   "rule": "lipSync",
+   "where": "known",
+   "msg": "mouth viseme 0.23 at 3600 ms with no speech playing"
+  },
+  {
+   "rule": "behaviour",
+   "where": "dragDuringTalk",
+   "msg": "drag.exit never plays to its end (never starts)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "dragWhileAsleep",
+   "msg": "drag.exit never plays to its end (never starts)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "dragWhileAsleep",
+   "msg": "drag.exit never plays"
+  },
+  {
+   "rule": "behaviour",
+   "where": "nextWhileAsleep",
+   "msg": "talk never plays"
+  },
+  {
+   "rule": "behaviour",
+   "where": "quickDrag",
+   "msg": "drag.exit has not started by 440 ms (enter 0-440 complete; loop 440-2040 cycle; loop 2040-3640 cycle; loop 3640-5240 cycle; loop 5240-6840 cycle; loop 6840-8440 cycle; loop 8440-10040 cycle; loop 10040-11640 cycle; loop 11640-13240 cycle; loop 13240-14840 cycle; loop 14840-16440 cycle; loop 16440-18040 cycle; loop 18040-19640 cycle; loop 19640-21240 cycle; loop 21240-22840 cycle; loop 22840-24440 cycle; loop 24440-26040 cycle; loop 26040-27640 cycle; loop 27640-29240 cycle; loop 29240-30840 cycle; loop 30840-32440 cycle; loop 32440-34040 cycle; loop 34040-35640 cycle; loop 35640-37240 cycle; loop 37240-38840 cycle; loop 38840-40440 cycle; loop 40440-42040 cycle; loop 42040-43640 cycle; loop 43640-45240 cycle; loop 45240-46840 cycle; loop 46840-48440 cycle; loop 48440-50040 cycle; loop 50040-51640 cycle; loop 51640-53240 cycle; loop 53240-54840 cycle; loop 54840-56440 cycle; loop 56440-58040 cycle; loop 58040-59640 cycle; loop 59640-61240 open)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "quickDrag",
+   "msg": "drag.loop plays but must not (loop 440-2040 cycle; loop 2040-3640 cycle; loop 3640-5240 cycle; loop 5240-6840 cycle; loop 6840-8440 cycle; loop 8440-10040 cycle; loop 10040-11640 cycle; loop 11640-13240 cycle; loop 13240-14840 cycle; loop 14840-16440 cycle; loop 16440-18040 cycle; loop 18040-19640 cycle; loop 19640-21240 cycle; loop 21240-22840 cycle; loop 22840-24440 cycle; loop 24440-26040 cycle; loop 26040-27640 cycle; loop 27640-29240 cycle; loop 29240-30840 cycle; loop 30840-32440 cycle; loop 32440-34040 cycle; loop 34040-35640 cycle; loop 35640-37240 cycle; loop 37240-38840 cycle; loop 38840-40440 cycle; loop 40440-42040 cycle; loop 42040-43640 cycle; loop 43640-45240 cycle; loop 45240-46840 cycle; loop 46840-48440 cycle; loop 48440-50040 cycle; loop 50040-51640 cycle; loop 51640-53240 cycle; loop 53240-54840 cycle; loop 54840-56440 cycle; loop 56440-58040 cycle; loop 58040-59640 cycle; loop 59640-61240 open)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "idleVariety",
+   "msg": "scheduler failed: Cannot read properties of undefined (reading 'kind')"
+  },
+  {
+   "rule": "behaviour",
+   "where": "clickDuringTalk",
+   "msg": "nod does not start within 150 ms of 300 ms (never starts)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "clickDuringThink",
+   "msg": "nod does not start within 150 ms of 500 ms (oneShot 3700-4600 complete)"
+  },
+  {
+   "rule": "behaviour",
+   "where": "menuSuppressesFidgets",
+   "msg": "scheduler failed: Cannot read properties of undefined (reading 'kind')"
+  },
+  {
+   "rule": "budget",
+   "where": "twoD.atlas",
+   "msg": "parts need 311057 px, more than 85 % of the 256x256 atlas"
+  }
+ ],
+ "rules": [
+  "rest",
+  "balance",
+  "footFloat",
+  "kneeIn",
+  "twist",
+  "contact",
+  "layerSeam",
+  "penetration",
+  "layerForeshorten",
+  "frameFit",
+  "footPlant",
+  "rightSilhouette",
+  "restEnds",
+  "gazeRange",
+  "layerViews",
+  "easeFrames",
+  "velocity",
+  "pop",
+  "hinge",
+  "frozenHold",
+  "structure",
+  "leftArmOnly",
+  "fingerRange",
+  "exprRange",
+  "edgeSilhouette",
+  "jointRange",
+  "heldFrame",
+  "idleEvents",
+  "seam",
+  "coverage",
+  "stateMachine",
+  "implemented",
+  "queueExpiry",
+  "sourceRefs",
+  "lipSync",
+  "behaviour",
+  "budget"
+ ],
+ "fallback": [
+  {
+   "rule": "easeFrames",
+   "where": "look @2650ms",
+   "msg": "only 0 in-between frame(s) at 5 fps (sprite fallback) before rest (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "look @2650ms",
+   "msg": "arrives at rest at full speed at 5 fps (sprite fallback): no ease out"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @400ms leftUpperArm",
+   "msg": "57.7 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @800ms leftHand",
+   "msg": "40.4 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @1000ms leftUpperArm",
+   "msg": "36.7 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @1200ms leftUpperArm",
+   "msg": "45.4 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @1800ms leftUpperArm",
+   "msg": "47.5 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @2000ms leftUpperArm",
+   "msg": "45.6 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @2200ms leftLowerArm",
+   "msg": "31.5 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @2400ms leftUpperArm",
+   "msg": "51.8 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "hairTuck @2600ms leftHand",
+   "msg": "38.8 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "think.enter @400ms leftUpperArm",
+   "msg": "48.5 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "think.enter @600ms leftUpperArm",
+   "msg": "34.6 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "think.enter @800ms leftHand",
+   "msg": "37.3 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "think.exit @600ms leftUpperArm",
+   "msg": "38.6 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "think.exit @800ms leftUpperArm",
+   "msg": "42.8 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "talk.enter @400ms leftUpperArm",
+   "msg": "32.4 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "talk.enter @600ms leftUpperArm",
+   "msg": "33.5 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "talk.exit @400ms leftLowerArm",
+   "msg": "53.9 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "talk.exit @600ms leftUpperArm",
+   "msg": "33.1 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "talk.exit @750ms",
+   "msg": "only 1 in-between frame(s) at 5 fps (sprite fallback) before rest (need 2)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @400ms leftUpperArm",
+   "msg": "57.8 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @600ms leftUpperArm",
+   "msg": "43.0 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @800ms leftUpperArm",
+   "msg": "42.7 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @2000ms leftUpperArm",
+   "msg": "39.1 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @2200ms leftUpperArm",
+   "msg": "52.3 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "wave @2400ms leftUpperArm",
+   "msg": "60.7 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "happy @400ms leftUpperArm",
+   "msg": "57.6 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "happy @800ms leftHand",
+   "msg": "35.2 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "happy @1600ms leftHand",
+   "msg": "42.4 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "happy @1800ms leftUpperArm",
+   "msg": "47.5 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "happy @2000ms leftHand",
+   "msg": "35.2 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "drag.enter @400ms leftUpperArm",
+   "msg": "30.4 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "drag.enter @0ms",
+   "msg": "only 1 in-between frame(s) at 5 fps (sprite fallback) before the first pose (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "drag.enter @0ms",
+   "msg": "leaves rest at full speed at 5 fps (sprite fallback): no ease in"
+  },
+  {
+   "rule": "pop",
+   "where": "sleep.enter @1600ms leftLowerArm",
+   "msg": "31.2 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "pop",
+   "where": "sleep.exit @800ms leftLowerArm",
+   "msg": "42.6 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "notice @0ms",
+   "msg": "only 0 in-between frame(s) at 5 fps (sprite fallback) before the first pose (need 2)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "notice @0ms",
+   "msg": "leaves rest at full speed at 5 fps (sprite fallback): no ease in"
+  },
+  {
+   "rule": "pop",
+   "where": "nod @600ms head",
+   "msg": "43.1 deg between two shown frames at 5 fps (sprite fallback) (> 30)"
+  },
+  {
+   "rule": "easeFrames",
+   "where": "nod @0ms",
+   "msg": "only 1 in-between frame(s) at 5 fps (sprite fallback) before the first pose (need 2)"
+  },
+  {
+   "rule": "frozenHold",
+   "where": "sprite idle",
+   "msg": "standing idle holds each of 4 breath frames 700 ms (>= 600); weight sway and head drift are lost"
+  },
+  {
+   "rule": "budget",
+   "where": "sprite.ram",
+   "msg": "135 frames at 5 fps = 26465600 B decoded, 2.80x the cap"
+  }
+ ],
+ "stats": {
+  "rest": {
+   "silhouetteEdgeX": -0.2341,
+   "groundY": 0.015,
+   "leftWrist": [
+    0.142,
+    0.971,
+    -0.01
+   ],
+   "rightWrist": [
+    -0.143,
+    0.825,
+    -0.03
+   ]
+  },
+  "balance": {
+   "com": [
+    -0.021,
+    0.935,
+    0
+   ],
+   "supportMid": [
+    -0.091,
+    0.032,
+    0.022
+   ],
+   "comToMidCm": 7.35,
+   "feetApartCm": 27.1,
+   "pelvisLineDeg": -6,
+   "shoulderLineDeg": -4.28,
+   "leftKnee": {
+    "inDeg": 25.1,
+    "medialCm": 2.63
+   },
+   "rightKnee": {
+    "inDeg": 0.1,
+    "medialCm": 0
+   }
+  },
+  "twist": {
+   "leftUpperArm": 63.6,
+   "rightUpperArm": 85.2,
+   "leftUpperLeg": 24.9,
+   "rightUpperLeg": 0.1
+  },
+  "contact": {
+   "tipToPelvisCm": 8.55,
+   "wristToPelvisCm": 2.95,
+   "idleWorstCm": 0
+  },
+  "frame": {
+   "pxPerM": 185.9,
+   "restFill": 0.927
+  },
+  "blink": {
+   "durationMs": 260
+  },
+  "breathe": {
+   "durationMs": 3100
+  },
+  "look": {
+   "durationMs": 2650
+  },
+  "hairTuck": {
+   "durationMs": 2700
+  },
+  "think.enter": {
+   "durationMs": 1050
+  },
+  "think.loop": {
+   "durationMs": 2400
+  },
+  "think.exit": {
+   "durationMs": 1100
+  },
+  "talk.enter": {
+   "durationMs": 660
+  },
+  "talk.loop": {
+   "durationMs": 1200
+  },
+  "talk.exit": {
+   "durationMs": 750
+  },
+  "wave": {
+   "durationMs": 2650
+  },
+  "happy": {
+   "durationMs": 2200
+  },
+  "drag.enter": {
+   "durationMs": 440
+  },
+  "drag.loop": {
+   "durationMs": 1600
+  },
+  "drag.exit": {
+   "durationMs": 800
+  },
+  "sleep.enter": {
+   "durationMs": 2100
+  },
+  "sleep.loop": {
+   "durationMs": 5200
+  },
+  "sleep.exit": {
+   "durationMs": 1500
+  },
+  "notice": {
+   "durationMs": 1600
+  },
+  "nod": {
+   "durationMs": 900
+  },
+  "idleHeld": {
+   "cycleMs": 120000,
+   "events": 11,
+   "heldShare": 0.671,
+   "maxGapMs": 11859,
+   "bodyPresentsPerCycle": 493,
+   "expectedPresentFps": 6.12,
+   "parts": {
+    "body": 4.11,
+    "blinks": 0.57,
+    "idleClips": 1.44
+   }
+  },
+  "queue": {
+   "expiryMs": 2000,
+   "neededMs": 4150,
+   "longestChain": [
+    "userBack",
+    4150
+   ]
+  },
+  "sourceRefs": {
+   "checked": 52
+  },
+  "behaviour": {
+   "appStart": [
+    "wave 0-2650 complete",
+    "talk.enter 2650-3310 complete",
+    "talk.exit 3310-4060 complete"
+   ],
+   "clickNoBubble": [
+    "nod 1000-1900 complete",
+    "talk.enter 1900-2560 complete",
+    "talk.loop 2560-3760 released",
+    "talk.exit 3760-4510 complete"
+   ],
+   "clickWithBubble": [
+    "nod 1000-1900 complete",
+    "talk.enter 2500-3160 complete",
+    "talk.loop 3160-4360 released",
+    "talk.exit 4360-5110 complete"
+   ],
+   "userBack": [
+    "sleep.enter 0-2100 complete",
+    "sleep.loop 2100-7300 cycle",
+    "sleep.loop 7300-9000 released",
+    "sleep.exit 9000-10500 complete",
+    "wave 10500-13150 complete"
+   ],
+   "known": [
+    "talk.enter 0-660 complete",
+    "talk.loop 660-700 preempted",
+    "happy 700-2900 complete",
+    "talk.enter 2900-3560 complete",
+    "talk.loop 3560-4760 released",
+    "talk.exit 4760-5510 complete"
+   ],
+   "guessReveal": [
+    "think.enter 0-1050 complete",
+    "think.loop 1050-2600 released",
+    "think.exit 2600-3700 complete",
+    "nod 3700-4600 complete"
+   ],
+   "dragDuringTalk": [
+    "talk.enter 0-500 preempted",
+    "drag.enter 500-940 complete",
+    "drag.loop 940-2540 cycle",
+    "drag.loop 2540-4140 cycle",
+    "drag.loop 4140-5740 cycle",
+    "drag.loop 5740-7340 cycle",
+    "drag.loop 7340-8940 cycle",
+    "drag.loop 8940-10540 cycle",
+    "drag.loop 10540-12140 cycle",
+    "drag.loop 12140-13740 cycle",
+    "drag.loop 13740-15340 cycle",
+    "drag.loop 15340-16940 cycle",
+    "drag.loop 16940-18540 cycle",
+    "drag.loop 18540-20140 cycle",
+    "drag.loop 20140-21740 cycle",
+    "drag.loop 21740-23340 cycle",
+    "drag.loop 23340-24940 cycle",
+    "drag.loop 24940-26540 cycle",
+    "drag.loop 26540-28140 cycle",
+    "drag.loop 28140-29740 cycle",
+    "drag.loop 29740-31340 cycle",
+    "drag.loop 31340-32940 cycle",
+    "drag.loop 32940-34540 cycle",
+    "drag.loop 34540-36140 cycle",
+    "drag.loop 36140-37740 cycle",
+    "drag.loop 37740-39340 cycle",
+    "drag.loop 39340-40940 cycle",
+    "drag.loop 40940-42540 cycle",
+    "drag.loop 42540-44140 cycle",
+    "drag.loop 44140-45740 cycle",
+    "drag.loop 45740-47340 cycle",
+    "drag.loop 47340-48940 cycle",
+    "drag.loop 48940-50540 cycle",
+    "drag.loop 50540-52140 cycle",
+    "drag.loop 52140-53740 cycle",
+    "drag.loop 53740-55340 cycle",
+    "drag.loop 55340-56940 cycle",
+    "drag.loop 56940-58540 cycle",
+    "drag.loop 58540-60140 cycle",
+    "drag.loop 60140-61740 cycle",
+    "drag.loop 61740-63340 open"
+   ],
+   "idleTickBusy": [
+    "talk.enter 0-660 complete",
+    "talk.loop 660-1860 cycle",
+    "talk.loop 1860-2500 released",
+    "talk.exit 2500-3250 complete"
+   ],
+   "quietHover": [
+    "sleep.enter 0-2100 complete",
+    "sleep.loop 2100-7300 cycle",
+    "sleep.loop 7300-12500 cycle",
+    "sleep.loop 12500-17700 cycle",
+    "sleep.loop 17700-22900 cycle",
+    "sleep.loop 22900-28100 cycle",
+    "sleep.loop 28100-33300 cycle",
+    "sleep.loop 33300-38500 cycle",
+    "sleep.loop 38500-43700 cycle",
+    "sleep.loop 43700-48900 cycle",
+    "sleep.loop 48900-54100 cycle",
+    "sleep.loop 54100-59300 cycle",
+    "sleep.loop 59300-64500 open"
+   ],
+   "hideShow": [
+    "wave 0-800 stopped",
+    "wave 400000-402650 complete"
+   ],
+   "dragWhileAsleep": [
+    "sleep.enter 0-2100 complete",
+    "sleep.loop 2100-7300 cycle",
+    "sleep.loop 7300-10000 preempted",
+    "drag.enter 10000-10440 complete",
+    "drag.loop 10440-12040 cycle",
+    "drag.loop 12040-13640 cycle",
+    "drag.loop 13640-15240 cycle",
+    "drag.loop 15240-16840 cycle",
+    "drag.loop 16840-18440 cycle",
+    "drag.loop 18440-20040 cycle",
+    "drag.loop 20040-21640 cycle",
+    "drag.loop 21640-23240 cycle",
+    "drag.loop 23240-24840 cycle",
+    "drag.loop 24840-26440 cycle",
+    "drag.loop 26440-28040 cycle",
+    "drag.loop 28040-29640 cycle",
+    "drag.loop 29640-31240 cycle",
+    "drag.loop 31240-32840 cycle",
+    "drag.loop 32840-34440 cycle",
+    "drag.loop 34440-36040 cycle",
+    "drag.loop 36040-37640 cycle",
+    "drag.loop 37640-39240 cycle",
+    "drag.loop 39240-40840 cycle",
+    "drag.loop 40840-42440 cycle",
+    "drag.loop 42440-44040 cycle",
+    "drag.loop 44040-45640 cycle",
+    "drag.loop 45640-47240 cycle",
+    "drag.loop 47240-48840 cycle",
+    "drag.loop 48840-50440 cycle",
+    "drag.loop 50440-52040 cycle",
+    "drag.loop 52040-53640 cycle",
+    "drag.loop 53640-55240 cycle",
+    "drag.loop 55240-56840 cycle",
+    "drag.loop 56840-58440 cycle",
+    "drag.loop 58440-60040 cycle",
+    "drag.loop 60040-61640 cycle",
+    "drag.loop 61640-63240 cycle",
+    "drag.loop 63240-64840 cycle",
+    "drag.loop 64840-66440 cycle",
+    "drag.loop 66440-68040 cycle",
+    "drag.loop 68040-69640 cycle",
+    "drag.loop 69640-71240 cycle",
+    "drag.loop 71240-72840 open"
+   ],
+   "hideShowAsleep": [
+    "sleep.enter 0-2100 complete",
+    "sleep.loop 2100-5000 stopped",
+    "sleep.enter 400000-402100 complete",
+    "sleep.loop 402100-407300 cycle",
+    "sleep.loop 407300-412500 cycle",
+    "sleep.loop 412500-417700 cycle",
+    "sleep.loop 417700-422900 cycle",
+    "sleep.loop 422900-428100 cycle",
+    "sleep.loop 428100-433300 cycle",
+    "sleep.loop 433300-438500 cycle",
+    "sleep.loop 438500-443700 cycle",
+    "sleep.loop 443700-448900 cycle",
+    "sleep.loop 448900-454100 cycle",
+    "sleep.loop 454100-459300 cycle",
+    "sleep.loop 459300-464500 open"
+   ],
+   "nextWhileAsleep": [
+    "sleep.enter 0-2100 complete",
+    "sleep.loop 2100-7300 cycle",
+    "sleep.loop 7300-9000 released",
+    "sleep.exit 9000-10500 complete",
+    "wave 10500-13150 complete"
+   ],
+   "quickDrag": [
+    "drag.enter 0-440 complete",
+    "drag.loop 440-2040 cycle",
+    "drag.loop 2040-3640 cycle",
+    "drag.loop 3640-5240 cycle",
+    "drag.loop 5240-6840 cycle",
+    "drag.loop 6840-8440 cycle",
+    "drag.loop 8440-10040 cycle",
+    "drag.loop 10040-11640 cycle",
+    "drag.loop 11640-13240 cycle",
+    "drag.loop 13240-14840 cycle",
+    "drag.loop 14840-16440 cycle",
+    "drag.loop 16440-18040 cycle",
+    "drag.loop 18040-19640 cycle",
+    "drag.loop 19640-21240 cycle",
+    "drag.loop 21240-22840 cycle",
+    "drag.loop 22840-24440 cycle",
+    "drag.loop 24440-26040 cycle",
+    "drag.loop 26040-27640 cycle",
+    "drag.loop 27640-29240 cycle",
+    "drag.loop 29240-30840 cycle",
+    "drag.loop 30840-32440 cycle",
+    "drag.loop 32440-34040 cycle",
+    "drag.loop 34040-35640 cycle",
+    "drag.loop 35640-37240 cycle",
+    "drag.loop 37240-38840 cycle",
+    "drag.loop 38840-40440 cycle",
+    "drag.loop 40440-42040 cycle",
+    "drag.loop 42040-43640 cycle",
+    "drag.loop 43640-45240 cycle",
+    "drag.loop 45240-46840 cycle",
+    "drag.loop 46840-48440 cycle",
+    "drag.loop 48440-50040 cycle",
+    "drag.loop 50040-51640 cycle",
+    "drag.loop 51640-53240 cycle",
+    "drag.loop 53240-54840 cycle",
+    "drag.loop 54840-56440 cycle",
+    "drag.loop 56440-58040 cycle",
+    "drag.loop 58040-59640 cycle",
+    "drag.loop 59640-61240 open"
+   ],
+   "revealDuringThinkEnter": [
+    "think.enter 0-1050 complete",
+    "think.exit 1050-2150 complete",
+    "nod 2150-3050 complete"
+   ],
+   "speechlessTalk": [
+    "wave 0-2650 complete",
+    "talk.enter 2650-3310 complete",
+    "talk.exit 3310-4060 complete"
+   ],
+   "clickDuringTalk": [
+    "talk.enter 0-660 complete",
+    "talk.loop 660-1860 cycle",
+    "talk.loop 1860-3060 cycle",
+    "talk.loop 3060-4260 released",
+    "talk.exit 4260-5010 complete"
+   ],
+   "clickDuringThink": [
+    "think.enter 0-1050 complete",
+    "think.loop 1050-2600 released",
+    "think.exit 2600-3700 complete",
+    "nod 3700-4600 complete"
+   ],
+   "speechCancelRace": [
+    "talk.enter 0-660 complete",
+    "talk.loop 660-1860 cycle",
+    "talk.loop 1860-3060 cycle",
+    "talk.loop 3060-3500 released",
+    "talk.exit 3500-4250 complete"
+   ]
+  },
+  "budget": {
+   "ships": "layered2d",
+   "ramCapBytes": 9452000,
+   "layered2d": {
+    "atlas": "256x256",
+    "ramBytes": 262144,
+    "partsPx": 311057,
+    "fill": 4.746
+   },
+   "sprite": {
+    "fps": 5,
+    "frames": 135,
+    "sheet": "1390x4760",
+    "ramBytes": 26465600,
+    "estWebpBytes": 1663335,
+    "faceCells": 44
+   },
+   "vrm": "not measured (run measure_ram.mjs)"
+  }
+ }
+}

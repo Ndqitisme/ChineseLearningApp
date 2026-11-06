@@ -1,0 +1,7 @@
+Use your built-in image generation tool to EDIT the attached image (exactly one generation).
+
+EDIT: Recolour ONLY her LEFT arm (the arm on the RIGHT side of the image, raised toward her face) as a flat, solid, pure magenta (#FF00FF) silhouette: the short white sleeve on that arm, the upper arm, the elbow, the forearm, the wrist and the whole hand with every finger. No shading, no outline, no texture inside the magenta. The magenta shape must follow the arm's exact current outline, including where the hand and forearm overlap her face, hair, collar or shirt: those overlapped parts of face, hair and shirt stay exactly as they are and are NOT coloured.
+
+Keep EVERYTHING else pixel-identical to the attached image: canvas 1024x1536, framing, scale, pose, the head, face, hair, glasses, the shirt, bow, skirt, legs, shoes, her right arm, the flat chroma-green background and the lighting.
+
+Save the result as a PNG in the current working directory named exactly mask_think.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

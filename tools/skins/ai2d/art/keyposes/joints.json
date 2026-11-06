@@ -1,0 +1,273 @@
+{
+ "_about": "Joint sites per key and limb in each source image's own pixels (1024x1536), read by eye off grid.py zooms (work/g_*.png), +-5 px. Arms: S shoulder, E elbow, W wrist, T middle fingertip (or fist knuckles). Legs: H hip, K knee, A ankle, T shoe tip. Left-arm keys are then shifted so S equals the rest shoulder (run.py). Existing keys (wave_up = ../src/wave.png, think, tuck, talk, happy) copy ../gen/joints.json. land has no rightArm: Codex swung it out past the rest silhouette and the frame (wrist x 227), against the agreed rule that the right arm stays inside the rest silhouette; the rig keeps the rest right arm for land.",
+ "wave_ul": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    780,
+    430
+   ],
+   "W": [
+    732,
+    280
+   ],
+   "T": [
+    692,
+    159
+   ]
+  }
+ },
+ "wave_ur": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    775,
+    440
+   ],
+   "W": [
+    790,
+    285
+   ],
+   "T": [
+    825,
+    172
+   ]
+  }
+ },
+ "wave_up": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    765,
+    415
+   ],
+   "W": [
+    740,
+    256
+   ],
+   "T": [
+    738,
+    150
+   ]
+  }
+ },
+ "think": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    630,
+    488
+   ],
+   "W": [
+    553,
+    325
+   ],
+   "T": [
+    515,
+    250
+   ]
+  }
+ },
+ "tuck": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    680,
+    425
+   ],
+   "W": [
+    610,
+    225
+   ],
+   "T": [
+    597,
+    140
+   ]
+  }
+ },
+ "talk": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    630,
+    545
+   ],
+   "W": [
+    705,
+    545
+   ],
+   "T": [
+    805,
+    555
+   ]
+  }
+ },
+ "happy": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    650,
+    510
+   ],
+   "W": [
+    668,
+    345
+   ],
+   "T": [
+    668,
+    292
+   ]
+  }
+ },
+ "drag": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    697,
+    579
+   ],
+   "W": [
+    730,
+    767
+   ],
+   "T": [
+    722,
+    858
+   ]
+  },
+  "rightArm": {
+   "S": [
+    372,
+    335
+   ],
+   "E": [
+    317,
+    579
+   ],
+   "W": [
+    297,
+    767
+   ],
+   "T": [
+    313,
+    862
+   ]
+  },
+  "leftLeg": {
+   "H": [
+    568,
+    760
+   ],
+   "K": [
+    575,
+    1040
+   ],
+   "A": [
+    573,
+    1340
+   ],
+   "T": [
+    573,
+    1490
+   ]
+  },
+  "rightLeg": {
+   "H": [
+    440,
+    760
+   ],
+   "K": [
+    435,
+    1040
+   ],
+   "A": [
+    440,
+    1340
+   ],
+   "T": [
+    440,
+    1485
+   ]
+  }
+ },
+ "land": {
+  "leftArm": {
+   "S": [
+    652,
+    355
+   ],
+   "E": [
+    716,
+    556
+   ],
+   "W": [
+    793,
+    667
+   ],
+   "T": [
+    860,
+    739
+   ]
+  },
+  "leftLeg": {
+   "H": [
+    570,
+    770
+   ],
+   "K": [
+    608,
+    1030
+   ],
+   "A": [
+    625,
+    1250
+   ],
+   "T": [
+    625,
+    1360
+   ]
+  },
+  "rightLeg": {
+   "H": [
+    420,
+    770
+   ],
+   "K": [
+    357,
+    1030
+   ],
+   "A": [
+    380,
+    1250
+   ],
+   "T": [
+    380,
+    1360
+   ]
+  }
+ }
+}

@@ -1,0 +1,9507 @@
+{
+ "$schema": "motion-spec v2 (this folder: MOTION_SPEC.md)",
+ "convention": {
+  "rig": "VRM 1.0 normalized humanoid bones (three-vrm getNormalizedBoneNode). VRM 0.x models: apply VRMUtils.rotateVRM0, then negate the X and Z of every rotation and of hipsOffset, because their normalized bones keep the model frame that faces -Z (three-vrm createVRMAnimationClip does the same). Verified by rendering Sendagaya_Shibu in spec poses (artifacts/vrm_poses.png). Gaze sign on VRM 0.x is not verified.",
+  "axes": "+Y up, +Z the way she faces, +X her left. Camera on +Z looking at -Z, turned camera.yawDeg around Y (orthographic).",
+  "euler": "degrees, order XYZ as three.js Euler (matrix = Rx*Ry*Rz), in the normalized local space, relative to the T-pose (identity). lowerArm is a hinge: only its Y channel moves (X and Z stay 0 +/- 5). Humeral rotation is upperArm.x; forearm pronation and supination are hand.x.",
+  "composition": "final local euler = rest + sum(idle layers * idleWeight(t)) + action delta, per channel. idleWeight ramps over idle.rampMs at rest ends (lib/compose.mjs).",
+  "signs": {
+   "headX": "+ chin down",
+   "headY": "+ turn to her left",
+   "headZ": "+ tilt to her right shoulder",
+   "leftUpperArmZ": "- lowers the arm",
+   "rightUpperArmZ": "+ lowers the arm",
+   "leftLowerArmY": "- bends the elbow (forearm forward)",
+   "rightLowerArmY": "+ bends the elbow",
+   "upperLegX": "- swings the thigh forward",
+   "upperLegZ": "+ moves the right foot toward her left (adduction of the right leg)",
+   "lowerLegX": "+ bends the knee",
+   "footX": "+ points the toes"
+  },
+  "curves": "Each track is a list of keys [tMs, value, flags?]; monotone cubic Hermite (Fritsch-Carlson) per channel; tangent 0 at the first and last key and at keys flagged \"h\". Before the first key the first value holds; after the last, the last value.",
+  "fingers": "[curl, spread, thumbCurl] deltas added to rest.fingers; a rig maps curl c to each finger joint X = c * [55, 75, 45] deg (proximal, intermediate, distal), spread s to proximal Z = s * [-8,-3,3,8] across index..little, thumb t to thumb joints = t * [20, 35, 40].",
+  "gaze": "[yawDeg, pitchDeg] relative to straight ahead of the head; +yaw her left, +pitch up. VRM: lookAt.yaw/pitch (or a lookAt target placed on that ray). 2D: shift the iris layer.",
+  "expressions": "VRM 1.0 preset names (happy, relaxed, surprised, aa, ih, ou, ee, oh, blink). Values are deltas added to rest.expressions, clamped to 0..1.",
+  "hipsOffset": "metres, added to the hips position (dip, lift).",
+  "twoD": "Layered 2D rig (lib/layer2d.mjs): run FK, project with camera.yawDeg. Each limb drawing is pinned at its projected joint, rotated to the projected bone angle, and stretched along the bone by ratio / variant.nominal, where ratio = projected length / true length; the variant is picked from twoD.parts[p].variants by ratio and depth (toward or away from the camera). Head, torso and pelvis pick a turn view by camera-relative yaw and pitch and shift their face parts by parallax between views. Draw order: sort parts by camera depth of their midpoints every frame."
+ },
+ "camera": {
+  "yawDeg": 14
+ },
+ "skeleton": {
+  "note": "Proportions used by the checker and preview (1.60 m). A real rig keeps the angles and re-solves the contacts in rest.contacts with its own IK.",
+  "bones": {
+   "hips": [
+    null,
+    [
+     0,
+     0.92,
+     0
+    ]
+   ],
+   "spine": [
+    "hips",
+    [
+     0,
+     0.08,
+     0
+    ]
+   ],
+   "chest": [
+    "spine",
+    [
+     0,
+     0.12,
+     0
+    ]
+   ],
+   "upperChest": [
+    "chest",
+    [
+     0,
+     0.12,
+     0
+    ]
+   ],
+   "neck": [
+    "upperChest",
+    [
+     0,
+     0.12,
+     0
+    ]
+   ],
+   "head": [
+    "neck",
+    [
+     0,
+     0.08,
+     0
+    ]
+   ],
+   "headTop": [
+    "head",
+    [
+     0,
+     0.2,
+     0
+    ]
+   ],
+   "leftShoulder": [
+    "upperChest",
+    [
+     0.03,
+     0.06,
+     0
+    ]
+   ],
+   "leftUpperArm": [
+    "leftShoulder",
+    [
+     0.14,
+     0,
+     0
+    ]
+   ],
+   "leftLowerArm": [
+    "leftUpperArm",
+    [
+     0.28,
+     0,
+     0
+    ]
+   ],
+   "leftHand": [
+    "leftLowerArm",
+    [
+     0.23,
+     0,
+     0
+    ]
+   ],
+   "leftHandTip": [
+    "leftHand",
+    [
+     0.17,
+     0,
+     0
+    ]
+   ],
+   "rightShoulder": [
+    "upperChest",
+    [
+     -0.03,
+     0.06,
+     0
+    ]
+   ],
+   "rightUpperArm": [
+    "rightShoulder",
+    [
+     -0.14,
+     0,
+     0
+    ]
+   ],
+   "rightLowerArm": [
+    "rightUpperArm",
+    [
+     -0.28,
+     0,
+     0
+    ]
+   ],
+   "rightHand": [
+    "rightLowerArm",
+    [
+     -0.23,
+     0,
+     0
+    ]
+   ],
+   "rightHandTip": [
+    "rightHand",
+    [
+     -0.17,
+     0,
+     0
+    ]
+   ],
+   "leftUpperLeg": [
+    "hips",
+    [
+     0.09,
+     -0.06,
+     0
+    ]
+   ],
+   "leftLowerLeg": [
+    "leftUpperLeg",
+    [
+     0,
+     -0.4,
+     0
+    ]
+   ],
+   "leftFoot": [
+    "leftLowerLeg",
+    [
+     0,
+     -0.42,
+     0
+    ]
+   ],
+   "leftToes": [
+    "leftFoot",
+    [
+     0,
+     -0.04,
+     0.13
+    ]
+   ],
+   "rightUpperLeg": [
+    "hips",
+    [
+     -0.09,
+     -0.06,
+     0
+    ]
+   ],
+   "rightLowerLeg": [
+    "rightUpperLeg",
+    [
+     0,
+     -0.4,
+     0
+    ]
+   ],
+   "rightFoot": [
+    "rightLowerLeg",
+    [
+     0,
+     -0.42,
+     0
+    ]
+   ],
+   "rightToes": [
+    "rightFoot",
+    [
+     0,
+     -0.04,
+     0.13
+    ]
+   ]
+  }
+ },
+ "rest": {
+  "bones": {
+   "hips": [
+    0,
+    0,
+    -6
+   ],
+   "spine": [
+    0,
+    0,
+    4
+   ],
+   "chest": [
+    0,
+    0,
+    3
+   ],
+   "upperChest": [
+    0,
+    0,
+    0.8
+   ],
+   "neck": [
+    1.5,
+    1,
+    -1
+   ],
+   "head": [
+    3,
+    2,
+    0.5
+   ],
+   "leftShoulder": [
+    0,
+    0,
+    1
+   ],
+   "rightShoulder": [
+    0,
+    0,
+    1
+   ],
+   "rightUpperLeg": [
+    3.4,
+    0,
+    13.8
+   ],
+   "rightLowerLeg": [
+    2,
+    0,
+    0
+   ],
+   "rightFoot": [
+    -5.3,
+    0,
+    -7.8
+   ],
+   "leftUpperLeg": [
+    -10,
+    8,
+    11
+   ],
+   "leftLowerLeg": [
+    18,
+    0,
+    0
+   ],
+   "leftFoot": [
+    -19,
+    0,
+    -2
+   ],
+   "leftUpperArm": [
+    65.1,
+    -44.3,
+    -37.9
+   ],
+   "leftLowerArm": [
+    0,
+    -99.9,
+    0
+   ],
+   "leftHand": [
+    0,
+    11.3,
+    19.8
+   ],
+   "rightUpperArm": [
+    10.8,
+    20,
+    75.1
+   ],
+   "rightLowerArm": [
+    0,
+    17.1,
+    0
+   ],
+   "rightHand": [
+    0,
+    2.7,
+    6.9
+   ]
+  },
+  "hipsOffset": [
+   -0.03,
+   -0.006,
+   0
+  ],
+  "fingers": {
+   "left": [
+    0.45,
+    0.1,
+    0.3
+   ],
+   "right": [
+    0.3,
+    0.05,
+    0.2
+   ]
+  },
+  "expressions": {
+   "relaxed": 0.25
+  },
+  "gaze": [
+   0,
+   -2
+  ],
+  "standingFoot": "rightFoot",
+  "contacts": {
+   "leftHand": "heel of the hand on the left iliac crest, fingertips forward-down on the hip (lib/body.mjs pelvis profile)",
+   "rightHand": "free, palm toward the thigh, 3-5 cm off it"
+  },
+  "goals": {
+   "hip": {
+    "wrist": [
+     0.172,
+     0.977,
+     -0.01
+    ],
+    "elbow": [
+     0.38,
+     1.091,
+     -0.08
+    ],
+    "tip": [
+     0.095,
+     0.865,
+     0.087
+    ]
+   },
+   "hang": {
+    "wrist": [
+     -0.235,
+     0.79,
+     0.015
+    ],
+    "elbow": [
+     -0.22,
+     1.03,
+     -0.03
+    ],
+    "tip": [
+     -0.227,
+     0.625,
+     0.045
+    ]
+   }
+  },
+  "measured": {
+   "leftElbowFlexDeg": 99.9,
+   "rightElbowFlexDeg": 17.1,
+   "leftWristMissM": 0,
+   "leftTipMissM": 0.003,
+   "rightWristMissM": 0.003
+  }
+ },
+ "idle": {
+  "note": "Always on, added on top of rest and of any action. A clip lowers it per bone with idleWeight (bones it drives default to drivenWeight, bones it does not drive keep 1). At every section end that touches rest, the weight ramps between 1 and the clip weight over rampMs with smoothstep, so the pose never steps when a clip starts or ends (lib/compose.mjs idleBlend).",
+  "rampMs": 250,
+  "drivenWeight": 0.35,
+  "layers": [
+   {
+    "name": "breath",
+    "shape": "breath",
+    "periodMs": 4200,
+    "channels": {
+     "chest": [
+      -1.4,
+      0,
+      0
+     ],
+     "upperChest": [
+      -1,
+      0,
+      0
+     ],
+     "neck": [
+      1.1,
+      0,
+      0
+     ],
+     "head": [
+      1,
+      0,
+      0
+     ],
+     "leftShoulder": [
+      0,
+      0,
+      1.4
+     ],
+     "rightShoulder": [
+      0,
+      0,
+      -1.4
+     ],
+     "rightUpperArm": [
+      0,
+      0,
+      1.4
+     ],
+     "leftUpperArm": [
+      -1.5,
+      -0.3,
+      -4.1
+     ],
+     "leftLowerArm": [
+      0,
+      1,
+      0
+     ],
+     "leftHand": [
+      0,
+      -0.6,
+      -2.6
+     ]
+    }
+   },
+   {
+    "name": "weightSway",
+    "periodMs": 8400,
+    "phase": 6.021,
+    "coupled": true,
+    "channels": {
+     "hips": [
+      0,
+      0,
+      1.6
+     ],
+     "spine": [
+      0,
+      0,
+      -1
+     ],
+     "chest": [
+      0,
+      0,
+      -0.6
+     ],
+     "rightUpperLeg": [
+      0,
+      0,
+      -1.6
+     ],
+     "leftUpperLeg": [
+      0,
+      0,
+      -1.6
+     ],
+     "leftUpperArm": [
+      0.1,
+      1,
+      -0.3
+     ],
+     "leftLowerArm": [
+      0,
+      -1.4,
+      0
+     ],
+     "leftHand": [
+      0,
+      1.6,
+      -0.1
+     ]
+    }
+   },
+   {
+    "name": "headDriftYaw",
+    "periodMs": 10500,
+    "phase": 0.262,
+    "channels": {
+     "head": [
+      0,
+      4.1,
+      1.2
+     ],
+     "neck": [
+      0,
+      1.6,
+      0
+     ]
+    }
+   },
+   {
+    "name": "headDriftPitch",
+    "periodMs": 6300,
+    "phase": 5.498,
+    "channels": {
+     "head": [
+      2.5,
+      0,
+      1.3
+     ],
+     "neck": [
+      1,
+      0,
+      0
+     ]
+    }
+   },
+   {
+    "name": "armSettle",
+    "periodMs": 14700,
+    "phase": 5.498,
+    "channels": {
+     "rightUpperArm": [
+      0,
+      1.5,
+      0
+     ],
+     "rightLowerArm": [
+      0,
+      1.9,
+      0
+     ],
+     "rightHand": [
+      0,
+      1.8,
+      0
+     ]
+    }
+   }
+  ],
+  "events": {
+   "blink": {
+    "clip": "blink",
+    "intervalMs": [
+     2000,
+     6000
+    ],
+    "doubleChance": 0.15,
+    "doubleGapMs": 260,
+    "note": "Uniform 2-6 s gives ~15 blinks/min (adult resting rate 15-20/min, guess-level source). Skipped while sleep owns the eyelids."
+   },
+   "saccade": {
+    "intervalMs": [
+     1200,
+     3500
+    ],
+    "yawDeg": [
+     -4,
+     4
+    ],
+    "pitchDeg": [
+     -2.5,
+     2.5
+    ],
+    "eyeMoveMs": 45,
+    "headFollow": {
+     "share": 0.3,
+     "delayMs": 150,
+     "durationMs": 420
+    },
+    "note": "Eyes jump first (45 ms), head follows 30 % of the gaze change after 150 ms over 420 ms (eye-head coordination)."
+   }
+  },
+  "spriteBake": {
+   "note": "Degraded sprite fallback only (not shipped). A sprite cannot add layers per bone: breath becomes 4 body frames; weight sway and head drift are lost. The checker reports what this costs (fallback block). The shipped layered2d rig evaluates the idle layer live, so sway, drift and breath all run.",
+   "breathFrames": 4,
+   "cssBreathScaleY": 0.004
+  }
+ },
+ "clips": {
+  "blink": {
+   "kind": "oneShot",
+   "agreed": "blink",
+   "bakeFps": 20,
+   "layer": "face",
+   "expressions": {
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      70,
+      1
+     ],
+     [
+      110,
+      1,
+      "h"
+     ],
+     [
+      260,
+      0
+     ]
+    ]
+   }
+  },
+  "breathe": {
+   "kind": "oneShot",
+   "agreed": "breathe",
+   "bakeFps": 8,
+   "bones": {
+    "chest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1100,
+      [
+       -4,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       -4.3,
+       0,
+       0
+      ]
+     ],
+     [
+      2600,
+      [
+       0.8,
+       0,
+       0
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "upperChest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       -2.5,
+       0,
+       0
+      ]
+     ],
+     [
+      1550,
+      [
+       -2.7,
+       0,
+       0
+      ]
+     ],
+     [
+      2650,
+      [
+       0.5,
+       0,
+       0
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftShoulder": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       0,
+       3
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       3.2
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       -1
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightShoulder": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       0,
+       -3
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       -3.2
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       1
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       0,
+       3
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       3.2
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       -1
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1100,
+      [
+       2,
+       0,
+       0
+      ]
+     ],
+     [
+      1600,
+      [
+       2,
+       0,
+       0
+      ]
+     ],
+     [
+      2600,
+      [
+       1.5,
+       0,
+       0
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1100,
+      [
+       1.8,
+       0,
+       0
+      ]
+     ],
+     [
+      1600,
+      [
+       2.2,
+       0,
+       0
+      ]
+     ],
+     [
+      2700,
+      [
+       3.5,
+       0,
+       0
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      600,
+      [
+       -1,
+       -0.5,
+       -4
+      ]
+     ],
+     [
+      1150,
+      [
+       4.5,
+       -4.6,
+       2.1
+      ]
+     ],
+     [
+      1500,
+      [
+       2.8,
+       -3.9,
+       -0.9
+      ]
+     ],
+     [
+      2100,
+      [
+       -1.9,
+       0.7,
+       -5
+      ]
+     ],
+     [
+      2650,
+      [
+       0.9,
+       0.6,
+       2.3
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftLowerArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      600,
+      [
+       0,
+       1,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       2,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       2.1,
+       0
+      ]
+     ],
+     [
+      2100,
+      [
+       0,
+       0.6,
+       0
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       -0.7,
+       0
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftHand": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      600,
+      [
+       0,
+       -0.3,
+       -2.8
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       1.3,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0.8,
+       -1.7
+      ]
+     ],
+     [
+      2100,
+      [
+       0,
+       -0.6,
+       -3.4
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0.3,
+       1.2
+      ]
+     ],
+     [
+      3100,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "expressions": {
+    "relaxed": [
+     [
+      0,
+      0
+     ],
+     [
+      1500,
+      0.1
+     ],
+     [
+      2600,
+      0.25
+     ],
+     [
+      3100,
+      0
+     ]
+    ],
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      1600,
+      0
+     ],
+     [
+      2100,
+      0.35
+     ],
+     [
+      2700,
+      0.2
+     ],
+     [
+      3100,
+      0
+     ]
+    ]
+   },
+   "idleWeight": {
+    "chest": 0.2,
+    "upperChest": 0.2,
+    "leftShoulder": 0.2,
+    "rightShoulder": 0.2,
+    "leftUpperArm": 0.2,
+    "leftLowerArm": 0.2,
+    "leftHand": 0.2
+   }
+  },
+  "look": {
+   "kind": "oneShot",
+   "agreed": "look",
+   "bakeFps": 8,
+   "bones": {
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      220,
+      [
+       -1,
+       -5,
+       -1
+      ]
+     ],
+     [
+      560,
+      [
+       -2,
+       -14,
+       -3
+      ]
+     ],
+     [
+      900,
+      [
+       -1.5,
+       -13,
+       -2.5
+      ]
+     ],
+     [
+      1250,
+      [
+       -1,
+       -12,
+       -2
+      ]
+     ],
+     [
+      1650,
+      [
+       0,
+       5,
+       2
+      ]
+     ],
+     [
+      1900,
+      [
+       0.5,
+       7,
+       2.5
+      ]
+     ],
+     [
+      2200,
+      [
+       0.5,
+       6,
+       2
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      260,
+      [
+       -0.5,
+       -2.5,
+       -0.5
+      ]
+     ],
+     [
+      600,
+      [
+       -1,
+       -7,
+       -1.5
+      ]
+     ],
+     [
+      940,
+      [
+       -0.7,
+       -6.5,
+       -1.2
+      ]
+     ],
+     [
+      1290,
+      [
+       -0.5,
+       -6,
+       -1
+      ]
+     ],
+     [
+      1690,
+      [
+       0,
+       2.5,
+       1
+      ]
+     ],
+     [
+      1940,
+      [
+       0.3,
+       3.5,
+       1.3
+      ]
+     ],
+     [
+      2240,
+      [
+       0.3,
+       3,
+       1
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "upperChest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      340,
+      [
+       -0.2,
+       -0.9,
+       -0.2
+      ]
+     ],
+     [
+      680,
+      [
+       -0.4,
+       -2.5,
+       -0.5
+      ]
+     ],
+     [
+      1020,
+      [
+       -0.3,
+       -2.3,
+       -0.4
+      ]
+     ],
+     [
+      1370,
+      [
+       -0.2,
+       -2.2,
+       -0.4
+      ]
+     ],
+     [
+      1770,
+      [
+       0,
+       0.9,
+       0.4
+      ]
+     ],
+     [
+      2020,
+      [
+       0.1,
+       1.3,
+       0.5
+      ]
+     ],
+     [
+      2320,
+      [
+       0.1,
+       1.1,
+       0.4
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "spine": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      380,
+      [
+       0,
+       -0.2,
+       0
+      ]
+     ],
+     [
+      720,
+      [
+       -0.1,
+       -0.7,
+       -0.2
+      ]
+     ],
+     [
+      1060,
+      [
+       -0.1,
+       -0.6,
+       -0.1
+      ]
+     ],
+     [
+      1410,
+      [
+       0,
+       -0.6,
+       -0.1
+      ]
+     ],
+     [
+      1810,
+      [
+       0,
+       0.3,
+       0.1
+      ]
+     ],
+     [
+      2060,
+      [
+       0,
+       0.4,
+       0.1
+      ]
+     ],
+     [
+      2360,
+      [
+       0,
+       0.3,
+       0.1
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "gaze": [
+    [
+     0,
+     [
+      0,
+      0
+     ]
+    ],
+    [
+     120,
+     [
+      -16,
+      2
+     ]
+    ],
+    [
+     1250,
+     [
+      -14,
+      2
+     ],
+     "h"
+    ],
+    [
+     1450,
+     [
+      10,
+      0
+     ]
+    ],
+    [
+     2200,
+     [
+      8,
+      0
+     ],
+     "h"
+    ],
+    [
+     2550,
+     [
+      0,
+      0
+     ]
+    ]
+   ],
+   "expressions": {
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      130,
+      0
+     ],
+     [
+      200,
+      1
+     ],
+     [
+      310,
+      0
+     ],
+     [
+      1370,
+      0
+     ],
+     [
+      1440,
+      0.9
+     ],
+     [
+      1550,
+      0
+     ]
+    ]
+   }
+  },
+  "hairTuck": {
+   "kind": "oneShot",
+   "agreed": "hair tuck",
+   "appName": "wink",
+   "bakeFps": 8,
+   "bones": {
+    "leftUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -1.6,
+       -0.1,
+       -1.5
+      ]
+     ],
+     [
+      560,
+      [
+       -62.5,
+       45.9,
+       -24.7
+      ]
+     ],
+     [
+      920,
+      [
+       -146.4,
+       29.7,
+       -33
+      ]
+     ],
+     [
+      1120,
+      [
+       -153.3,
+       13.6,
+       -4.6
+      ]
+     ],
+     [
+      1650,
+      [
+       -153.1,
+       14.3,
+       -1.9
+      ],
+      "h"
+     ],
+     [
+      2160,
+      [
+       -53.7,
+       51.5,
+       -27.4
+      ]
+     ],
+     [
+      2420,
+      [
+       -1.7,
+       -0.6,
+       -0.4
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftLowerArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       0,
+       1.8,
+       0
+      ]
+     ],
+     [
+      560,
+      [
+       0,
+       -44,
+       0
+      ]
+     ],
+     [
+      920,
+      [
+       0,
+       -42.6,
+       0
+      ]
+     ],
+     [
+      1120,
+      [
+       0,
+       -46.6,
+       0
+      ]
+     ],
+     [
+      1650,
+      [
+       0,
+       -48.1,
+       0
+      ],
+      "h"
+     ],
+     [
+      2160,
+      [
+       0,
+       -43.9,
+       0
+      ]
+     ],
+     [
+      2420,
+      [
+       0,
+       2.9,
+       0
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftHand": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      230,
+      [
+       0,
+       -1.2,
+       -0.5
+      ]
+     ],
+     [
+      610,
+      [
+       0,
+       -11.3,
+       -19.8
+      ]
+     ],
+     [
+      970,
+      [
+       0,
+       9.6,
+       -19.5
+      ]
+     ],
+     [
+      1170,
+      [
+       0,
+       15.1,
+       8.3
+      ]
+     ],
+     [
+      1700,
+      [
+       0,
+       15.5,
+       10.3
+      ],
+      "h"
+     ],
+     [
+      2210,
+      [
+       0,
+       -11.3,
+       -19.8
+      ]
+     ],
+     [
+      2470,
+      [
+       0,
+       -1.6,
+       -0.3
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       0,
+       1,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       1.5,
+       5,
+       -5
+      ]
+     ],
+     [
+      1080,
+      [
+       2,
+       6,
+       -7
+      ]
+     ],
+     [
+      1650,
+      [
+       2.5,
+       5,
+       -6.5
+      ],
+      "h"
+     ],
+     [
+      2150,
+      [
+       1,
+       2,
+       -2
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      220,
+      [
+       0,
+       0.4,
+       0
+      ]
+     ],
+     [
+      840,
+      [
+       0.6,
+       2,
+       -2
+      ]
+     ],
+     [
+      1120,
+      [
+       0.8,
+       2.4,
+       -2.8
+      ]
+     ],
+     [
+      1690,
+      [
+       1,
+       2,
+       -2.6
+      ],
+      "h"
+     ],
+     [
+      2190,
+      [
+       0.4,
+       0.8,
+       -0.8
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftShoulder": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       0,
+       3
+      ]
+     ],
+     [
+      1650,
+      [
+       0,
+       0,
+       2.5
+      ]
+     ],
+     [
+      2300,
+      [
+       0,
+       0,
+       0.5
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "spine": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       -1.5
+      ]
+     ],
+     [
+      1700,
+      [
+       0,
+       0,
+       -1.2
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "fingers": {
+    "left": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      500,
+      [
+       -0.25,
+       0.1,
+       -0.1
+      ]
+     ],
+     [
+      1080,
+      [
+       -0.15,
+       0.15,
+       0
+      ]
+     ],
+     [
+      1650,
+      [
+       -0.12,
+       0.15,
+       0
+      ]
+     ],
+     [
+      2420,
+      [
+       0.05,
+       0,
+       0
+      ]
+     ],
+     [
+      2700,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "gaze": [
+    [
+     0,
+     [
+      0,
+      0
+     ]
+    ],
+    [
+     500,
+     [
+      6,
+      -6
+     ]
+    ],
+    [
+     1650,
+     [
+      5,
+      -5
+     ],
+     "h"
+    ],
+    [
+     2100,
+     [
+      0,
+      0
+     ]
+    ]
+   ],
+   "expressions": {
+    "happy": [
+     [
+      0,
+      0
+     ],
+     [
+      1080,
+      0.3
+     ],
+     [
+      1650,
+      0.3
+     ],
+     [
+      2400,
+      0
+     ]
+    ],
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      700,
+      0.25
+     ],
+     [
+      1650,
+      0.3
+     ],
+     [
+      2200,
+      0
+     ]
+    ]
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "head": 0.4,
+    "neck": 0.4
+   }
+  },
+  "think": {
+   "kind": "stateful",
+   "agreed": "think",
+   "bakeFps": 8,
+   "enter": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        -1.6,
+        -0.1,
+        -1.5
+       ]
+      ],
+      [
+       500,
+       [
+        -67.3,
+        39.3,
+        -37.1
+       ]
+      ],
+      [
+       880,
+       [
+        -126.3,
+        2.8,
+        -59.7
+       ]
+      ],
+      [
+       1050,
+       [
+        -132.6,
+        -0.2,
+        -59.9
+       ],
+       "h"
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        1.8,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        0,
+        -34.7,
+        0
+       ]
+      ],
+      [
+       880,
+       [
+        0,
+        -36.1,
+        0
+       ]
+      ],
+      [
+       1050,
+       [
+        0,
+        -36.7,
+        0
+       ],
+       "h"
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       200,
+       [
+        0,
+        -1.2,
+        -0.5
+       ]
+      ],
+      [
+       540,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       920,
+       [
+        0,
+        -4.8,
+        -19.1
+       ]
+      ],
+      [
+       1050,
+       [
+        0,
+        -0.1,
+        -14
+       ],
+       "h"
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       200,
+       [
+        -2,
+        0,
+        0
+       ]
+      ],
+      [
+       850,
+       [
+        2,
+        -5,
+        4
+       ]
+      ],
+      [
+       1050,
+       [
+        2,
+        -5,
+        5
+       ],
+       "h"
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       240,
+       [
+        -0.8,
+        0,
+        0
+       ]
+      ],
+      [
+       890,
+       [
+        0.8,
+        -2,
+        1.6
+       ]
+      ],
+      [
+       1050,
+       [
+        0.8,
+        -2,
+        2
+       ],
+       "h"
+      ]
+     ],
+     "spine": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1050,
+       [
+        2,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0.2,
+        -0.1,
+        0.2
+       ]
+      ],
+      [
+       1050,
+       [
+        0.35,
+        -0.1,
+        0.3
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       0,
+       0
+      ]
+     ],
+     [
+      200,
+      [
+       10,
+       10
+      ]
+     ],
+     [
+      1050,
+      [
+       12,
+       11
+      ]
+     ]
+    ],
+    "expressions": {
+     "relaxed": [
+      [
+       0,
+       0
+      ],
+      [
+       1050,
+       -0.15
+      ]
+     ],
+     "blink": [
+      [
+       0,
+       0
+      ],
+      [
+       700,
+       0.15
+      ],
+      [
+       1050,
+       0.15
+      ]
+     ]
+    }
+   },
+   "loop": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -132.6,
+        -0.2,
+        -59.9
+       ]
+      ],
+      [
+       1200,
+       [
+        -128.8,
+        2.1,
+        -59.8
+       ]
+      ],
+      [
+       2400,
+       [
+        -132.6,
+        -0.2,
+        -59.9
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -36.7,
+        0
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        -36.8,
+        0
+       ]
+      ],
+      [
+       2400,
+       [
+        0,
+        -36.7,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -0.1,
+        -14
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        -2.4,
+        -17.5
+       ]
+      ],
+      [
+       2400,
+       [
+        0,
+        -0.1,
+        -14
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        2,
+        -5,
+        5
+       ]
+      ],
+      [
+       800,
+       [
+        1.5,
+        -6,
+        6.5
+       ]
+      ],
+      [
+       1600,
+       [
+        2.5,
+        -4.5,
+        5.5
+       ]
+      ],
+      [
+       2400,
+       [
+        2,
+        -5,
+        5
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0.8,
+        -2,
+        2
+       ]
+      ],
+      [
+       800,
+       [
+        0.6,
+        -2.4,
+        2.6
+       ]
+      ],
+      [
+       1600,
+       [
+        1,
+        -1.8,
+        2.2
+       ]
+      ],
+      [
+       2400,
+       [
+        0.8,
+        -2,
+        2
+       ]
+      ]
+     ],
+     "spine": [
+      [
+       0,
+       [
+        2,
+        0,
+        0
+       ]
+      ],
+      [
+       1200,
+       [
+        2.4,
+        0,
+        0
+       ]
+      ],
+      [
+       2400,
+       [
+        2,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0.35,
+        -0.1,
+        0.3
+       ]
+      ],
+      [
+       600,
+       [
+        0.3,
+        -0.1,
+        0.25
+       ]
+      ],
+      [
+       1200,
+       [
+        0.35,
+        -0.1,
+        0.3
+       ]
+      ],
+      [
+       2400,
+       [
+        0.35,
+        -0.1,
+        0.3
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       12,
+       11
+      ]
+     ],
+     [
+      700,
+      [
+       12,
+       11
+      ],
+      "h"
+     ],
+     [
+      760,
+      [
+       6,
+       9
+      ]
+     ],
+     [
+      1500,
+      [
+       6,
+       9
+      ],
+      "h"
+     ],
+     [
+      1560,
+      [
+       12,
+       11
+      ]
+     ],
+     [
+      2400,
+      [
+       12,
+       11
+      ]
+     ]
+    ],
+    "expressions": {
+     "relaxed": [
+      [
+       0,
+       -0.15
+      ],
+      [
+       2400,
+       -0.15
+      ]
+     ],
+     "blink": [
+      [
+       0,
+       0.15
+      ],
+      [
+       1200,
+       0.2
+      ],
+      [
+       2400,
+       0.15
+      ]
+     ]
+    }
+   },
+   "exit": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -132.6,
+        -0.2,
+        -59.9
+       ]
+      ],
+      [
+       180,
+       [
+        -129.8,
+        12.6,
+        -59.4
+       ]
+      ],
+      [
+       480,
+       [
+        -68.5,
+        52,
+        -36.2
+       ]
+      ],
+      [
+       820,
+       [
+        -1.7,
+        -0.6,
+        -0.4
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -36.7,
+        0
+       ]
+      ],
+      [
+       180,
+       [
+        0,
+        -33.1,
+        0
+       ]
+      ],
+      [
+       480,
+       [
+        0,
+        -32.6,
+        0
+       ]
+      ],
+      [
+       820,
+       [
+        0,
+        2.9,
+        0
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -0.1,
+        -14
+       ]
+      ],
+      [
+       230,
+       [
+        0,
+        20.5,
+        -9.7
+       ]
+      ],
+      [
+       530,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       870,
+       [
+        0,
+        -1.6,
+        -0.3
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        2,
+        -5,
+        5
+       ]
+      ],
+      [
+       180,
+       [
+        -3,
+        -1,
+        2
+       ]
+      ],
+      [
+       500,
+       [
+        -1,
+        2,
+        0
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0.8,
+        -2,
+        2
+       ]
+      ],
+      [
+       180,
+       [
+        -1.2,
+        -0.4,
+        0.8
+       ]
+      ],
+      [
+       500,
+       [
+        -0.4,
+        0.8,
+        0
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "spine": [
+      [
+       0,
+       [
+        2,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0.5,
+        0,
+        0
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0.35,
+        -0.1,
+        0.3
+       ]
+      ],
+      [
+       300,
+       [
+        -0.2,
+        0.2,
+        -0.1
+       ]
+      ],
+      [
+       800,
+       [
+        0.05,
+        0,
+        0
+       ]
+      ],
+      [
+       1000,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       12,
+       11
+      ]
+     ],
+     [
+      150,
+      [
+       0,
+       0
+      ]
+     ],
+     [
+      1000,
+      [
+       0,
+       0
+      ]
+     ]
+    ],
+    "expressions": {
+     "relaxed": [
+      [
+       0,
+       -0.15
+      ],
+      [
+       400,
+       0
+      ],
+      [
+       1000,
+       0
+      ]
+     ],
+     "surprised": [
+      [
+       0,
+       0
+      ],
+      [
+       150,
+       0.35
+      ],
+      [
+       450,
+       0.2
+      ],
+      [
+       900,
+       0
+      ]
+     ],
+     "happy": [
+      [
+       0,
+       0
+      ],
+      [
+       350,
+       0.4
+      ],
+      [
+       1000,
+       0
+      ]
+     ],
+     "blink": [
+      [
+       0,
+       0.15
+      ],
+      [
+       120,
+       0
+      ],
+      [
+       1000,
+       0
+      ]
+     ]
+    }
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "leftHand": 0,
+    "head": 0.35,
+    "neck": 0.35
+   }
+  },
+  "talk": {
+   "kind": "stateful",
+   "agreed": "talk",
+   "bakeFps": 8,
+   "enter": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       140,
+       [
+        -1.6,
+        -0.1,
+        -1.5
+       ]
+      ],
+      [
+       380,
+       [
+        -45.2,
+        36.7,
+        -27.5
+       ]
+      ],
+      [
+       600,
+       [
+        -64.4,
+        51.7,
+        -37.7
+       ],
+       "h"
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       140,
+       [
+        0,
+        1.8,
+        0
+       ]
+      ],
+      [
+       380,
+       [
+        0,
+        -7,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        -6.4,
+        0
+       ],
+       "h"
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       180,
+       [
+        0,
+        -1.2,
+        -0.5
+       ]
+      ],
+      [
+       420,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        2.2,
+        -15.5
+       ],
+       "h"
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        3,
+        6,
+        -3
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        1,
+        2,
+        -1
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        2,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        -0.3,
+        0.15,
+        -0.15
+       ]
+      ]
+     ]
+    },
+    "expressions": {
+     "happy": [
+      [
+       0,
+       0
+      ],
+      [
+       600,
+       0.2
+      ]
+     ],
+     "surprised": [
+      [
+       0,
+       0
+      ],
+      [
+       300,
+       0.15
+      ],
+      [
+       600,
+       0.1
+      ]
+     ]
+    }
+   },
+   "loop": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -64.4,
+        51.7,
+        -37.7
+       ]
+      ],
+      [
+       260,
+       [
+        -64,
+        50.6,
+        -38.6
+       ]
+      ],
+      [
+       600,
+       [
+        -63.8,
+        55.9,
+        -37.3
+       ]
+      ],
+      [
+       860,
+       [
+        -64,
+        50.6,
+        -38.6
+       ]
+      ],
+      [
+       1200,
+       [
+        -64.4,
+        51.7,
+        -37.7
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -6.4,
+        0
+       ]
+      ],
+      [
+       260,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        -7.9,
+        0
+       ]
+      ],
+      [
+       860,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        -6.4,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        2.2,
+        -15.5
+       ]
+      ],
+      [
+       260,
+       [
+        0,
+        -0.6,
+        -15.5
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        1,
+        -16.9
+       ]
+      ],
+      [
+       860,
+       [
+        0,
+        -0.6,
+        -15.5
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        2.2,
+        -15.5
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        3,
+        6,
+        -3
+       ]
+      ],
+      [
+       260,
+       [
+        4.5,
+        6,
+        -3
+       ]
+      ],
+      [
+       600,
+       [
+        3,
+        7,
+        -3.5
+       ]
+      ],
+      [
+       860,
+       [
+        4.5,
+        6.5,
+        -3
+       ]
+      ],
+      [
+       1200,
+       [
+        3,
+        6,
+        -3
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        1,
+        2,
+        -1
+       ]
+      ],
+      [
+       1200,
+       [
+        1,
+        2,
+        -1
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        0,
+        2,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        0.5,
+        2.5,
+        0
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        2,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.3,
+        0.15,
+        -0.15
+       ]
+      ],
+      [
+       600,
+       [
+        -0.25,
+        0.2,
+        -0.1
+       ]
+      ],
+      [
+       1200,
+       [
+        -0.3,
+        0.15,
+        -0.15
+       ]
+      ]
+     ]
+    },
+    "expressions": {
+     "aa": [
+      [
+       0,
+       0
+      ],
+      [
+       90,
+       0.55
+      ],
+      [
+       200,
+       0.1
+      ],
+      [
+       600,
+       0
+      ],
+      [
+       700,
+       0.45
+      ],
+      [
+       800,
+       0.1
+      ],
+      [
+       1200,
+       0
+      ]
+     ],
+     "ih": [
+      [
+       0,
+       0
+      ],
+      [
+       200,
+       0
+      ],
+      [
+       300,
+       0.35
+      ],
+      [
+       400,
+       0
+      ],
+      [
+       1200,
+       0
+      ]
+     ],
+     "ou": [
+      [
+       0,
+       0
+      ],
+      [
+       400,
+       0
+      ],
+      [
+       520,
+       0.45
+      ],
+      [
+       600,
+       0.1
+      ],
+      [
+       900,
+       0
+      ],
+      [
+       1000,
+       0.3
+      ],
+      [
+       1100,
+       0
+      ],
+      [
+       1200,
+       0
+      ]
+     ],
+     "ee": [
+      [
+       0,
+       0
+      ],
+      [
+       800,
+       0
+      ],
+      [
+       900,
+       0.35
+      ],
+      [
+       1000,
+       0
+      ],
+      [
+       1200,
+       0
+      ]
+     ],
+     "happy": [
+      [
+       0,
+       0.2
+      ],
+      [
+       1200,
+       0.2
+      ]
+     ],
+     "surprised": [
+      [
+       0,
+       0.1
+      ],
+      [
+       260,
+       0.2
+      ],
+      [
+       600,
+       0.1
+      ],
+      [
+       860,
+       0.18
+      ],
+      [
+       1200,
+       0.1
+      ]
+     ]
+    },
+    "note": "Mouth tracks are the fallback pattern. When speech reports boundaries or audio level, drive aa/ih/ou/ee/oh from it and keep the body tracks."
+   },
+   "exit": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -64.4,
+        51.7,
+        -37.7
+       ]
+      ],
+      [
+       300,
+       [
+        -41.1,
+        37.8,
+        -27.7
+       ]
+      ],
+      [
+       560,
+       [
+        -1.7,
+        -0.6,
+        -0.4
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -6.4,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        0,
+        -9.6,
+        0
+       ]
+      ],
+      [
+       560,
+       [
+        0,
+        2.9,
+        0
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        2.2,
+        -15.5
+       ]
+      ],
+      [
+       350,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       610,
+       [
+        0,
+        -1.6,
+        -0.3
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        3,
+        6,
+        -3
+       ]
+      ],
+      [
+       450,
+       [
+        1,
+        2,
+        -1
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        1,
+        2,
+        -1
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        0,
+        2,
+        0
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.3,
+        0.15,
+        -0.15
+       ]
+      ],
+      [
+       560,
+       [
+        0.05,
+        0,
+        0
+       ]
+      ],
+      [
+       750,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "expressions": {
+     "happy": [
+      [
+       0,
+       0.2
+      ],
+      [
+       750,
+       0
+      ]
+     ],
+     "surprised": [
+      [
+       0,
+       0.1
+      ],
+      [
+       400,
+       0
+      ]
+     ]
+    }
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "leftHand": 0,
+    "head": 0.5,
+    "neck": 0.5
+   }
+  },
+  "wave": {
+   "kind": "oneShot",
+   "agreed": "wave",
+   "bakeFps": 10,
+   "bones": {
+    "leftUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      130,
+      [
+       -1.6,
+       -0.1,
+       -1.5
+      ]
+     ],
+     [
+      450,
+      [
+       -64.8,
+       61.1,
+       -26.4
+      ]
+     ],
+     [
+      680,
+      [
+       -131.4,
+       56.1,
+       -9.9
+      ]
+     ],
+     [
+      800,
+      [
+       -134.6,
+       66.3,
+       -4.8
+      ]
+     ],
+     [
+      1000,
+      [
+       -131.4,
+       43.7,
+       -19.3
+      ]
+     ],
+     [
+      1200,
+      [
+       -134.6,
+       66.3,
+       -4.8
+      ]
+     ],
+     [
+      1400,
+      [
+       -131.3,
+       46.4,
+       -17.3
+      ]
+     ],
+     [
+      1600,
+      [
+       -133,
+       62.7,
+       -6.7
+      ]
+     ],
+     [
+      1800,
+      [
+       -131.6,
+       54.2,
+       -12.2
+      ],
+      "h"
+     ],
+     [
+      2100,
+      [
+       -63.7,
+       64,
+       -28.3
+      ]
+     ],
+     [
+      2450,
+      [
+       -1.7,
+       -0.6,
+       -0.4
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftLowerArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      130,
+      [
+       0,
+       1.8,
+       0
+      ]
+     ],
+     [
+      450,
+      [
+       0,
+       -25.5,
+       0
+      ]
+     ],
+     [
+      680,
+      [
+       0,
+       -41.1,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       -33.5,
+       0
+      ]
+     ],
+     [
+      1000,
+      [
+       0,
+       -45.7,
+       0
+      ]
+     ],
+     [
+      1200,
+      [
+       0,
+       -33.5,
+       0
+      ]
+     ],
+     [
+      1400,
+      [
+       0,
+       -45.1,
+       0
+      ]
+     ],
+     [
+      1600,
+      [
+       0,
+       -36.8,
+       0
+      ]
+     ],
+     [
+      1800,
+      [
+       0,
+       -42.3,
+       0
+      ],
+      "h"
+     ],
+     [
+      2100,
+      [
+       0,
+       -27.3,
+       0
+      ]
+     ],
+     [
+      2450,
+      [
+       0,
+       2.9,
+       0
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftHand": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      190,
+      [
+       0,
+       -1.2,
+       -0.5
+      ]
+     ],
+     [
+      510,
+      [
+       0,
+       -11.3,
+       -19.8
+      ]
+     ],
+     [
+      740,
+      [
+       0,
+       18.7,
+       -12.7
+      ]
+     ],
+     [
+      860,
+      [
+       0,
+       12.1,
+       -15.2
+      ]
+     ],
+     [
+      1060,
+      [
+       0,
+       21.6,
+       -12.3
+      ]
+     ],
+     [
+      1260,
+      [
+       0,
+       12.1,
+       -15.2
+      ]
+     ],
+     [
+      1460,
+      [
+       0,
+       21.4,
+       -12.5
+      ]
+     ],
+     [
+      1660,
+      [
+       0,
+       14.6,
+       -14.2
+      ]
+     ],
+     [
+      1860,
+      [
+       0,
+       20,
+       -13.4
+      ],
+      "h"
+     ],
+     [
+      2160,
+      [
+       0,
+       -11.3,
+       -19.8
+      ]
+     ],
+     [
+      2510,
+      [
+       0,
+       -1.6,
+       -0.3
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      380,
+      [
+       0,
+       3,
+       -2
+      ]
+     ],
+     [
+      700,
+      [
+       -1,
+       5,
+       -5
+      ]
+     ],
+     [
+      1800,
+      [
+       -1,
+       5,
+       -4.5
+      ],
+      "h"
+     ],
+     [
+      2300,
+      [
+       0,
+       2,
+       -1
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       1.2,
+       -0.8
+      ]
+     ],
+     [
+      740,
+      [
+       -0.4,
+       2,
+       -2
+      ]
+     ],
+     [
+      1840,
+      [
+       -0.4,
+       2,
+       -1.8
+      ],
+      "h"
+     ],
+     [
+      2340,
+      [
+       0,
+       0.8,
+       -0.4
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "spine": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      600,
+      [
+       0,
+       0,
+       1.5
+      ]
+     ],
+     [
+      1800,
+      [
+       0,
+       0,
+       1.3
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftShoulder": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      600,
+      [
+       0,
+       0,
+       4
+      ]
+     ],
+     [
+      1800,
+      [
+       0,
+       0,
+       4
+      ]
+     ],
+     [
+      2300,
+      [
+       0,
+       0,
+       1
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "fingers": {
+    "left": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      400,
+      [
+       -0.35,
+       0.2,
+       -0.2
+      ]
+     ],
+     [
+      600,
+      [
+       -0.4,
+       0.3,
+       -0.25
+      ]
+     ],
+     [
+      1800,
+      [
+       -0.4,
+       0.3,
+       -0.25
+      ]
+     ],
+     [
+      2400,
+      [
+       0.05,
+       0,
+       0
+      ]
+     ],
+     [
+      2650,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "gaze": [
+    [
+     0,
+     [
+      0,
+      0
+     ]
+    ],
+    [
+     200,
+     [
+      4,
+      2
+     ]
+    ],
+    [
+     2200,
+     [
+      4,
+      2
+     ],
+     "h"
+    ],
+    [
+     2600,
+     [
+      0,
+      0
+     ]
+    ]
+   ],
+   "expressions": {
+    "happy": [
+     [
+      0,
+      0
+     ],
+     [
+      500,
+      0.6
+     ],
+     [
+      1800,
+      0.6
+     ],
+     [
+      2650,
+      0
+     ]
+    ],
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      600,
+      0.2
+     ],
+     [
+      1800,
+      0.2
+     ],
+     [
+      2650,
+      0
+     ]
+    ]
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "leftHand": 0,
+    "head": 0.4,
+    "neck": 0.4
+   }
+  },
+  "happy": {
+   "kind": "oneShot",
+   "agreed": "happy",
+   "bakeFps": 10,
+   "bones": {
+    "leftUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -1.6,
+       -0.1,
+       -1.5
+      ]
+     ],
+     [
+      460,
+      [
+       -74.5,
+       34.3,
+       -40.1
+      ]
+     ],
+     [
+      650,
+      [
+       -66.5,
+       32.2,
+       -40.8
+      ]
+     ],
+     [
+      900,
+      [
+       -74.5,
+       34.3,
+       -40.1
+      ]
+     ],
+     [
+      1150,
+      [
+       -66.5,
+       32.2,
+       -40.8
+      ],
+      "h"
+     ],
+     [
+      1650,
+      [
+       -44.2,
+       38.5,
+       -28.6
+      ]
+     ],
+     [
+      2000,
+      [
+       -1.7,
+       -0.6,
+       -0.4
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftLowerArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       0,
+       1.8,
+       0
+      ]
+     ],
+     [
+      460,
+      [
+       0,
+       -39.3,
+       0
+      ]
+     ],
+     [
+      650,
+      [
+       0,
+       -34.9,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       -39.3,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       -34.9,
+       0
+      ],
+      "h"
+     ],
+     [
+      1650,
+      [
+       0,
+       -16,
+       0
+      ]
+     ],
+     [
+      2000,
+      [
+       0,
+       2.9,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftHand": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      220,
+      [
+       0,
+       -1.2,
+       -0.5
+      ]
+     ],
+     [
+      500,
+      [
+       0,
+       -11.4,
+       -26.4
+      ]
+     ],
+     [
+      690,
+      [
+       0,
+       -21.6,
+       -24.3
+      ]
+     ],
+     [
+      940,
+      [
+       0,
+       -11.4,
+       -26.4
+      ]
+     ],
+     [
+      1190,
+      [
+       0,
+       -21.6,
+       -24.3
+      ],
+      "h"
+     ],
+     [
+      1690,
+      [
+       0,
+       -11.3,
+       -19.8
+      ]
+     ],
+     [
+      2040,
+      [
+       0,
+       -1.6,
+       -0.3
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       3,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       -3,
+       4,
+       -5
+      ]
+     ],
+     [
+      620,
+      [
+       -1,
+       4,
+       -6
+      ]
+     ],
+     [
+      900,
+      [
+       -3,
+       4,
+       -5
+      ]
+     ],
+     [
+      1150,
+      [
+       -1,
+       3,
+       -5
+      ]
+     ],
+     [
+      1700,
+      [
+       0,
+       1,
+       -2
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      210,
+      [
+       1.2,
+       0,
+       0
+      ]
+     ],
+     [
+      450,
+      [
+       -1.2,
+       1.6,
+       -2
+      ]
+     ],
+     [
+      650,
+      [
+       -0.4,
+       1.6,
+       -2.4
+      ]
+     ],
+     [
+      930,
+      [
+       -1.2,
+       1.6,
+       -2
+      ]
+     ],
+     [
+      1180,
+      [
+       -0.4,
+       1.2,
+       -2
+      ]
+     ],
+     [
+      1730,
+      [
+       0,
+       0.4,
+       -0.8
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftUpperLeg": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -5.9,
+       -1.5,
+       0.8
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       -3.5,
+       -0.9,
+       0.5
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       -1.4,
+       -0.4,
+       0.2
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightUpperLeg": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -10.8,
+       -2.5,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       -7.5,
+       -1.8,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftLowerLeg": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       11.8,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       7,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       2.8,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightLowerLeg": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       21.8,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       15.3,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       0.1,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "leftFoot": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -6,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       -3.7,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       -1.6,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightFoot": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       -10.9,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      620,
+      [
+       -7.8,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      1150,
+      [
+       -1.7,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "chest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      180,
+      [
+       2,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       -3,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       -2.5,
+       0,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       -1,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightUpperArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      260,
+      [
+       0,
+       4,
+       0
+      ]
+     ],
+     [
+      520,
+      [
+       0,
+       -3,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       3,
+       0
+      ]
+     ],
+     [
+      1100,
+      [
+       0,
+       -1.5,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       1,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "rightLowerArm": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      320,
+      [
+       0,
+       6,
+       0
+      ]
+     ],
+     [
+      580,
+      [
+       0,
+       -2,
+       0
+      ]
+     ],
+     [
+      860,
+      [
+       0,
+       4,
+       0
+      ]
+     ],
+     [
+      1500,
+      [
+       0,
+       0.5,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "hipsOffset": [
+    [
+     0,
+     [
+      0,
+      0,
+      0
+     ]
+    ],
+    [
+     180,
+     [
+      0,
+      -0.018,
+      0
+     ]
+    ],
+    [
+     420,
+     [
+      0,
+      0,
+      0
+     ]
+    ],
+    [
+     620,
+     [
+      0,
+      -0.01,
+      0
+     ]
+    ],
+    [
+     900,
+     [
+      0,
+      0,
+      0
+     ]
+    ],
+    [
+     1150,
+     [
+      0,
+      -0.004,
+      0
+     ]
+    ],
+    [
+     1500,
+     [
+      0,
+      0,
+      0
+     ]
+    ],
+    [
+     2200,
+     [
+      0,
+      0,
+      0
+     ]
+    ]
+   ],
+   "fingers": {
+    "left": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0.45,
+       -0.1,
+       0.5
+      ]
+     ],
+     [
+      1150,
+      [
+       0.45,
+       -0.1,
+       0.5
+      ]
+     ],
+     [
+      1800,
+      [
+       0.1,
+       0,
+       0
+      ]
+     ],
+     [
+      2200,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "expressions": {
+    "happy": [
+     [
+      0,
+      0
+     ],
+     [
+      400,
+      0.9
+     ],
+     [
+      1300,
+      0.85
+     ],
+     [
+      2200,
+      0
+     ]
+    ],
+    "relaxed": [
+     [
+      0,
+      0
+     ],
+     [
+      400,
+      -0.25
+     ],
+     [
+      1500,
+      -0.2
+     ],
+     [
+      2200,
+      0
+     ]
+    ],
+    "blink": [
+     [
+      0,
+      0
+     ],
+     [
+      400,
+      0.35
+     ],
+     [
+      1300,
+      0.3
+     ],
+     [
+      2200,
+      0
+     ]
+    ],
+    "aa": [
+     [
+      0,
+      0
+     ],
+     [
+      420,
+      0.15
+     ],
+     [
+      900,
+      0.1
+     ],
+     [
+      1300,
+      0
+     ]
+    ]
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "leftHand": 0,
+    "head": 0.4
+   }
+  },
+  "drag": {
+   "kind": "stateful",
+   "agreed": "drag",
+   "airborne": true,
+   "bakeFps": 10,
+   "enter": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       90,
+       [
+        -1.2,
+        0.4,
+        0.9
+       ]
+      ],
+      [
+       320,
+       [
+        -66.6,
+        26.1,
+        -32.7
+       ]
+      ],
+      [
+       440,
+       [
+        -92.4,
+        1.6,
+        -52.3
+       ],
+       "h"
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       90,
+       [
+        0,
+        -1.8,
+        0
+       ]
+      ],
+      [
+       320,
+       [
+        0,
+        -34.9,
+        0
+       ]
+      ],
+      [
+       440,
+       [
+        0,
+        -42.7,
+        0
+       ],
+       "h"
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       120,
+       [
+        0,
+        3.1,
+        0.9
+       ]
+      ],
+      [
+       350,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       440,
+       [
+        0,
+        -7.9,
+        -33.2
+       ],
+       "h"
+      ]
+     ],
+     "rightUpperArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       200,
+       [
+        0,
+        7,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        0,
+        6,
+        0
+       ]
+      ]
+     ],
+     "rightLowerArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       220,
+       [
+        0,
+        9,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        0,
+        8,
+        0
+       ]
+      ]
+     ],
+     "leftUpperLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       200,
+       [
+        4,
+        0,
+        -1
+       ]
+      ],
+      [
+       420,
+       [
+        0,
+        0,
+        -1
+       ]
+      ]
+     ],
+     "leftLowerLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       140,
+       [
+        10,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        38,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftFoot": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        22,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightUpperLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        3,
+        0,
+        -4.5
+       ]
+      ]
+     ],
+     "rightLowerLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       180,
+       [
+        6,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        14,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightFoot": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        18,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       150,
+       [
+        -6,
+        3,
+        1
+       ]
+      ],
+      [
+       420,
+       [
+        -4,
+        5,
+        3
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        -2,
+        2,
+        1
+       ]
+      ]
+     ],
+     "chest": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       150,
+       [
+        -3,
+        0,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        -2,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "hipsOffset": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      200,
+      [
+       0,
+       0.03,
+       0
+      ]
+     ],
+     [
+      420,
+      [
+       0,
+       0.04,
+       0
+      ]
+     ]
+    ],
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       260,
+       [
+        -0.4,
+        0.4,
+        -0.2
+       ]
+      ],
+      [
+       420,
+       [
+        -0.35,
+        0.35,
+        -0.2
+       ]
+      ]
+     ],
+     "right": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        -0.15,
+        0.2,
+        0
+       ]
+      ],
+      [
+       420,
+       [
+        -0.15,
+        0.2,
+        0
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       0,
+       0
+      ]
+     ],
+     [
+      120,
+      [
+       0,
+       6
+      ]
+     ],
+     [
+      420,
+      [
+       3,
+       4
+      ]
+     ]
+    ],
+    "expressions": {
+     "surprised": [
+      [
+       0,
+       0
+      ],
+      [
+       150,
+       0.8
+      ],
+      [
+       420,
+       0.6
+      ]
+     ],
+     "oh": [
+      [
+       0,
+       0
+      ],
+      [
+       150,
+       0.4
+      ],
+      [
+       420,
+       0.25
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       0
+      ],
+      [
+       150,
+       -0.25
+      ],
+      [
+       420,
+       -0.25
+      ]
+     ]
+    }
+   },
+   "loop": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -92.4,
+        1.6,
+        -52.3
+       ]
+      ],
+      [
+       800,
+       [
+        -89.6,
+        2.5,
+        -48.8
+       ]
+      ],
+      [
+       1600,
+       [
+        -92.4,
+        1.6,
+        -52.3
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -42.7,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        -42.1,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        0,
+        -42.7,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -7.9,
+        -33.2
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        -11.1,
+        -32.5
+       ]
+      ],
+      [
+       1600,
+       [
+        0,
+        -7.9,
+        -33.2
+       ]
+      ]
+     ],
+     "rightUpperArm": [
+      [
+       0,
+       [
+        0,
+        6,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        7,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        0,
+        6,
+        0
+       ]
+      ]
+     ],
+     "rightLowerArm": [
+      [
+       0,
+       [
+        0,
+        8,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        9.5,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        0,
+        8,
+        0
+       ]
+      ]
+     ],
+     "leftUpperLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        -1
+       ]
+      ],
+      [
+       400,
+       [
+        -5,
+        0,
+        -1
+       ]
+      ],
+      [
+       1200,
+       [
+        5,
+        0,
+        -1
+       ]
+      ],
+      [
+       1600,
+       [
+        0,
+        0,
+        -1
+       ]
+      ]
+     ],
+     "leftLowerLeg": [
+      [
+       0,
+       [
+        38,
+        0,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        45,
+        0,
+        0
+       ]
+      ],
+      [
+       1300,
+       [
+        32,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        38,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftFoot": [
+      [
+       0,
+       [
+        22,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        26,
+        0,
+        0
+       ]
+      ],
+      [
+       1400,
+       [
+        18,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        22,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightUpperLeg": [
+      [
+       0,
+       [
+        3,
+        0,
+        -4.5
+       ]
+      ],
+      [
+       400,
+       [
+        7,
+        0,
+        -4.5
+       ]
+      ],
+      [
+       1200,
+       [
+        -1,
+        0,
+        -4.5
+       ]
+      ],
+      [
+       1600,
+       [
+        3,
+        0,
+        -4.5
+       ]
+      ]
+     ],
+     "rightLowerLeg": [
+      [
+       0,
+       [
+        14,
+        0,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        9,
+        0,
+        0
+       ]
+      ],
+      [
+       1300,
+       [
+        19,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        14,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightFoot": [
+      [
+       0,
+       [
+        18,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        18,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        -4,
+        5,
+        3
+       ]
+      ],
+      [
+       800,
+       [
+        -3,
+        6,
+        4
+       ]
+      ],
+      [
+       1600,
+       [
+        -4,
+        5,
+        3
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        -2,
+        2,
+        1
+       ]
+      ],
+      [
+       1600,
+       [
+        -2,
+        2,
+        1
+       ]
+      ]
+     ],
+     "chest": [
+      [
+       0,
+       [
+        -2,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        -2,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "hipsOffset": [
+     [
+      0,
+      [
+       0,
+       0.04,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       0.043,
+       0
+      ]
+     ],
+     [
+      1600,
+      [
+       0,
+       0.04,
+       0
+      ]
+     ]
+    ],
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.35,
+        0.35,
+        -0.2
+       ]
+      ],
+      [
+       1600,
+       [
+        -0.35,
+        0.35,
+        -0.2
+       ]
+      ]
+     ],
+     "right": [
+      [
+       0,
+       [
+        -0.15,
+        0.2,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        -0.15,
+        0.2,
+        0
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       3,
+       4
+      ]
+     ],
+     [
+      900,
+      [
+       3,
+       4
+      ],
+      "h"
+     ],
+     [
+      950,
+      [
+       -3,
+       -6
+      ]
+     ],
+     [
+      1500,
+      [
+       -3,
+       -6
+      ],
+      "h"
+     ],
+     [
+      1600,
+      [
+       3,
+       4
+      ]
+     ]
+    ],
+    "expressions": {
+     "surprised": [
+      [
+       0,
+       0.6
+      ],
+      [
+       800,
+       0.5
+      ],
+      [
+       1600,
+       0.6
+      ]
+     ],
+     "oh": [
+      [
+       0,
+       0.25
+      ],
+      [
+       1600,
+       0.25
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       -0.25
+      ],
+      [
+       1600,
+       -0.25
+      ]
+     ]
+    }
+   },
+   "exit": {
+    "name": "land",
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -92.4,
+        1.6,
+        -52.3
+       ]
+      ],
+      [
+       260,
+       [
+        -38.2,
+        26.9,
+        -23.7
+       ]
+      ],
+      [
+       560,
+       [
+        -1.7,
+        -0.6,
+        -0.4
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        -42.7,
+        0
+       ]
+      ],
+      [
+       260,
+       [
+        0,
+        -24.9,
+        0
+       ]
+      ],
+      [
+       560,
+       [
+        0,
+        2.9,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -7.9,
+        -33.2
+       ]
+      ],
+      [
+       300,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       600,
+       [
+        0,
+        -1.6,
+        -0.3
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightUpperArm": [
+      [
+       0,
+       [
+        0,
+        6,
+        0
+       ]
+      ],
+      [
+       250,
+       [
+        0,
+        3,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        0,
+        -0.7,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightLowerArm": [
+      [
+       0,
+       [
+        0,
+        8,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        0,
+        4,
+        0
+       ]
+      ],
+      [
+       550,
+       [
+        0,
+        -0.5,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftUpperLeg": [
+      [
+       0,
+       [
+        0,
+        0,
+        -1
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        -7.7,
+        -2,
+        1
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftLowerLeg": [
+      [
+       0,
+       [
+        38,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        15.4,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftFoot": [
+      [
+       0,
+       [
+        22,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        -7.7,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightUpperLeg": [
+      [
+       0,
+       [
+        3,
+        0,
+        -4.5
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        -12.9,
+        -3,
+        -0.1
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightLowerLeg": [
+      [
+       0,
+       [
+        14,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        26.1,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightFoot": [
+      [
+       0,
+       [
+        18,
+        0,
+        0
+       ]
+      ],
+      [
+       160,
+       [
+        0,
+        0,
+        0
+       ],
+       "h"
+      ],
+      [
+       300,
+       [
+        -13,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        -4,
+        5,
+        3
+       ]
+      ],
+      [
+       300,
+       [
+        3,
+        2,
+        1
+       ]
+      ],
+      [
+       550,
+       [
+        -1,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        -2,
+        2,
+        1
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "chest": [
+      [
+       0,
+       [
+        -2,
+        0,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        2,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "hipsOffset": [
+     [
+      0,
+      [
+       0,
+       0.04,
+       0
+      ]
+     ],
+     [
+      160,
+      [
+       0,
+       0,
+       0
+      ],
+      "h"
+     ],
+     [
+      300,
+      [
+       0,
+       -0.025,
+       0
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.35,
+        0.35,
+        -0.2
+       ]
+      ],
+      [
+       560,
+       [
+        0.05,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "right": [
+      [
+       0,
+       [
+        -0.15,
+        0.2,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       3,
+       4
+      ]
+     ],
+     [
+      200,
+      [
+       0,
+       -4
+      ]
+     ],
+     [
+      800,
+      [
+       0,
+       0
+      ]
+     ]
+    ],
+    "expressions": {
+     "surprised": [
+      [
+       0,
+       0.6
+      ],
+      [
+       300,
+       0.1
+      ],
+      [
+       800,
+       0
+      ]
+     ],
+     "oh": [
+      [
+       0,
+       0.25
+      ],
+      [
+       250,
+       0
+      ],
+      [
+       800,
+       0
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       -0.25
+      ],
+      [
+       300,
+       0
+      ],
+      [
+       800,
+       0
+      ]
+     ],
+     "happy": [
+      [
+       0,
+       0
+      ],
+      [
+       450,
+       0.35
+      ],
+      [
+       800,
+       0
+      ]
+     ],
+     "blink": [
+      [
+       0,
+       0
+      ],
+      [
+       300,
+       0
+      ],
+      [
+       360,
+       0.9
+      ],
+      [
+       470,
+       0
+      ],
+      [
+       800,
+       0
+      ]
+     ]
+    },
+    "groundContactAt": 160
+   },
+   "idleWeight": {
+    "leftUpperArm": 0,
+    "leftLowerArm": 0,
+    "leftHand": 0,
+    "hips": 0,
+    "rightUpperLeg": 0,
+    "leftUpperLeg": 0
+   }
+  },
+  "sleep": {
+   "kind": "stateful",
+   "agreed": "sleep",
+   "bakeFps": 6,
+   "enter": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       450,
+       [
+        0.1,
+        0,
+        0.5
+       ]
+      ],
+      [
+       900,
+       [
+        0.5,
+        0,
+        2.1
+       ],
+       "h"
+      ],
+      [
+       1300,
+       [
+        -11.5,
+        1.4,
+        0.9
+       ]
+      ],
+      [
+       1700,
+       [
+        -50.2,
+        13.9,
+        -39.2
+       ]
+      ],
+      [
+       2100,
+       [
+        -57.3,
+        20.2,
+        -43.8
+       ],
+       "h"
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       450,
+       [
+        0,
+        -0.1,
+        0
+       ]
+      ],
+      [
+       900,
+       [
+        0,
+        -0.3,
+        0
+       ],
+       "h"
+      ],
+      [
+       1300,
+       [
+        0,
+        16.9,
+        0
+       ]
+      ],
+      [
+       1700,
+       [
+        0,
+        69.2,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        0,
+        79.3,
+        0
+       ],
+       "h"
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       450,
+       [
+        0,
+        0,
+        0.2
+       ]
+      ],
+      [
+       960,
+       [
+        0,
+        0.2,
+        0.7
+       ],
+       "h"
+      ],
+      [
+       1360,
+       [
+        0,
+        22.2,
+        -22.2
+       ]
+      ],
+      [
+       1760,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       2100,
+       [
+        0,
+        -11.5,
+        -25.2
+       ],
+       "h"
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        3,
+        0,
+        1
+       ]
+      ],
+      [
+       800,
+       [
+        1,
+        0,
+        0.5
+       ]
+      ],
+      [
+       1500,
+       [
+        6,
+        -2,
+        4
+       ]
+      ],
+      [
+       2100,
+       [
+        8,
+        -3,
+        6
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       600,
+       [
+        3,
+        0,
+        0.5
+       ]
+      ],
+      [
+       900,
+       [
+        2,
+        0,
+        0
+       ]
+      ],
+      [
+       1600,
+       [
+        8,
+        -1,
+        1.5
+       ]
+      ],
+      [
+       2100,
+       [
+        10,
+        -1,
+        2
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        3,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1400,
+       [
+        0,
+        0,
+        -1
+       ]
+      ],
+      [
+       2100,
+       [
+        0,
+        0,
+        -2
+       ]
+      ]
+     ],
+     "rightShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        0,
+        0,
+        2
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1200,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        -0.2,
+        -0.05,
+        -0.1
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       0,
+       0
+      ]
+     ],
+     [
+      400,
+      [
+       0,
+       -8
+      ]
+     ],
+     [
+      2100,
+      [
+       0,
+       -10
+      ]
+     ]
+    ],
+    "expressions": {
+     "blink": [
+      [
+       0,
+       0
+      ],
+      [
+       400,
+       0.4
+      ],
+      [
+       700,
+       0.2
+      ],
+      [
+       1100,
+       0.6
+      ],
+      [
+       1400,
+       0.45
+      ],
+      [
+       2100,
+       1
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       0
+      ],
+      [
+       2100,
+       0.3
+      ]
+     ],
+     "aa": [
+      [
+       0,
+       0
+      ],
+      [
+       1600,
+       0
+      ],
+      [
+       2100,
+       0.06
+      ]
+     ]
+    }
+   },
+   "loop": {
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -57.3,
+        20.2,
+        -43.8
+       ]
+      ],
+      [
+       2600,
+       [
+        -60,
+        18.2,
+        -44.6
+       ]
+      ],
+      [
+       5200,
+       [
+        -57.3,
+        20.2,
+        -43.8
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        79.3,
+        0
+       ]
+      ],
+      [
+       2600,
+       [
+        0,
+        84.4,
+        0
+       ]
+      ],
+      [
+       5200,
+       [
+        0,
+        79.3,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -11.5,
+        -25.2
+       ]
+      ],
+      [
+       2600,
+       [
+        0,
+        -13.9,
+        -25
+       ]
+      ],
+      [
+       5200,
+       [
+        0,
+        -11.5,
+        -25.2
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        8,
+        -3,
+        6
+       ]
+      ],
+      [
+       1900,
+       [
+        9.4,
+        -3,
+        6.4
+       ]
+      ],
+      [
+       2500,
+       [
+        9.9,
+        -3.3,
+        6.7
+       ]
+      ],
+      [
+       3300,
+       [
+        9.3,
+        -2.8,
+        6.3
+       ]
+      ],
+      [
+       5200,
+       [
+        8,
+        -3,
+        6
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        10,
+        -1,
+        2
+       ]
+      ],
+      [
+       2100,
+       [
+        11,
+        -1,
+        2
+       ]
+      ],
+      [
+       5200,
+       [
+        10,
+        -1,
+        2
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        3,
+        0,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        0.4,
+        0,
+        0
+       ]
+      ],
+      [
+       2500,
+       [
+        0.6,
+        0,
+        0
+       ]
+      ],
+      [
+       5200,
+       [
+        3,
+        0,
+        0
+       ]
+      ]
+     ],
+     "chest": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2100,
+       [
+        -2.3,
+        0,
+        0
+       ]
+      ],
+      [
+       2500,
+       [
+        -2,
+        0,
+        0
+       ]
+      ],
+      [
+       5200,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        -2
+       ]
+      ],
+      [
+       2000,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       5200,
+       [
+        0,
+        0,
+        -2
+       ]
+      ]
+     ],
+     "rightShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        2
+       ]
+      ],
+      [
+       2000,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       5200,
+       [
+        0,
+        0,
+        2
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.2,
+        -0.05,
+        -0.1
+       ]
+      ],
+      [
+       5200,
+       [
+        -0.2,
+        -0.05,
+        -0.1
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       0,
+       -10
+      ]
+     ],
+     [
+      5200,
+      [
+       0,
+       -10
+      ]
+     ]
+    ],
+    "expressions": {
+     "blink": [
+      [
+       0,
+       1
+      ],
+      [
+       5200,
+       1
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       0.3
+      ],
+      [
+       5200,
+       0.3
+      ]
+     ],
+     "aa": [
+      [
+       0,
+       0.06
+      ],
+      [
+       2000,
+       0.1
+      ],
+      [
+       5200,
+       0.06
+      ]
+     ]
+    },
+    "note": "Breath slows to 5.2 s and deepens; the idle breath layer is muted (idleWeight) so the two do not stack."
+   },
+   "exit": {
+    "name": "wake",
+    "bones": {
+     "leftUpperArm": [
+      [
+       0,
+       [
+        -57.3,
+        20.2,
+        -43.8
+       ]
+      ],
+      [
+       500,
+       [
+        -60,
+        18.2,
+        -44.6
+       ],
+       "h"
+      ],
+      [
+       900,
+       [
+        -26.4,
+        12.2,
+        -18.7
+       ]
+      ],
+      [
+       1250,
+       [
+        -1.7,
+        -0.6,
+        -0.4
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftLowerArm": [
+      [
+       0,
+       [
+        0,
+        79.3,
+        0
+       ]
+      ],
+      [
+       500,
+       [
+        0,
+        84.4,
+        0
+       ],
+       "h"
+      ],
+      [
+       900,
+       [
+        0,
+        17.2,
+        0
+       ]
+      ],
+      [
+       1250,
+       [
+        0,
+        2.9,
+        0
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftHand": [
+      [
+       0,
+       [
+        0,
+        -11.5,
+        -25.2
+       ]
+      ],
+      [
+       550,
+       [
+        0,
+        -13.9,
+        -25
+       ],
+       "h"
+      ],
+      [
+       950,
+       [
+        0,
+        -11.3,
+        -19.8
+       ]
+      ],
+      [
+       1300,
+       [
+        0,
+        -1.6,
+        -0.3
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "head": [
+      [
+       0,
+       [
+        8,
+        -3,
+        6
+       ]
+      ],
+      [
+       220,
+       [
+        -3,
+        1,
+        1
+       ]
+      ],
+      [
+       450,
+       [
+        0,
+        0,
+        0.5
+       ]
+      ],
+      [
+       900,
+       [
+        -1,
+        2,
+        -1
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "neck": [
+      [
+       0,
+       [
+        10,
+        -1,
+        2
+       ]
+      ],
+      [
+       250,
+       [
+        -1,
+        0,
+        0.5
+       ]
+      ],
+      [
+       600,
+       [
+        1,
+        0,
+        0
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "upperChest": [
+      [
+       0,
+       [
+        3,
+        0,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        -2.5,
+        0,
+        0
+       ]
+      ],
+      [
+       900,
+       [
+        -1,
+        0,
+        0
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "chest": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       300,
+       [
+        -2,
+        0,
+        0
+       ]
+      ],
+      [
+       800,
+       [
+        -0.5,
+        0,
+        0
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "leftShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        -2
+       ]
+      ],
+      [
+       300,
+       [
+        0,
+        0,
+        2
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "rightShoulder": [
+      [
+       0,
+       [
+        0,
+        0,
+        2
+       ]
+      ],
+      [
+       300,
+       [
+        0,
+        0,
+        -2
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "fingers": {
+     "left": [
+      [
+       0,
+       [
+        -0.2,
+        -0.05,
+        -0.1
+       ]
+      ],
+      [
+       800,
+       [
+        -0.1,
+        0.05,
+        0
+       ]
+      ],
+      [
+       1500,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    "gaze": [
+     [
+      0,
+      [
+       0,
+       -10
+      ]
+     ],
+     [
+      250,
+      [
+       0,
+       3
+      ]
+     ],
+     [
+      700,
+      [
+       -5,
+       0
+      ]
+     ],
+     [
+      1100,
+      [
+       0,
+       0
+      ]
+     ]
+    ],
+    "expressions": {
+     "blink": [
+      [
+       0,
+       1
+      ],
+      [
+       200,
+       0.3
+      ],
+      [
+       330,
+       0
+      ],
+      [
+       430,
+       0
+      ],
+      [
+       490,
+       0.95
+      ],
+      [
+       620,
+       0
+      ],
+      [
+       1500,
+       0
+      ]
+     ],
+     "surprised": [
+      [
+       0,
+       0
+      ],
+      [
+       220,
+       0.35
+      ],
+      [
+       700,
+       0
+      ]
+     ],
+     "relaxed": [
+      [
+       0,
+       0.3
+      ],
+      [
+       1500,
+       0
+      ]
+     ],
+     "aa": [
+      [
+       0,
+       0.06
+      ],
+      [
+       200,
+       0
+      ],
+      [
+       1500,
+       0
+      ]
+     ]
+    }
+   },
+   "idleWeight": {
+    "chest": 0,
+    "upperChest": 0,
+    "leftShoulder": 0,
+    "rightShoulder": 0,
+    "leftUpperArm": 0,
+    "head": 0.2,
+    "neck": 0.2
+   },
+   "eyelidOwner": true
+  },
+  "notice": {
+   "kind": "oneShot",
+   "proposed": true,
+   "bakeFps": 8,
+   "bones": {
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      150,
+      [
+       -1.5,
+       2,
+       0
+      ]
+     ],
+     [
+      450,
+      [
+       -1,
+       7,
+       -4
+      ]
+     ],
+     [
+      1100,
+      [
+       -0.5,
+       6,
+       -4.5
+      ],
+      "h"
+     ],
+     [
+      1600,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      190,
+      [
+       -0.6,
+       0.8,
+       0
+      ]
+     ],
+     [
+      490,
+      [
+       -0.4,
+       2.8,
+       -1.6
+      ]
+     ],
+     [
+      1140,
+      [
+       -0.2,
+       2.4,
+       -1.8
+      ],
+      "h"
+     ],
+     [
+      1600,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "upperChest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      250,
+      [
+       -0.2,
+       0.3,
+       0
+      ]
+     ],
+     [
+      550,
+      [
+       -0.1,
+       1.1,
+       -0.6
+      ]
+     ],
+     [
+      1200,
+      [
+       -0.1,
+       0.9,
+       -0.7
+      ],
+      "h"
+     ],
+     [
+      1600,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "gaze": [
+    [
+     0,
+     [
+      0,
+      0
+     ]
+    ],
+    [
+     60,
+     [
+      10,
+      3
+     ]
+    ],
+    [
+     1100,
+     [
+      8,
+      3
+     ],
+     "h"
+    ],
+    [
+     1500,
+     [
+      0,
+      0
+     ]
+    ]
+   ],
+   "expressions": {
+    "surprised": [
+     [
+      0,
+      0
+     ],
+     [
+      150,
+      0.25
+     ],
+     [
+      500,
+      0.05
+     ],
+     [
+      1600,
+      0
+     ]
+    ],
+    "happy": [
+     [
+      0,
+      0
+     ],
+     [
+      400,
+      0.45
+     ],
+     [
+      1100,
+      0.4
+     ],
+     [
+      1600,
+      0
+     ]
+    ]
+   }
+  },
+  "nod": {
+   "kind": "oneShot",
+   "proposed": true,
+   "bakeFps": 10,
+   "bones": {
+    "head": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      120,
+      [
+       -2,
+       0,
+       0
+      ]
+     ],
+     [
+      300,
+      [
+       7,
+       1,
+       -1
+      ]
+     ],
+     [
+      480,
+      [
+       -1,
+       0,
+       0
+      ]
+     ],
+     [
+      650,
+      [
+       2,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "neck": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      160,
+      [
+       -1,
+       0,
+       0
+      ]
+     ],
+     [
+      340,
+      [
+       3.5,
+       0.5,
+       -0.5
+      ]
+     ],
+     [
+      520,
+      [
+       -0.5,
+       0,
+       0
+      ]
+     ],
+     [
+      690,
+      [
+       1,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ],
+    "upperChest": [
+     [
+      0,
+      [
+       0,
+       0,
+       0
+      ]
+     ],
+     [
+      200,
+      [
+       -0.2,
+       0,
+       0
+      ]
+     ],
+     [
+      380,
+      [
+       0.8,
+       0.1,
+       -0.1
+      ]
+     ],
+     [
+      560,
+      [
+       -0.1,
+       0,
+       0
+      ]
+     ],
+     [
+      730,
+      [
+       0.2,
+       0,
+       0
+      ]
+     ],
+     [
+      900,
+      [
+       0,
+       0,
+       0
+      ]
+     ]
+    ]
+   },
+   "expressions": {
+    "happy": [
+     [
+      0,
+      0
+     ],
+     [
+      300,
+      0.35
+     ],
+     [
+      900,
+      0
+     ]
+    ]
+   }
+  }
+ },
+ "stateMachine": {
+  "note": "Binds clips to the real events in src/pet/Pet.svelte. One body clip plays at a time; blink and saccade events and mouth visemes layer on top. lib/behaviour.mjs is the reference implementation of these rules; the checker runs it on scenarios that reproduce Pet.svelte call order.",
+  "events": {
+   "wordShownRevealed": {
+    "source": "Pet.svelte showNext() with revealed = true (Pet.svelte:219)",
+    "clip": "talk",
+    "priority": 50,
+    "hold": "whileSpeaking",
+    "minMs": 1600,
+    "maxMs": 6000,
+    "note": "Talk loops while speech plays (speakStart..speakEnd); without speech, one loop then exit (min 1.6 s)."
+   },
+   "wordShownGuess": {
+    "source": "Pet.svelte showNext() with revealed = false (Pet.svelte:219)",
+    "clip": "think",
+    "priority": 50,
+    "hold": "untilEvent:reveal",
+    "maxMs": 8000
+   },
+   "reveal": {
+    "source": "Pet.svelte reveal() (2600 ms timer, Pet.svelte:221, or Bubble onreveal)",
+    "exits": "think",
+    "then": "nod",
+    "priority": 55,
+    "locks": true
+   },
+   "speakStart": {
+    "source": "NEW: speech start signal at both speak() call sites (Pet.svelte:222, 423)",
+    "clip": "talk",
+    "priority": 50,
+    "hold": "whileSpeaking",
+    "mouthOverlay": "visemes start at once even when the body talk is queued behind a lock"
+   },
+   "speakEnd": {
+    "source": "NEW: utterance.onend / onerror (system) or audio ended / error (http, pack) in src/lib/speech/index.ts. Not the speak() promise: it resolves when speech starts.",
+    "exits": "talk"
+   },
+   "known": {
+    "source": "Bubble onknown (Pet.svelte:427)",
+    "clip": "happy",
+    "priority": 70,
+    "locks": true,
+    "note": "nextNow() shows the next word after SWAP_MS (1500 ms); its talk queues until happy ends."
+   },
+   "hoverEnter": {
+    "source": "sprite onpointerenter (Pet.svelte:474)",
+    "clip": "notice",
+    "priority": 30,
+    "cooldownMs": 8000,
+    "greet": {
+     "clip": "wave",
+     "ifNoHoverForMs": 300000,
+     "cooldownMs": 300000
+    }
+   },
+   "hoverBubble": {
+    "source": "Bubble onhover(true) (Pet.svelte:430)",
+    "gazeTarget": "bubble",
+    "priority": 0,
+    "note": "Gaze only: eyes and 30 % head toward the bubble; no clip."
+   },
+   "click": {
+    "source": "sprite onpointerup without drag (onSpriteUp -> resume, Pet.svelte:272-280)",
+    "clip": "nod",
+    "priority": 45,
+    "cooldownMs": 600,
+    "locks": true,
+    "note": "resume() -> nextNow() -> advance() may call showNext() in the same tick; that talk queues until the nod ends."
+   },
+   "menuOpen": {
+    "source": "contextmenu toggles menuOpen (Pet.svelte:408, 475)",
+    "gazeTarget": "menu",
+    "priority": 0,
+    "suppressFidgets": true
+   },
+   "dragStart": {
+    "source": "onDragMove past 4 px (Pet.svelte:260-271)",
+    "clip": "drag",
+    "priority": 100,
+    "hold": "untilEvent:dragEnd",
+    "interruptExitMs": 120
+   },
+   "dragEnd": {
+    "source": "win.onMoved quiet for 250 ms (Pet.svelte:366-373), or the 1200 ms fallback (Pet.svelte:269)",
+    "exits": "drag"
+   },
+   "longIdle": {
+    "source": "loop(): sys.idleSecs > idlePauseMin * 60 (Pet.svelte:183-186)",
+    "clip": "sleep",
+    "priority": 90,
+    "hold": "untilEvent:userBack"
+   },
+   "quietHours": {
+    "source": "loop(): inQuietHours() or progress.pausedUntil > now (Pet.svelte:177-180)",
+    "clip": "sleep",
+    "priority": 90,
+    "hold": "untilEvent:userBack",
+    "wakeOnHover": false
+   },
+   "userBack": {
+    "source": "wake() when the sleep condition clears (Pet.svelte:187), or resume() by click (Pet.svelte:278)",
+    "exits": "sleep",
+    "then": "wave",
+    "locks": true,
+    "note": "loop() calls wake() then advance() in the same tick; the word talk queues until wake and wave end."
+   },
+   "fullscreenHide": {
+    "source": "busy && hideOnFullscreen -> win.hide() (Pet.svelte:322-330)",
+    "action": "stopAll",
+    "note": "Hidden: cancel every clip and timer, reset to rest (nobody sees it)."
+   },
+   "fullscreenShow": {
+    "source": "visible again -> win.show() (Pet.svelte:324); NEW: remember hiddenSince",
+    "clip": "wave",
+    "priority": 40,
+    "ifHiddenForMs": 300000,
+    "locks": true
+   },
+   "appStart": {
+    "source": "NEW: onMount after restorePlacement() (Pet.svelte:359)",
+    "clip": "wave",
+    "priority": 40,
+    "locks": true,
+    "note": "scheduleTick(1500) shows the first word at 1.5 s, mid-wave; that talk queues until the wave ends."
+   },
+   "idleTick": {
+    "source": "NEW idle scheduler (replaces idleLoop, Pet.svelte:289-297): every 6-14 s while nothing plays",
+    "priority": 10,
+    "pick": [
+     [
+      "look",
+      0.4
+     ],
+     [
+      "hairTuck",
+      0.25
+     ],
+     [
+      "breathe",
+      0.35
+     ]
+    ],
+    "noRepeat": true,
+    "cooldownMs": {
+     "hairTuck": 45000,
+     "breathe": 20000,
+     "look": 8000
+    },
+    "note": "Blink is not picked here: it is procedural in the idle layer (idle.events.blink)."
+   }
+  },
+  "interrupt": {
+   "rule": "A request with higher priority than the playing clip preempts it, unless a lock holds. A request that cannot play queues if its priority >= queue.minPriority, else it is dropped.",
+   "lock": {
+    "breakPriority": 90,
+    "note": "A locking event (click, reveal, known, userBack, appStart, fullscreenShow) holds its clip and its then-chain against every request below breakPriority. Only drag and sleep break it."
+   },
+   "queue": {
+    "size": 1,
+    "newestWins": true,
+    "expiryMs": 4500,
+    "minPriority": 40,
+    "note": "Expiry covers the longest one-shot (breathe 3100 ms) and the longest locked chain (sleep exit 1500 + wave 2650 = 4150 ms)."
+   },
+   "exit": {
+    "boundaryWaitMs": 400,
+    "blendMs": 200,
+    "note": "On release a loop finishes its cycle if the boundary is within 400 ms, else it blends into the exit at once over 200 ms."
+   },
+   "preemptBlend": "Crossfade in pose space from the current sampled pose into the new clip over interruptExitMs (default 250 ms, ease in-out).",
+   "statefulExit": "A stateful clip ends by playing its exit section, never by snapping. maxMs forces the exit if the hold event never comes."
+  },
+  "priorities": {
+   "drag": 100,
+   "sleep": 90,
+   "happy": 70,
+   "reveal": 55,
+   "talk": 50,
+   "think": 50,
+   "click": 45,
+   "greet": 40,
+   "notice": 30,
+   "idleTick": 10
+  }
+ },
+ "frame": {
+  "pxPerM": 190,
+  "originXPx": 58.3,
+  "originYPx": 325.8,
+  "note": "Image x = originXPx + projected x * pxPerM, image y = originYPx - projected y * pxPerM (y down). Derived from the union box of every sampled pose plus the skin margin; the checker re-derives the fit."
+ },
+ "twoD": {
+  "parts": {
+   "leftUpperArm": {
+    "kind": "limb",
+    "w": 40,
+    "h": 130,
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": 1
+     }
+    ],
+    "ratioRange": [
+     0.494,
+     1
+    ],
+    "areaPx": 8528
+   },
+   "leftForearm": {
+    "kind": "limb",
+    "w": 36,
+    "h": 110,
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": 1
+     },
+     {
+      "nominal": 0.41,
+      "depth": 1
+     },
+     {
+      "nominal": 0.26,
+      "depth": 1
+     },
+     {
+      "endOn": true,
+      "depth": 1
+     }
+    ],
+    "ratioRange": [
+     0.04,
+     1
+    ],
+    "areaPx": 10445
+   },
+   "leftHand": {
+    "kind": "limb",
+    "w": 44,
+    "h": 80,
+    "shapes": [
+     "grip",
+     "relaxed",
+     "open",
+     "fist",
+     "wave"
+    ],
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": 1
+     },
+     {
+      "nominal": 0.41,
+      "depth": 1
+     },
+     {
+      "nominal": 0.26,
+      "depth": 1
+     },
+     {
+      "endOn": true,
+      "depth": 1
+     }
+    ],
+    "ratioRange": [
+     0.052,
+     1
+    ],
+    "areaPx": 50345
+   },
+   "rightUpperArm": {
+    "kind": "limb",
+    "w": 40,
+    "h": 130,
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.993,
+     1
+    ],
+    "areaPx": 5200
+   },
+   "rightForearm": {
+    "kind": "limb",
+    "w": 36,
+    "h": 110,
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.934,
+     0.993
+    ],
+    "areaPx": 3960
+   },
+   "rightHand": {
+    "kind": "limb",
+    "w": 44,
+    "h": 80,
+    "shapes": [
+     "grip",
+     "relaxed",
+     "open",
+     "fist",
+     "wave"
+    ],
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.949,
+     0.998
+    ],
+    "areaPx": 17600
+   },
+   "leftThigh": {
+    "kind": "limb",
+    "w": 60,
+    "h": 180,
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.97,
+     0.999
+    ],
+    "areaPx": 10800
+   },
+   "leftShin": {
+    "kind": "limb",
+    "w": 50,
+    "h": 190,
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": -1
+     }
+    ],
+    "ratioRange": [
+     0.701,
+     0.987
+    ],
+    "areaPx": 15580
+   },
+   "leftShoe": {
+    "kind": "limb",
+    "w": 40,
+    "h": 60,
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": 1
+     },
+     {
+      "nominal": 0.41,
+      "depth": 1
+     }
+    ],
+    "ratioRange": [
+     0.408,
+     0.971
+    ],
+    "areaPx": 4920
+   },
+   "rightThigh": {
+    "kind": "limb",
+    "w": 60,
+    "h": 180,
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.982,
+     1
+    ],
+    "areaPx": 10800
+   },
+   "rightShin": {
+    "kind": "limb",
+    "w": 50,
+    "h": 190,
+    "variants": [
+     {
+      "nominal": 1
+     }
+    ],
+    "ratioRange": [
+     0.911,
+     0.993
+    ],
+    "areaPx": 9500
+   },
+   "rightShoe": {
+    "kind": "limb",
+    "w": 40,
+    "h": 60,
+    "variants": [
+     {
+      "nominal": 1
+     },
+     {
+      "nominal": 0.64,
+      "depth": 1
+     },
+     {
+      "nominal": 0.41,
+      "depth": 1
+     }
+    ],
+    "ratioRange": [
+     0.346,
+     0.821
+    ],
+    "areaPx": 4920
+   },
+   "head": {
+    "kind": "turn",
+    "w": 150,
+    "h": 190,
+    "yawViews": [
+     -10,
+     0,
+     10,
+     20,
+     30
+    ],
+    "pitchViews": [
+     0,
+     20
+    ],
+    "coverDeg": {
+     "yaw": 5,
+     "pitch": 10
+    },
+    "yawRange": [
+     -5.8,
+     31.4
+    ],
+    "pitchRange": [
+     -6.4,
+     26.5
+    ],
+    "areaPx": 285000,
+    "note": "One head+hair drawing per (yaw, pitch) view; eyes, brows and mouth are separate parts placed by a per-view anchor and shifted by parallax between views."
+   },
+   "torso": {
+    "kind": "turn",
+    "w": 140,
+    "h": 170,
+    "yawViews": [
+     14
+    ],
+    "pitchViews": [
+     0
+    ],
+    "coverDeg": {
+     "yaw": 8,
+     "pitch": 8
+    },
+    "maxTurnFromRestDeg": 7.5,
+    "areaPx": 23800
+   },
+   "pelvis": {
+    "kind": "turn",
+    "w": 140,
+    "h": 120,
+    "yawViews": [
+     14
+    ],
+    "pitchViews": [
+     0
+    ],
+    "coverDeg": {
+     "yaw": 8,
+     "pitch": 8
+    },
+    "maxTurnFromRestDeg": 0,
+    "areaPx": 16800
+   }
+  },
+  "faceParts": [
+   {
+    "name": "eyes",
+    "w": 80,
+    "h": 30,
+    "count": 10
+   },
+   {
+    "name": "mouth",
+    "w": 40,
+    "h": 26,
+    "count": 10
+   },
+   {
+    "name": "brows",
+    "w": 80,
+    "h": 16,
+    "count": 4
+   },
+   {
+    "name": "ponytail",
+    "w": 70,
+    "h": 120,
+    "count": 3
+   },
+   {
+    "name": "neck",
+    "w": 40,
+    "h": 50,
+    "count": 1
+   }
+  ],
+  "atlas": {
+   "w": 1024,
+   "h": 1024,
+   "partsPx": 544918,
+   "fill": 0.52
+  },
+  "ladder": "Limb variants: nominal ratios 1.0 / 0.64 / 0.41 / 0.26 (each covers +/-25 %), split by depth below 1.0, plus an end-on drawing for ratio <= 0.21. Only the rungs the motion uses are listed."
+ },
+ "budget": {
+  "ships": "layered2d",
+  "runtimes": {
+   "layered2d": {
+    "evalFps": 30,
+    "ramBytes": 4194304,
+    "note": "Decoded atlas RAM, flat whatever the number of actions. Work per frame: FK of 25 bones, ~30 canvas drawImage calls; 30 fps while visible, nothing runs when hidden. Measured in headless Chrome by measure_ram.mjs (artifacts/ram.json)."
+   },
+   "vrm": {
+    "evalFps": 30,
+    "measured": "artifacts/ram.json",
+    "note": "three.js + three-vrm + a VRoid model. Decoded textures alone exceed the cap; shipping it needs the lead to approve the measured RAM."
+   },
+   "sprite": {
+    "role": "degraded",
+    "fps": 5,
+    "frameW": 139,
+    "frameH": 340,
+    "columns": 10,
+    "quantizeDeg": 4,
+    "quantizeMetres": 0.004,
+    "note": "Emergency fallback only (rig failed to load). The checker measures what it breaks at its own fps; see the fallback block of its output and artifacts/fallback-sweep.json."
+   }
+  },
+  "faceOverlay": {
+   "cellW": 40,
+   "cellH": 26,
+   "quantizeWeight": 0.25
+  },
+  "v4": {
+   "frames": 43,
+   "cells": 50,
+   "sheetW": 1390,
+   "sheetH": 1700,
+   "ramBytes": 9452000,
+   "webpBytes": 529794,
+   "webpBytesPerFrame": 12321
+  }
+ }
+}

@@ -15,10 +15,7 @@
     "data:fetch": "node tools/data/fetch-sources.ts",
     "data:build": "node tools/data/build.ts",
     "data:fonts": "python tools/data/subset_font.py",
-    "skin:render": "python tools/skins/run.py render",
-    "skin:check": "python tools/skins/run.py check",
-    "skin:save": "python tools/skins/run.py save",
-    "skin:pack": "python tools/skins/run.py pack",
+    "skin:rig": "node tools/skins/ai2d/rig/run.mjs",
     "perf": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/perf/measure.ps1",
     "e2e": "node tools/e2e/run.ts"
   },

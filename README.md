@@ -58,7 +58,7 @@ Các lệnh khác:
 | `pnpm test` | Chạy unit test |
 | `pnpm data:fonts` | Cắt font theo bộ chữ đang dùng (cần Python có `fonttools` và `brotli`) |
 | `pnpm perf` | Đo CPU/RAM của app đang chạy (Windows) |
-| `pnpm skin:check`, `skin:render`, `skin:pack`, `skin:save` | Kiểm tư thế, render và đóng gói sprite nhân vật (cần Blender 4.5 LTS và MPFB) |
+| `pnpm skin:rig` | Dựng lại rig nhân vật từ bản vẽ nguồn và chạy bộ kiểm ([docs/CHARACTER.md](docs/CHARACTER.md)) |
 
 Cấu trúc chính: `src/main/` (cửa sổ chính), `src/pet/` (cửa sổ trợ lý), `src/lib/` (dùng chung), `src-tauri/` (Rust), `data/` (dữ liệu biên tập tay), `tools/` (pipeline dữ liệu, dựng nhân vật, gói giọng).
 
@@ -74,7 +74,8 @@ Cấu trúc chính: `src/main/` (cửa sổ chính), `src/pet/` (cửa sổ tr�
 
 Nghĩa ngắn, câu ví dụ và âm Hán Việt một phần do AI viết và soát, chưa có người bản ngữ duyệt lại. Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật và cùng nghĩa (学生 học sinh, 电话 điện thoại); khi chưa chắc thì ẩn.
 
-Nhân vật trợ lý được dựng bằng MakeHuman (MPFB2 trong Blender) và render sẵn thành sprite sheet; app không dùng engine 3D lúc chạy.
+Nhân vật trợ lý là bản vẽ 2D tạo bằng AI cho dự án.
+App ghép các phần của bản vẽ và cho chúng chuyển động bằng WebGL.
 
 ## Đóng góp
 
@@ -89,6 +90,6 @@ Sửa nội dung từ vựng trong `data/` (chủ đề, âm Hán Việt, sửa 
 | Dữ liệu nét chữ | Arphic Public License |
 | Font | SIL OFL 1.1 |
 | Icon (`public/icons/`, tạo bằng AI cho dự án) | CC0 1.0 |
-| Nhân vật | Tài sản MakeHuman CC0; áo (Elvaerwyn) theo CC-BY; váy kẻ, nơ và kính dựng mới theo MIT |
+| Nhân vật (bản vẽ tạo bằng AI cho dự án) | CC0 1.0 |
 
 Chi tiết và ghi công: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) và trang **Giới thiệu** trong app.

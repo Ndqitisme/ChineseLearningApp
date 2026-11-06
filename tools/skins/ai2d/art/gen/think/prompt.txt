@@ -1,0 +1,9 @@
+Use your built-in image generation tool to EDIT the attached image (exactly one generation).
+
+EDIT: Change only her LEFT arm (the arm on the RIGHT side of the image, which currently rests with the hand on the hip). Pose it in a thinking gesture: the elbow down by her side at waist height; the forearm angled up and inward across the chest; a loose fist with the knuckles resting just below her chin, in front of the shirt collar on the image-right half of the collar. The fist does not cover the mouth, the lips or the bow.
+
+The short white sleeve follows the arm naturally. Draw the whole arm and the whole hand clearly, with every finger visible; the arm and hand must not be hidden behind anything.
+
+Keep EVERYTHING else identical to the attached image: canvas size 1024x1536, framing and scale, the head, face, expression, hair and glasses exactly as they are, the cropped white shirt and black bow, the plaid skirt, the legs and their pose, socks and sneakers, her RIGHT arm (left side of the image) hanging relaxed by her side, the flat solid chroma-green background, the lighting and the semi-realistic anime style.
+
+Save the result as a PNG in the current working directory named exactly think.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.

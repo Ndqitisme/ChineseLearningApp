@@ -1,0 +1,16 @@
+# Frozen likeness harness. Do not edit any file listed below. Verify first (from the repo root):
+#   cd tools/skins/ai2d/harness && grep -E '^[0-9a-f]{64}  ' FROZEN | sha256sum -c
+#
+# Checker command (from the repo root; replace the <...> parts only):
+#   tools/skins/ai2d/.venv/Scripts/python.exe tools/skins/ai2d/harness/likeness.py --ref references/character/face-reference.png --cand <face close-up.png, short side >= 512> [--probe <probe.json>] [--mode auto|mesh|probe] [--body <full-body frame.png> ...] --out <OUT>/likeness/<name>
+# Sensitivity proof (rebuilds artifacts/):
+#   tools/skins/ai2d/.venv/Scripts/python.exe tools/skins/ai2d/harness/run_sensitivity.py
+# Runtime: Python 3.12.10 venv at tools/skins/ai2d/.venv, made from requirements.lock (venv itself not hashed).
+# Reference image hash (input, not a harness file): e5cb039747c41a357d892a221a5aa7e1d3f7b85c280ddc59e8b014a3c2da4d53
+#
+8d07d6f5f15b709edd0bc553513b84740e8e53dc9749ec258e1eadd12b8c4791  likeness.py
+51478bfe76c1938cca44b683c5aee76c0df1af189b773c14f60e5cbd96a50709  run_sensitivity.py
+64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff  models/face_landmarker.task
+266f65bb454bae670e9262ce8f317996fa7e61c415052c9da79cc0b1fb8b6c47  requirements.lock
+f1c553bc7aea38b6a41785b9010d5812320e4e8f8a4eea4f8324d070e929ca63  RUBRIC.md
+c0011708d0c0e248f729a275e4969fb971660a18b57c09ae02c7d9a85339464c  CREDITS.md

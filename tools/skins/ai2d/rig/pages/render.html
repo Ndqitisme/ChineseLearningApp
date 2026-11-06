@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="icon" href="data:,"><title>rig render</title>
+<style>html,body{margin:0;background:transparent}</style></head><body>
+<script type="module">
+// Offline renderer: the same RigPlayer the pet uses, at 1x and natively at 4x, one call per frame.
+import { RigPlayer } from '/lib/rig-player.js';
+import { idleOnly } from '/lib/compose.js';
+const [rig, spec] = await Promise.all([fetch('/out/rig.json').then((r) => r.json()), fetch('/motion/motion-spec.json').then((r) => r.json())]);
+const q = new URLSearchParams(location.search);
+// seed only: ?atlas=seed-glasses draws from out/atlas-seed-glasses.webp (lens rims drawn off the eyes in colour)
+const atlas = await createImageBitmap(await (await fetch(q.get('atlas') === 'seed-glasses' ? '/out/atlas-seed-glasses.webp' : '/out/atlas.webp')).blob(), { premultiplyAlpha: 'premultiply' });
+const hard = q.has('hard');   // seeded rigid-elbow frames for the seam check
+const xfade = q.has('xfade'); // seeded cross-fades (doubled arm, ghosted head) for the seam check
+// checker-only ID atlas: lens rims, irises and left-arm coverage, drawn by the 4x player's ID pass
+const idAtlas = await createImageBitmap(await (await fetch('/out/atlas-id.png')).blob(), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+// seeds that change the rig, not the player: --hard draws every left-arm pose with the rest drawing alone, its
+// bend unlimited, on rigid pieces (a broken elbow); --legacy hairTuck uses the older drawing set (no in-between
+// drawings, tuck bent up to 45 deg: a sheared sleeve and a cut elbow)
+if (hard) { for (const k of Object.keys(rig.leftArm.clipKeys)) rig.leftArm.clipKeys[k] = ['rest']; rig.leftArm.maxBendDeg = [180, 180]; rig.leftArm.keys.rest.maxBendDeg = [180, 180]; }
+if (q.has('legacy')) { rig.leftArm.clipKeys.hairTuck = ['rest', 'hang', 'talk', 'tuck']; rig.leftArm.keys.tuck.maxBendDeg = [45, 40]; rig.leftArm.keys.hang.maxBendDeg = [45, 40]; }
+const mk = (scale, id) => new RigPlayer({ rig, spec, atlas, canvas: document.createElement('canvas'), scale, hardWeights: hard, xfade, idAtlas: id ? idAtlas : null });
+const p1 = mk(1, false), p4 = mk(4, true);
+const sections = Object.fromEntries(p1.sections.map((s) => [`${s.name}.${s.part}`, s]));
+window.begin = () => { p1.resetMotion(); p4.resetMotion(); };
+window.renderFrame = (key, t, idleT = 0) => {
+  let r1, r4;
+  if (key === 'rest') { r1 = p1.drawRest(); r4 = p4.drawRest(); }
+  else if (key === 'idle') { const P = idleOnly(spec, t); r1 = p1.draw(P, { clip: 'idle', now: t }); r4 = p4.draw(P, { clip: 'idle', now: t }); }
+  else { const s = sections[key]; r1 = p1.drawSection(s, t, idleT); r4 = p4.drawSection(s, t, idleT); }
+  const png1 = p1.canvas.toDataURL('image/png'), png4 = p4.canvas.toDataURL('image/png');
+  // ID pass: the head and the first left-arm drawing; a second drawing (a cross-fade) gets its own pass
+  p4.paint(r4.items, 0);
+  const pngId = p4.canvas.toDataURL('image/png');
+  let pngId2 = null;
+  if (r4.items.filter((it) => it.arm).length > 1) { p4.paint(r4.items, 1); pngId2 = p4.canvas.toDataURL('image/png'); }
+  return { mesh: p1.meshQuality(r1.items), png1, png4, pngId, pngId2, settled: p1.settled() && p4.settled(), arm: p4.debugArm, joints: r4.joints, headView: r4.headView, headTurn: r4.headTurn, headCentre: r4.headCentre, pair: r4.pair };
+};
+window.stats = () => ({ s1: p1.stats, s4: p4.stats, compTexSize: p1.compTexSize, compTexBytes: p1.compTexSize[0] * p1.compTexSize[1] * 4 });
+window.ready = true;
+</script></body></html>

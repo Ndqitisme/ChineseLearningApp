@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="icon" href="data:,"><title>present cost</title>
+<style>html,body{margin:0;background:#ddd}canvas{display:block;width:139px;height:340px}</style></head><body><canvas id="c" width="278" height="680"></canvas>
+<script>
+// Experiment: the per-frame cost of presenting a 278x680 canvas at 15 fps, with nothing else drawn.
+const mode = new URLSearchParams(location.search).get('mode'); const cv = document.getElementById('c'); let n = 0, t = 0;
+let draw;
+if (mode === 'gl') { const gl = cv.getContext('webgl', { premultipliedAlpha: true, antialias: false }); draw = () => { t++; gl.clearColor((t % 2) * 0.5, 0, 0, 0.5); gl.clear(gl.COLOR_BUFFER_BIT); }; }
+else { const g = cv.getContext('2d'); draw = () => { t++; g.clearRect(0, 0, 278, 680); g.fillStyle = t % 2 ? '#a00' : '#0a0'; g.fillRect(10, 10, 200, 600); }; }
+setInterval(() => { draw(); n++; }, 1000 / 15);
+window.draws = () => n; window.ready = true;
+</script></body></html>

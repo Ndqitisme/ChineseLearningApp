@@ -1,0 +1,7 @@
+Use your built-in image generation tool to EDIT the attached image (exactly one generation).
+
+EDIT: Close both eyes gently, as if dozing peacefully: the upper lids come down fully, a soft curved lash line, relaxed brows. Change ONLY the eyes and lids.
+
+Keep EVERYTHING else pixel-identical to the attached image: canvas 1024x1024, framing, scale, head position and angle, the hair (every strand), the face shape, nose, mouth, skin tone, lighting, the white collar, no glasses, the flat solid chroma-green background and the semi-realistic anime style.
+
+Save the result as a PNG in the current working directory named exactly head_pitch15_closed.png (copy it from wherever the image tool stores its output). Do not create or modify any other files. Reply with the file path only.
