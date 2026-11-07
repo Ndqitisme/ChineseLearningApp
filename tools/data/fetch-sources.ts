@@ -26,8 +26,10 @@ for (const src of SOURCES) {
   }
   const buf = Buffer.from(await res.arrayBuffer());
   const hash = sha256(buf);
-  if (lock[src.id] && lock[src.id] !== hash && !update) {
-    console.error(`CHANGED ${src.id}: upstream content differs from sources.lock.json. Review it, then rerun with --update.`);
+  if (lock[src.id] !== hash && !update) {
+    console.error(lock[src.id]
+      ? `CHANGED ${src.id}: upstream content differs from sources.lock.json. Review it, then rerun with --update.`
+      : `NEW     ${src.id}: not pinned in sources.lock.json. Review it, then rerun with --update to pin it.`);
     failed = true;
     continue;
   }

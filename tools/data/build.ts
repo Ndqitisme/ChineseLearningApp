@@ -1,7 +1,7 @@
 // Builds src/generated/*.json and public/strokes/* from upstream sources + data/ overlays.
-// Fails (exit 1) on anything a learner would see as broken: missing pinyin, meaning or Hán Việt.
+// Fails (exit 1) on anything a learner would see as broken: missing pinyin, meaning, Hán Việt, stroke data or font glyph.
 // Usage: node tools/data/build.ts
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pinyin as pinyinPro } from 'pinyin-pro';
 import {
@@ -10,6 +10,7 @@ import {
 import type { Dataset, Example, HskLevel, LevelPack, QA, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
 import { fullGloss, parseCedict, referenceOf, shortGloss, type CedictEntry } from './cedict.ts';
 import { CACHE_DIR } from './sources.ts';
+import { woff2Codepoints } from './woff2.ts';
 
 const REPORT_DIR = '.cache/reports';
 const OUT_DIR = 'src/generated';
@@ -19,10 +20,9 @@ const errors: string[] = [];
 const reports: Record<string, string[]> = {};
 const report = (name: string, line: string) => (reports[name] ??= []).push(line);
 
+// Every overlay is required: a missing one would drop its overrides or verdicts without an error.
 const readTsv = (path: string) =>
-  existsSync(path)
-    ? readFileSync(path, 'utf8').split(/\r?\n/).slice(1).filter((l) => l.trim() && !l.startsWith('#')).map((l) => l.split('\t'))
-    : [];
+  readFileSync(path, 'utf8').split(/\r?\n/).slice(1).filter((l) => l.trim() && !l.startsWith('#')).map((l) => l.split('\t'));
 
 /** Numeric pinyin syllable normalized for lookups: lowercase, ü, tone digit 1–5. */
 const normNum = (s: string) => {
@@ -275,7 +275,7 @@ const hwd = 'node_modules/hanzi-writer-data';
 for (const c of strokeChars) {
   const src = join(hwd, `${c}.json`);
   if (existsSync(src)) copyFileSync(src, join(STROKES_DIR, `${c}.json`));
-  else report('strokes-missing', c);
+  else errors.push(`${c}: no stroke data in ${hwd}`);
 }
 mkdirSync('public/licenses', { recursive: true });
 copyFileSync(join(hwd, 'ARPHICPL.TXT'), 'public/licenses/ARPHICPL.TXT');
@@ -323,6 +323,39 @@ for (const x of qa) for (const c of x.q + x.a) charset.add(c);
 const charsetExt = new Set<string>();
 for (const p of packs) for (const w of p.words) for (const c of w.hanzi) if (isHan(c) && !charset.has(c)) charsetExt.add(c);
 
+// ---------------------------------------------------------------- font coverage
+// Han text and pinyin render in TieuMai Kai (src/lib/ui/base.css). The committed subset holds only what
+// tools/data/subset_font.py put in it; any other character silently falls back to a system font.
+const BASE_CSS = 'src/lib/ui/base.css';
+const PINYIN_LETTER = /[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüÜĀÁǍÀĒÉĚÈĪÍǏÌŌÓǑÒŪÚǓÙǕǗǙǛ]/;
+const kaiGlyphs = woff2Codepoints(readFileSync('public/fonts/TieuMaiKai.woff2'));
+// The browser loads the extension file only for code points in its unicode-range.
+const extRange = /tieumai-ext[\s\S]*?unicode-range:([^;]+);/.exec(readFileSync(BASE_CSS, 'utf8'))?.[1];
+if (!extRange) errors.push(`${BASE_CSS}: no unicode-range for TieuMaiKai-ext.woff2`);
+const extRanges = (extRange ?? '').split(',').map((r) => r.trim().replace(/^U\+/i, '').split('-').map((h) => parseInt(h, 16)));
+for (const cp of woff2Codepoints(readFileSync('public/fonts/TieuMaiKai-ext.woff2')))
+  if (extRanges.some(([lo, hi = lo]) => cp >= lo && cp <= hi)) kaiGlyphs.add(cp);
+
+/** Character → first place it is shown. */
+const fontNeeds = new Map<string, string>();
+const needGlyphs = (text: string | undefined, where: string, pick = (c: string) => !/\s/.test(c)) => {
+  for (const c of text ?? '') if (pick(c) && !fontNeeds.has(c)) fontNeeds.set(c, where);
+};
+for (const w of words.values())
+  for (const s of [w.hanzi, w.pinyin, w.ex?.zh, w.ex?.py, ...w.syllables.map((y) => y.py)]) needGlyphs(s, `word ${w.id}`);
+for (const t of topics) needGlyphs(t.titleZh, `topic ${t.id}`);
+for (const x of qa) for (const s of [x.q, x.a, x.aPy, ...(x.alt ?? [])]) needGlyphs(s, x.id);
+for (const f of readdirSync('src', { recursive: true, encoding: 'utf8' })) {
+  const path = `src/${f.replaceAll('\\', '/')}`;
+  if (!/\.(svelte|ts)$/.test(path) || path.startsWith(`${OUT_DIR}/`) || path.endsWith('.test.ts')) continue;
+  needGlyphs(readFileSync(path, 'utf8'), path, (c) => isHan(c) || PINYIN_LETTER.test(c));
+}
+const missingGlyphs = [...fontNeeds].filter(([c]) => !kaiGlyphs.has(c.codePointAt(0)!));
+if (missingGlyphs.length) {
+  const list = missingGlyphs.slice(0, 20).map(([c, where]) => `${c} U+${c.codePointAt(0)!.toString(16).toUpperCase()} (${where})`);
+  errors.push(`public/fonts: TieuMai Kai lacks ${missingGlyphs.length} character(s); rerun pnpm data:fonts, and add UI text to ui_han in tools/data/subset_font.py: ${list.join(', ')}`);
+}
+
 // Clear old reports: tools read them, and a report that is now empty must not linger.
 rmSync(REPORT_DIR, { recursive: true, force: true });
 mkdirSync(REPORT_DIR, { recursive: true });
@@ -341,7 +374,7 @@ const sizes = (levels: Record<HskLevel, string[]>) => Object.values(levels).map(
 console.log(`core words ${dataset.words.length}  (HSK 1–6 by level: 2021 ${sizes(hskLevels)}, 2025 ${sizes(hsk2025Levels)}; topic-only ${count((w) => !w.hsk && !w.hsk2025)}, HSK4–6 topic words ${count((w) => minLevel(w) > 3 && minLevel(w) < 9)})`);
 for (const p of packs) console.log(`pack hsk${p.level}: ${p.ids.length} ids (2025: ${p.ids2025.length}), ${p.words.length} words`);
 console.log(`topics ${topics.length}  topic words ${topics.reduce((n, t) => n + t.words.length, 0)}  with example ${count((w) => !!w.ex)}`);
-console.log(`stroke files ${strokeChars.size - (reports['strokes-missing']?.length ?? 0)}/${strokeChars.size}  charset ${[...charset].filter(isHan).length} + ext ${charsetExt.size}`);
+console.log(`stroke files ${strokeChars.size}  charset ${[...charset].filter(isHan).length} + ext ${charsetExt.size}`);
 for (const [name, lines] of Object.entries(reports)) console.log(`report ${name}: ${lines.length} → ${REPORT_DIR}/${name}.tsv`);
 if (errors.length) {
   console.error(`\n${errors.length} error(s):`);

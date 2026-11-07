@@ -84,7 +84,12 @@ export function shortGloss(senses: string[], max = 32): string {
   return cut.slice(0, cut.lastIndexOf(' ') > 12 ? cut.lastIndexOf(' ') : max).replace(/[,;:\s]+$/, '') + '…';
 }
 
+/** All senses, cut after the last whole sense that fits in `max`; a single long sense is cut at a word like shortGloss. */
 export function fullGloss(senses: string[], max = 220): string {
   const out = usableSenses(senses).join('; ');
-  return out.length > max ? out.slice(0, out.lastIndexOf(';', max)) : out;
+  if (out.length <= max) return out;
+  const lastSense = out.lastIndexOf(';', max);
+  if (lastSense > 0) return out.slice(0, lastSense);
+  const lastSpace = out.lastIndexOf(' ', max);
+  return out.slice(0, lastSpace > 0 ? lastSpace : max).replace(/[,;:\s]+$/, '') + '…';
 }
