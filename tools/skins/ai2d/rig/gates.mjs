@@ -18,11 +18,11 @@
 //   sleep    20 s in the sleep loop: presented frames per second (ticks at 10 Hz, presents what moved); CPU.
 // Usage: node gates.mjs [runs=3]
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { freshProfile, saveProfileAnswer } from '../../../chrome-profile.ts';
 import http from 'node:http';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -60,7 +60,7 @@ const spread = (xs) => [Math.min(...xs), Math.max(...xs)];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function withPage(name, fn) {
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), `rig-gate-${name}-`));
+  const profile = freshProfile(`rig-gate-${name}-`);
   const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, userDataDir: profile,
     args: ['--headless=new', '--no-first-run', '--no-default-browser-check', '--ignore-gpu-blocklist', '--force-device-scale-factor=2', '--window-size=300,600'] });
   try {
@@ -74,7 +74,7 @@ async function withPage(name, fn) {
     await sleep(2000);
     const r = await fn({ page, cdp, profile, browser });
     return { ...r, errors };
-  } finally { await browser.close(); fs.rmSync(profile, { recursive: true, force: true }); }
+  } finally { await browser.close(); saveProfileAnswer(profile); fs.rmSync(profile, { recursive: true, force: true }); }
 }
 const task = async (cdp) => (await cdp.send('Performance.getMetrics')).metrics.find((m) => m.name === 'TaskDuration').value;
 async function window_(page, cdp, profile, ms) {

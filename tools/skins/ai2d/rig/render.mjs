@@ -7,10 +7,10 @@
 // Usage: node render.mjs [--only key1,key2] [--out dir] [--hard | --xfade | --seed-glasses | --legacy]   (seeds: rigid elbow; whole-drawing cross-fades; rims drawn off the eyes; the older hairTuck drawing set)
 import http from 'node:http';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { freshProfile, saveProfileAnswer } from '../../../chrome-profile.ts';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(path.join(HERE, 'motion', 'package.json'));
@@ -77,7 +77,7 @@ const todo = ONLY ? jobs.filter((j) => ONLY.includes(j.dir)) : jobs;
 
 const srv = await serve(HERE);
 const base = `http://127.0.0.1:${srv.address().port}`;
-const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'rig-render-'));
+const profile = freshProfile('rig-render-');
 // Software WebGL (SwiftShader) for byte-stable output, independent of the GPU driver.
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, userDataDir: profile,
   args: ['--headless=new', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', '--force-color-profile=srgb'] });
@@ -151,6 +151,7 @@ try {
 } finally {
   await browser.close();
   srv.close();
+  saveProfileAnswer(profile);
   fs.rmSync(profile, { recursive: true, force: true });
 }
 const mpath = path.join(OUT, 'manifest.json');
