@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { snap, spriteOffset, type Anchor } from './geometry.ts';
+import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, snap, spriteOffset, windowSize, type Anchor } from './geometry.ts';
 
 const workArea = { x: 0, y: 0, w: 1920, h: 1040 };
 const spriteCss = { w: 115, h: 210 };
@@ -41,6 +41,35 @@ describe('snap', () => {
       const once = snapAt(x, y, { h: x > 960 ? 'right' : 'left' }, 1.25);
       const twice = snap({ windowPos: once.pos, scale: 1.25, winCss, spriteCss, anchor: once.anchor, workArea });
       expect(twice).toEqual(once);
+    }
+  });
+});
+
+describe('bubbleInset', () => {
+  // Every pet size (frame 139x340 scaled to 160/210/270 px tall), short and tall bubbles.
+  const sprites = [160, 210, 270].map((h) => ({ w: Math.round((139 * h) / 340), h }));
+  const bubbleHeights = [150, 222, 300, 420];
+
+  it('keeps the shadow margin around the bubble inside the window', () => {
+    for (const sprite of sprites) for (const bh of bubbleHeights) {
+      const room = Math.max(BASE_BUBBLE_ROOM, bh + 2 * SHADOW_PAD);
+      const win = windowSize(sprite, room);
+      const { side, top } = bubbleInset(win, sprite, room);
+      expect(top, `top, sprite ${sprite.h}, bubble ${bh}`).toBeGreaterThanOrEqual(SHADOW_PAD);
+      expect(win.h - (top + bh), `bottom, sprite ${sprite.h}, bubble ${bh}`).toBeGreaterThanOrEqual(SHADOW_PAD);
+      expect(win.w - side - 264, `far side, sprite ${sprite.h}`).toBeGreaterThanOrEqual(SHADOW_PAD);
+    }
+  });
+
+  it('points the tail at her eyes, also when a tall bubble rises above her head', () => {
+    for (const sprite of sprites) for (const bh of bubbleHeights) {
+      const room = Math.max(BASE_BUBBLE_ROOM, bh + 2 * SHADOW_PAD);
+      const win = windowSize(sprite, room);
+      const { top, tail } = bubbleInset(win, sprite, room);
+      const eyes = win.h - sprite.h + sprite.h * 0.12;
+      const tailMid = top + tail + 8;
+      if (eyes - top >= 20) expect(Math.abs(tailMid - eyes), `sprite ${sprite.h}, bubble ${bh}`).toBeLessThanOrEqual(1);
+      else expect(tail).toBe(12);
     }
   });
 });

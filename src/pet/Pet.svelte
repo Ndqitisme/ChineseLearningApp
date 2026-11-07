@@ -16,7 +16,7 @@
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
-  import { BASE_BUBBLE_ROOM, bubbleInset, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
+  import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
 
   const win = getCurrentWindow();
@@ -53,7 +53,7 @@
   const spriteScale = $derived(displayScale(settings.petScale));
   // With the character hidden, the window holds only the bubble. The "sprite" then becomes a
   // zero-height strip along the window bottom, so placement and snapping keep working unchanged.
-  const BUBBLE_ONLY_W = 290;
+  const BUBBLE_ONLY_W = 264 + 2 * SHADOW_PAD;
   /** Grows when a bubble (long meaning, example sentence) needs more height than the default. */
   let bubbleRoom = $state(BASE_BUBBLE_ROOM);
   const spriteCss = $derived(
@@ -64,7 +64,7 @@
   const mirror = $derived(anchor.h === 'right');
   const visible = $derived(settings.petEnabled && !(busy && settings.hideOnFullscreen));
   const winCss = $derived(settings.petCharacter ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
-  const slotInset = $derived(settings.petCharacter ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: 4, top: 4 });
+  const slotInset = $derived(settings.petCharacter ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: SHADOW_PAD, top: SHADOW_PAD, tail: 0 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
   // Packs load once the shared settings unlock them; the main window does the unlocking.
   let loadedOpen = $state(settings.hskOpen);
@@ -145,7 +145,7 @@
     const el = bubbleEl;
     if (!el) return;
     const ro = new ResizeObserver(() => {
-      const needed = Math.ceil(el.offsetHeight) + 20; // margins and shadow
+      const needed = Math.ceil(el.offsetHeight) + 2 * SHADOW_PAD;
       if (needed > bubbleRoom || needed < bubbleRoom - 60) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
     });
     ro.observe(el);
@@ -438,6 +438,7 @@
         {starred}
         canSpeak={speechAvailable()}
         tail={settings.petCharacter}
+        tailTop={slotInset.tail}
         showHanviet={settings.showHanviet}
         showExample={settings.showExample}
         onopen={() => ipc.openMain(`/word/${encodeURIComponent(bubble!.word.id)}`)}
@@ -516,6 +517,8 @@
   .stage {
     position: relative;
     overflow: hidden;
+    /* small enough to fit in SHADOW_PAD: past the window edge a shadow is cut off in a hard line */
+    --pet-shadow: 0 2px 9px rgba(0, 0, 0, 0.22);
   }
   .sprite-slot {
     position: absolute;
@@ -530,7 +533,7 @@
     border-radius: 99px;
     background: var(--bubble-bg);
     color: var(--bubble-text);
-    box-shadow: var(--shadow);
+    box-shadow: var(--pet-shadow);
     padding: 6px 14px;
     font-size: 13px;
     font-weight: 700;
@@ -545,7 +548,7 @@
     background: var(--surface);
     border: 2px solid var(--bubble-border);
     border-radius: 14px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--pet-shadow);
     animation: pop 0.16s ease-out;
   }
   .menu button {

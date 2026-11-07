@@ -15,6 +15,8 @@
     canSpeak: boolean;
     /** false when the character is hidden: no tail pointing at her head. */
     tail: boolean;
+    /** Tail offset from the bubble's top, CSS px (level with her eyes). */
+    tailTop?: number;
     showHanviet: boolean;
     showExample: boolean;
     onopen: () => void;
@@ -39,6 +41,7 @@
   class="bubble"
   class:right={p.anchor.h === 'right'}
   class:notail={!p.tail}
+  style:--tail-top={p.tailTop === undefined ? null : `${p.tailTop}px`}
   role="dialog"
   aria-label="Từ mới"
   tabindex="-1"
@@ -96,7 +99,7 @@
     color: var(--bubble-text);
     border: 2.5px solid var(--bubble-border);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--pet-shadow);
     text-align: center;
     cursor: grab;
     animation: pop 0.22s cubic-bezier(0.2, 1.4, 0.4, 1);
@@ -108,7 +111,8 @@
   .bubble::after {
     content: '';
     position: absolute;
-    top: 26px;
+    /* never below the bubble's last 30 px, whatever its height */
+    top: min(var(--tail-top, 26px), calc(100% - 30px));
     left: -11px;
     width: 16px;
     height: 16px;

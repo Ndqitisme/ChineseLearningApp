@@ -7,8 +7,15 @@ export interface Size { w: number; h: number }
 
 /** Height an ordinary bubble needs; taller bubbles grow it (see Pet.svelte). */
 export const BASE_BUBBLE_ROOM = 250;
-/** Bubble width plus room for its shadow, CSS px. */
+/** Room kept around the bubble for its shadow, CSS px: the window clips anything drawn past its edge,
+ * so the pet's shadow (Pet.svelte --pet-shadow) must stay inside this margin. */
+export const SHADOW_PAD = 14;
+/** Bubble width (264) plus the shadow margin on its far side, CSS px. */
 const BUBBLE_W = 280;
+/** Her eyes sit this far down the frame; the bubble's tail points at them. */
+const EYES = 0.12;
+/** The tail is a rotated 16 px square. */
+const TAIL = 16;
 /** The bubble starts this far into the sprite frame, whose sides are transparent margin. */
 const BUBBLE_START = 0.85;
 
@@ -18,10 +25,14 @@ export function windowSize(sprite: Size, room = BASE_BUBBLE_ROOM): Size {
 }
 
 /** Where the bubble sits (CSS px from the window's anchor side and top): its top level with her head,
- * moved up only as far as a tall bubble needs to fit. */
+ * moved up only as far as a tall bubble needs to fit, with the shadow margin kept on every side.
+ * `tail` is the tail's offset from the bubble's top, so it points at her eyes even when the bubble rose. */
 export function bubbleInset(win: Size, sprite: Size, room = BASE_BUBBLE_ROOM) {
-  const headTop = win.h - sprite.h + sprite.h * 0.03;
-  return { side: Math.round(sprite.w * BUBBLE_START), top: Math.round(Math.max(4, Math.min(headTop, win.h - room + 4))) };
+  const spriteTop = win.h - sprite.h;
+  const headTop = spriteTop + sprite.h * 0.03;
+  const top = Math.round(Math.max(SHADOW_PAD, Math.min(headTop, win.h - room + SHADOW_PAD)));
+  const tail = Math.round(Math.max(12, spriteTop + sprite.h * EYES - TAIL / 2 - top));
+  return { side: Math.round(sprite.w * BUBBLE_START), top, tail };
 }
 
 /** Where the sprite sits inside the window (CSS px). */
