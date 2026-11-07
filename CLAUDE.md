@@ -8,6 +8,7 @@ Chỉ đọc tài liệu của việc đang làm:
 - Nhân vật trợ lý (yêu cầu, rig, dựng lại, bộ kiểm): `docs/CHARACTER.md`.
 - Dựng nhân vật trên máy có hoặc không có GPU: `docs/CHARACTER-PIPELINE.md`.
 - Bộ e2e: `tools/e2e/README.md`.
+- Mọi thay đổi giao diện (liquid glass, màu, trạng thái): `docs/UI-GLASS.md`.
 
 ## Lệnh
 
