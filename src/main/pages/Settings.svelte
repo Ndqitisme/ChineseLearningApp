@@ -154,7 +154,11 @@
       Bản 2025: đề cương chính thức công bố tháng 11/2025, dùng cho kỳ thi HSK mới.<br />
       Đổi bộ từ không ảnh hưởng tiến độ ôn tập.
     </p>
-    <p class="muted small">Chọn mức thấp hơn thì từ của các cấp cao hơn tạm ẩn và trợ lý ngừng nhắc; tiến độ ôn tập vẫn được giữ.</p>
+    <p class="muted small">
+      Chọn mức thấp hơn thì danh sách từ của các cấp cao hơn tạm ẩn và trợ lý ngừng nhắc các cấp đó.<br />
+      Từ trong chủ đề vẫn hiện đủ, kể cả từ thuộc cấp cao hơn.<br />
+      Tiến độ ôn tập vẫn được giữ.
+    </p>
     {#if hskFailed}<p class="small bad">Không mở khoá được. Hãy thử lại.</p>{/if}
   </div>
 

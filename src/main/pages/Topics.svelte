@@ -97,7 +97,7 @@
     {/each}
   </div>
   {#if settings.hskOpen < 6}
-    <p class="muted small unlock-note">Có thể khoá lại các cấp đã mở trong <a href="#/settings/hsk">Cài đặt</a>; tiến độ ôn tập vẫn được giữ.</p>
+    <p class="muted small unlock-note">Có thể khoá lại các cấp đã mở trong <a href="#/settings/hsk">Cài đặt</a>.<br />Tiến độ ôn tập vẫn được giữ.</p>
   {/if}
   {#if failed}<p class="small bad">Không mở khoá được. Hãy thử lại.</p>
   {:else if startup.failedLevel > settings.hskOpen}<p class="small bad">Không đọc được dữ liệu HSK {startup.failedLevel} khi khởi động nên cấp này đã bị khoá. Hãy mở khoá lại.</p>{/if}
