@@ -107,6 +107,7 @@ Bong bóng ở cạnh nhân vật, ngang đầu (`bubbleInset` trong `src/pet/ge
 | Headless Chrome: cử chỉ; ẩn; ngủ | 30 fps; 0 lần vẽ; 5,5 fps |
 | App thật, bản release, chỉ trợ lý, mỗi 16 giây một từ, `pnpm perf` 180 giây, 2 lần | CPU trung bình 3,4–3,9% một nhân, p95 15–17%; 0% giữa các lần đổi từ |
 | App thật: RAM private | Trung bình 160–171 MB, cao nhất 185 MB (nhân vật cũ: 128,6 / 165,7 MB) |
+| App thật sau đợt sửa lỗi 2026-11-07, như trên nhưng 600 giây, 1 lần, qua Remote Desktop | CPU trung bình 3,6% một nhân, p95 16%; RAM private trung bình 172 MB, cao nhất 188 MB |
 
 CPU trong app cao hơn ngân sách đứng yên vì mỗi lần đổi từ chạy clip nói khoảng 5 giây ở 30 fps. RAM vượt 150 MB, chủ yếu do WebGL (suy luận: ngân sách của trình phát chỉ 7,8 MB). Đây là việc mở đầu tiên trong `CLAUDE.md`.
 

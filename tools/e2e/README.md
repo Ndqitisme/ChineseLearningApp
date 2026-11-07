@@ -46,7 +46,8 @@ Text cut off with `overflow: hidden` on purpose (ellipsis) is not flagged.
 
 A scenario is one `.js` file in `scenarios/`. It default-exports `async (t) => {}` and can
 export a `seed` for the stores. Each scenario gets a fresh browser profile, so stores start empty
-(or as seeded).
+(or as seeded). It can also export `system` (`{ busy, idleSecs }`) to set what `system_state`
+reports from the first call, in every window and again after a reload.
 
 ```js
 // Review: a due card flips and a grade schedules it.
@@ -77,7 +78,7 @@ the data may change.
 | `waitFor(page, selector, text?, timeout?)` | waits until a match (containing `text`) exists; 8 s by default |
 | `click(page, selector, text?)` | clicks the first match containing `text` |
 | `text(page, selector)` / `texts(page, selector)` | visible text (`innerText`, so CSS `text-transform` applies) |
-| `store(page, path)` | saved content of a plugin-store file, e.g. `'settings.json'`, `'progress.json'` |
+| `store(page, path)` | saved content of an app store file, `'settings.json'` or `'progress.json'` |
 | `calls(page, cmd?)` | Tauri commands that window invoked, `{ cmd, args }` |
 | `emitTo(page, label, event, payload)` | sends an app event to a window, like Rust or the other window would (e.g. tray `'next'`) |
 | `data` | `src/generated/dataset.json` (the core, HSK 1–3) |
@@ -100,10 +101,11 @@ and the knobs `system` (`{ busy, idleSecs }`), `autostart`, `dialogResult`.
 |---|---|
 | `open_main { route }` | emits `main:navigate` with `route` to the main window (as `lib.rs` does when it is open) |
 | `pet_set_hit_rects { rects }` | stored in `__e2e.hitRects` |
-| `system_state` | returns `__e2e.system` (default not busy, 0 s idle) |
+| `system_state` | returns `__e2e.system` (default not busy, 0 s idle, or the scenario's `system` export) |
 | `tts_http`, `voicepack_info`, `voicepack_clip` | reject: no voices in tests |
 | `plugin:event\|listen/unlisten/emit/emit_to` | real delivery inside the window; `emit` reaches every window, `emit_to` only the named one, across windows via `BroadcastChannel` |
-| `plugin:store\|load/get/set/delete/has/keys/values/entries/length/save/reload/get_store` | one shared store per path, saved to `localStorage` (`e2e:store:<path>`) on every write; a change fires `store://change` in every window with that window's own resource id, like the plugin. `localStorage` stands in for the Rust process, so data survives a reload |
+| `store_load { name }` | returns the saved object for `'settings.json'` or `'progress.json'` from `localStorage` (`e2e:store:<name>`) |
+| `store_set { name, key, value }` | saves to `localStorage` and fires `store:change` with `{ name, key, value }` in every window, the writer included, like `store.rs`. `localStorage` stands in for the Rust process, so data survives a reload |
 | `plugin:resources\|close` | no-op |
 | `plugin:opener\|open_url/open_path/reveal_item_in_dir` | recorded only |
 | `plugin:autostart\|is_enabled/enable/disable` | flips `__e2e.autostart` |

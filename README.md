@@ -11,7 +11,7 @@ Một trợ lý đứng ở cạnh màn hình và luôn hiện một từ: chữ
 ## Tính năng
 
 - **Trợ lý chạy nền:** tự ẩn khi có ứng dụng toàn màn hình, ngủ khi máy không được dùng hoặc trong giờ yên lặng. Kéo được tới bất kỳ đâu trên màn hình.
-- **Từ vựng:** HSK 3.0 cấp 1–6 theo hai bộ từ (bản 2021 và bản 2025), cùng 22 chủ đề có câu ví dụ. Mặc định mở HSK 1–3; HSK 4–6 mở thêm trong app.
+- **Từ vựng:** HSK 3.0 cấp 1–6 theo bộ từ bản 2025, cùng 22 chủ đề có câu ví dụ. Bộ bản 2021 chọn được trong Cài đặt. Mặc định mở HSK 1–3; HSK 4–6 mở thêm trong app.
 - **Luyện tập:** đoán nghĩa, chọn mặt chữ, nghe chọn chữ, viết theo thứ tự nét, ghép câu, luyện thanh điệu (thu âm và so cao độ).
 - **Ôn tập** theo lịch FSRS, **sổ tay** từ đã lưu.
 - **Tra cứu** theo chữ Hán, pinyin (có hoặc không dấu), nghĩa tiếng Việt hoặc âm Hán Việt.
@@ -23,8 +23,8 @@ Số từ mỗi cấp HSK:
 
 | Bộ từ | HSK 1 | HSK 2 | HSK 3 | HSK 4 | HSK 5 | HSK 6 |
 |---|---|---|---|---|---|---|
-| Bản 2021 | 506 | 750 | 953 | 972 | 1.059 | 1.123 |
 | Bản 2025 | 294 | 197 | 487 | 972 | 1.547 | 1.684 |
+| Bản 2021 | 506 | 750 | 953 | 972 | 1.059 | 1.123 |
 
 ## Tải về
 

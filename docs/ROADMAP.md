@@ -13,7 +13,7 @@
 ## 1. Đã có
 
 - **Khoá HSK 4–6:** mặc định mở HSK 1–3; người học tự mở 4 → 5 → 6 trong app. Mỗi cấp chia bài 25 từ theo tần suất. Gói từ nạp khi mở khoá (`src/generated/hsk4.json`…); `settings.hskOpen` mặc định 3.
-- **Hai bộ từ HSK 3.0:** bản 2021 (`new-1..6`) và bản 2025 (`newest-1..6`, đề cương công bố tháng 11/2025). Chọn ở trang Chủ đề hoặc Cài đặt (`settings.hskEdition`, mặc định 2021). Nguồn chưa thống nhất về ngày kỳ thi chuyển sang bản mới, nên app không ghi ngày thi.
+- **Hai bộ từ HSK 3.0:** bản 2025 (`newest-1..6`, đề cương công bố tháng 11/2025) và bản 2021 (`new-1..6`). Chọn ở trang Chủ đề hoặc Cài đặt (`settings.hskEdition`, mặc định 2025). Đổi bộ không làm mất từ ở Ôn tập, Sổ tay, Tra cứu và trang từ. Nguồn chưa thống nhất về ngày kỳ thi chuyển sang bản mới, nên app không ghi ngày thi.
 - **Tab "Ủng hộ tác giả"** (`#/support`): một câu ngắn và mã QR "Số tài khoản ngân hàng". Không popup, không nhắc.
 
 ## 2. Các tính năng, theo thứ tự ưu tiên

@@ -29,9 +29,9 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 
 ## Việc tiếp theo
 
-1. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách ở `docs/PLAN.md` mục 6: CPU trung bình 3,4–3,9% một nhân khi mỗi 16 giây đổi một từ, RAM private 160–171 MB. Số đo và nguyên nhân ở `docs/CHARACTER.md` mục 2. Cần đo lại 10 phút khi màn hình mở, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
+1. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách ở `docs/PLAN.md` mục 6: CPU trung bình 3,4–3,9% một nhân khi mỗi 16 giây đổi một từ, RAM private 160–171 MB. Số đo và nguyên nhân ở `docs/CHARACTER.md` mục 2. Đã đo 10 phút qua Remote Desktop (`docs/PLAN.md` mục 6); cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
 2. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
-3. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó.
+3. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
 4. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
 
 ## Luật bắt buộc
@@ -68,6 +68,7 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 - Không giết Chrome của người dùng, daemon của Codex, MCP server, hay việc của agent khác.
 - Vòng chờ phải thoát cả khi gặp lỗi và có giới hạn thời gian. Git Bash không có `pgrep`.
 - Kiểm không có bản nào đang chạy trước khi chạy e2e, bộ đo hay server.
+- Việc nặng (`tauri build`, `cargo`, `pnpm e2e` đầy đủ, `skin:rig`, `pnpm perf`) chỉ chạy khi các việc khác đã xong, mỗi lần một việc. Agent chạy song song chỉ được kiểm nhẹ (`pnpm check`, vitest từng file) và báo lại phần còn cần build hay e2e.
 
 ### Nhân vật
 
@@ -92,3 +93,4 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 - Python in tiếng Việt ra console cần `PYTHONIOENCODING=utf-8`.
 - Blender chạy nền trên GPU Intel đời cũ: Workbench render sai góc nhìn, Eevee không chạy; dùng Cycles với đường dẫn Windows tuyệt đối.
 - Toolchain Rust `x86_64-pc-windows-gnu` dùng được thay Visual Studio Build Tools; lib chỉ build `rlib`.
+- Mở Chrome bằng puppeteer thì tạo hồ sơ bằng `freshProfile` và gọi `saveProfileAnswer` sau khi đóng (`tools/chrome-profile.ts`). Mỗi hồ sơ Chrome mới thử đăng nhập Windows bằng mật khẩu rỗng; 10 lần trong 10 phút là tài khoản bị khoá.
