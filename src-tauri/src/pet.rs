@@ -80,7 +80,10 @@ pub fn create_pet_window(app: &AppHandle) -> tauri::Result<()> {
 fn cursor_tracking_supported() -> bool {
     if cfg!(target_os = "linux") {
         let wayland = std::env::var_os("WAYLAND_DISPLAY").is_some();
-        let forced_x11 = std::env::var("GDK_BACKEND").map(|v| v == "x11").unwrap_or(false);
+        // GDK_BACKEND is a preference list such as "x11,wayland"; GTK takes the first one that works,
+        // and with WAYLAND_DISPLAY set both would.
+        let forced_x11 = std::env::var("GDK_BACKEND")
+            .is_ok_and(|v| v.split(',').map(str::trim).find(|b| *b == "x11" || *b == "wayland") == Some("x11"));
         return !wayland || forced_x11;
     }
     true

@@ -1,7 +1,7 @@
 // Learning progress in "progress.json". Each key has exactly one writer to avoid lost updates
 // between windows: the pet window owns `exposure` and `seenDays`; the main window owns `srs`
 // and `reviewDays`. Other windows ask the owner to change a key via events (see ipc.ts).
-import { load, type Store } from '@tauri-apps/plugin-store';
+import { load, type Store } from './durable-store.ts';
 import type { Exposure } from './scheduler.ts';
 
 export type DayCounts = Record<string, number>; // "YYYY-MM-DD" → count
@@ -30,7 +30,7 @@ function valid(key: Key, v: unknown): unknown {
 }
 
 export async function initProgress() {
-  store = await load('progress.json', { autoSave: 1500, defaults: {} });
+  store = await load('progress.json');
   for (const key of KEYS) {
     const v = await store.get(key);
     if (v !== undefined) (progress as Record<Key, unknown>)[key] = valid(key, v);

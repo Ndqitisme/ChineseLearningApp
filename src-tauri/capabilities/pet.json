@@ -1,0 +1,21 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "pet",
+  "description": "The assistant window",
+  "windows": ["pet"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-position",
+    "core:window:allow-set-size",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "allow-open-main",
+    "allow-pet-set-hit-rects",
+    "allow-system-state",
+    "allow-tts-http",
+    "allow-voicepack-clip",
+    "allow-store-load",
+    "allow-store-set"
+  ]
+}
