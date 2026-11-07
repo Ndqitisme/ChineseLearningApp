@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { isHan } from '../../lib/pinyin.ts';
   import { settings, updateSettings } from '../../lib/settings.svelte.ts';
@@ -42,7 +43,7 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1><Icon name="write" /> Viết theo nét</h1>
+  <h1><Icon name="write" hue={HUE_OF.write} /> Viết theo nét</h1>
   <p class="lead">{deck.title}<br />Xem mẫu thứ tự nét rồi vẽ lại bằng chuột. Sai 3 lần ở một nét thì nét đó tự hiện gợi ý.</p>
 
   {#if deck.gone}

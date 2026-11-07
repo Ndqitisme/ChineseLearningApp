@@ -2,6 +2,7 @@
   import Icon from '../../lib/ui/Icon.svelte';
   import { progress } from '../../lib/progress.svelte.ts';
   import { openWord } from '../../lib/settings.svelte.ts';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import type { Word } from '../../lib/types.ts';
   import WordRow from '../components/WordRow.svelte';
 
@@ -14,12 +15,12 @@
 </script>
 
 <div class="page">
-  <h1><Icon name="nav-notebook" /> Sổ tay</h1>
+  <h1><Icon name="nav-notebook" hue={HUE_OF.notebook} /> Sổ tay</h1>
   <p class="lead">Các từ đã lưu để luyện riêng.</p>
   {#if starred.length}
     <div class="row actions">
       <a class="btn primary" href="#/quiz/meaning/starred"><Icon name="quiz-meaning" /> Luyện sổ tay</a>
-      <a class="btn" href="#/write/starred"><Icon name="write" /> Viết</a>
+      <a class="btn" href="#/write/starred"><Icon name="write" hue={HUE_OF.write} /> Viết</a>
     </div>
     <div class="card list">{#each starred as w (w.id)}<WordRow word={w} />{/each}</div>
   {:else}

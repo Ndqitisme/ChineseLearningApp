@@ -1,5 +1,6 @@
 import raw from '../generated/dataset.json';
-import type { Dataset, HskEdition, HskLevel, LevelIds, LevelPack, Topic, Word } from './types.ts';
+import type { Hue } from './theme/themes.ts';
+import type { Dataset, HskEdition, HskLevel, LevelIds, LevelPack, Topic, TopicGroup, Word } from './types.ts';
 
 export const dataset = raw as unknown as Dataset;
 export const words: Word[] = dataset.words;
@@ -8,10 +9,15 @@ export const wordById = new Map(words.map((w) => [w.id, w]));
 export const topicById = new Map(topics.map((t) => [t.id, t]));
 
 export const GROUPS = [
-  { id: 'daily', title: 'Đời sống', icon: 'group-daily' },
-  { id: 'food', title: 'Ăn uống', icon: 'group-food' },
-  { id: 'work', title: 'Công việc', icon: 'group-work' },
+  { id: 'daily', title: 'Đời sống', icon: 'group-daily', hue: 'teal' },
+  { id: 'food', title: 'Ăn uống', icon: 'group-food', hue: 'orange' },
+  { id: 'work', title: 'Công việc', icon: 'group-work', hue: 'blue' },
 ] as const;
+/** A topic's colour is its group's, wherever the topic is shown. */
+const GROUP_HUE = Object.fromEntries(GROUPS.map((g) => [g.id, g.hue])) as Record<TopicGroup, Hue>;
+export const topicHue = (t: Topic) => GROUP_HUE[t.group];
+/** Colour of the HSK courses and level badges. */
+export const HSK_HUE: Hue = 'violet';
 
 /** A word's level in `edition`; undefined when that edition does not list it. */
 export const levelOf = (w: Word, edition: HskEdition): HskLevel | undefined => (edition === 2025 ? w.hsk2025 : w.hsk);

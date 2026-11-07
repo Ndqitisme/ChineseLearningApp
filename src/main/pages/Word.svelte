@@ -2,13 +2,14 @@
   import Icon from '../../lib/ui/Icon.svelte';
   import BackButton from '../components/BackButton.svelte';
   import { onMount, tick } from 'svelte';
-  import { levelOf, loadLevels, topicById, wordById } from '../../lib/data.ts';
+  import { HSK_HUE, levelOf, loadLevels, topicById, topicHue, wordById } from '../../lib/data.ts';
   import { requestExposurePatch } from '../../lib/exposure.ts';
   import { isHan } from '../../lib/pinyin.ts';
   import { progress, saveProgress } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
   import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
   import { previewIntervals } from '../../lib/srs.ts';
+  import { HUE_OF, hueVar } from '../../lib/theme/themes.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
   import HanziStroke from '../components/HanziStroke.svelte';
 
@@ -72,20 +73,20 @@
         <div class="vi">{word.vi}</div>
         {#if word.hanviet}<div class="hv">Hán Việt: <b>{word.hanviet}</b></div>{/if}
         <div class="chips">
-          {#if level}<a class="chip" href="#/hsk/{level}">HSK {level}</a>{/if}
+          {#if level}<a class="chip hued" href="#/hsk/{level}" style:--h={hueVar(HSK_HUE)}>HSK {level}</a>{/if}
           {#if (level || otherLevel) && otherLevel !== level}
             <span class="chip other" title="Cấp của từ này trong bộ từ bản {otherEdition}">Bản {otherEdition}: {otherLevel ? `HSK ${otherLevel}` : 'không có'}</span>
           {/if}
           {#each word.topics as t (t)}
             {@const topic = topicById.get(t)}
-            {#if topic}<a class="chip" href="#/topic/{t}"><Icon name={topic.icon} /> {topic.title}</a>{/if}
+            {#if topic}<a class="chip hued" href="#/topic/{t}" style:--h={hueVar(topicHue(topic))}><Icon name={topic.icon} /> {topic.title}</a>{/if}
           {/each}
         </div>
         <div class="row btns">
-          <button class="btn" onclick={replayStrokes}><Icon name="write" /> Xem lại nét</button>
+          <button class="btn" onclick={replayStrokes}><Icon name="write" hue={HUE_OF.write} /> Xem lại nét</button>
           {#if speechAvailable()}
-            <button class="btn" onclick={() => say('female', word.hanzi)}><Icon name="speaker" /> Giọng nữ</button>
-            <button class="btn" onclick={() => say('male', word.hanzi)}><Icon name="speaker" /> Giọng nam</button>
+            <button class="btn" onclick={() => say('female', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nữ</button>
+            <button class="btn" onclick={() => say('male', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nam</button>
           {:else}
             <a class="btn ghost" href="#/settings"><Icon name="speaker-off" /> Cài giọng đọc…</a>
           {/if}
@@ -98,7 +99,7 @@
       <h2 class="section-title">Ví dụ</h2>
       <div class="card ex">
         <div class="han ex-zh" data-hover-pinyin="on">{word.ex.zh}
-          {#if speechAvailable()}<button class="btn ghost sm" onclick={() => say('female', word.ex!.zh)}><Icon name="speaker" /></button>{/if}
+          {#if speechAvailable()}<button class="btn ghost sm" onclick={() => say('female', word.ex!.zh)}><Icon name="speaker" hue={HUE_OF.listen} /></button>{/if}
         </div>
         <div class="ex-py" data-has-pinyin>{word.ex.py}</div>
         <div class="ex-vi">{word.ex.vi}</div>
@@ -117,7 +118,7 @@
       {#if card}
         <span class="muted">Ôn tiếp: {new Date(card.due).toLocaleDateString('vi-VN')} · lần ôn {card.reps}</span>
       {:else}
-        <button class="btn" onclick={addToReview}><Icon name="nav-review" /> Thêm vào ôn tập</button>
+        <button class="btn" onclick={addToReview}><Icon name="nav-review" hue={HUE_OF.review} /> Thêm vào ôn tập</button>
         <span class="muted small">Nếu nhớ tốt, lần ôn sau: {previewIntervals(undefined)[3]}</span>
       {/if}
     </div>

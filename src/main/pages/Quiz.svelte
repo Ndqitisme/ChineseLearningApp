@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
@@ -70,7 +71,7 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1><Icon name={mode === 'meaning' ? 'quiz-meaning' : mode === 'hanzi' ? 'quiz-hanzi' : 'quiz-listen'} /> {mode === 'meaning' ? 'Đoán nghĩa' : mode === 'hanzi' ? 'Chọn mặt chữ' : 'Nghe chọn chữ'}</h1>
+  <h1><Icon name={mode === 'meaning' ? 'quiz-meaning' : mode === 'hanzi' ? 'quiz-hanzi' : 'quiz-listen'} hue={HUE_OF[mode]} /> {mode === 'meaning' ? 'Đoán nghĩa' : mode === 'hanzi' ? 'Chọn mặt chữ' : 'Nghe chọn chữ'}</h1>
   <p class="lead">{deck.title}<br />Gợi ý phím: 1–4 để chọn đáp án, Enter để sang câu tiếp.</p>
 
   {#if deck.gone}

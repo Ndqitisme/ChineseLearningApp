@@ -3,6 +3,7 @@
   import { progress, streak, today } from '../../lib/progress.svelte.ts';
   import { TARGET_EXPOSURES } from '../../lib/scheduler.ts';
   import { openWord, settings } from '../../lib/settings.svelte.ts';
+  import { HUE_OF, hueVar } from '../../lib/theme/themes.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
   import { reviewQueueIds } from '../review-queue.ts';
 
@@ -31,21 +32,21 @@
   </p>
 
   <div class="stats">
-    <div class="card stat"><b>{seenToday}</b><span>lượt gặp từ hôm nay</span></div>
-    <div class="card stat"><b>{days}</b><span>ngày học liên tiếp <Icon name="streak" /></span></div>
-    <div class="card stat"><b>{familiar}</b><span>từ đã quen</span></div>
-    <a class="card stat link" href="#/review"><b>{due}</b><span>thẻ cần ôn →</span></a>
+    <div class="card stat" style:--h={hueVar('blue')}><b>{seenToday}</b><span>lượt gặp từ hôm nay</span></div>
+    <div class="card stat" style:--h={hueVar('orange')}><b>{days}</b><span>ngày học liên tiếp <Icon name="streak" /></span></div>
+    <div class="card stat" style:--h={hueVar('teal')}><b>{familiar}</b><span>từ đã quen</span></div>
+    <a class="card stat link" href="#/review" style:--h={hueVar(HUE_OF.review)}><b>{due}</b><span>thẻ cần ôn →</span></a>
   </div>
 
-  <h2 class="section-title">Bắt đầu nhanh</h2>
+  <h2 class="section-title"><Icon name="nav-practice" hue={HUE_OF.practice} /> Bắt đầu nhanh</h2>
   <div class="grid">
-    <a class="card action" href="#/quiz/meaning"><span class="big"><Icon name="quiz-meaning" /></span><b>Đoán nghĩa</b><span class="muted">Nhìn chữ, chọn nghĩa đúng</span></a>
-    <a class="card action" href="#/write"><span class="big"><Icon name="write" /></span><b>Viết theo nét</b><span class="muted">Tập viết đúng thứ tự nét</span></a>
-    <a class="card action" href="#/tones"><span class="big"><Icon name="tones" /></span><b>Luyện thanh điệu</b><span class="muted">Chọn thanh, ghi âm và so cao độ</span></a>
-    <a class="card action" href="#/review"><span class="big"><Icon name="nav-review" /></span><b>Ôn tập</b><span class="muted">Thẻ ghi nhớ theo lịch FSRS</span></a>
+    <a class="card action" href="#/quiz/meaning" style:--h={hueVar(HUE_OF.meaning)}><span class="disc"><Icon name="quiz-meaning" /></span><b>Đoán nghĩa</b><span class="muted">Nhìn chữ, chọn nghĩa đúng</span></a>
+    <a class="card action" href="#/write" style:--h={hueVar(HUE_OF.write)}><span class="disc"><Icon name="write" /></span><b>Viết theo nét</b><span class="muted">Tập viết đúng thứ tự nét</span></a>
+    <a class="card action" href="#/tones" style:--h={hueVar(HUE_OF.tones)}><span class="disc"><Icon name="tones" /></span><b>Luyện thanh điệu</b><span class="muted">Chọn thanh, ghi âm và so cao độ</span></a>
+    <a class="card action" href="#/review" style:--h={hueVar(HUE_OF.review)}><span class="disc"><Icon name="nav-review" /></span><b>Ôn tập</b><span class="muted">Thẻ ghi nhớ theo lịch FSRS</span></a>
   </div>
 
-  <h2 class="section-title">Từ vừa gặp</h2>
+  <h2 class="section-title"><Icon name="pet-open" hue={HUE_OF.home} /> Từ vừa gặp</h2>
   {#if recent.length}
     <div class="recent" data-has-pinyin>
       {#each recent as w (w.id)}
@@ -64,13 +65,14 @@
 <style>
   .zh { color: var(--primary); font-size: 24px; margin-left: 6px; }
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-  .stat { display: flex; flex-direction: column; gap: 2px; }
-  .stat b { font-size: 32px; font-weight: 900; color: var(--primary); }
+  .stat { display: flex; flex-direction: column; gap: 2px; border-top: 4px solid var(--h); }
+  .stat b { font-size: 32px; font-weight: 900; color: var(--h); }
   .stat span { color: var(--text-2); font-weight: 700; font-size: 13.5px; }
+  .stat span :global(.icon) { color: var(--h); }
   .link { text-decoration: none; }
   .action { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--text); transition: transform .12s; }
   .action:hover { transform: translateY(-2px); }
-  .big { font-size: 28px; }
+  .disc { font-size: 24px; margin-bottom: 4px; }
   .recent { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
   .mini { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text); padding: 12px; gap: 2px; }
   .mini .hz { font-size: 30px; }

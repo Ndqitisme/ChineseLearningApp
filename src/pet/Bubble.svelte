@@ -1,8 +1,9 @@
 <script lang="ts">
   import Icon from '../lib/ui/Icon.svelte';
   import type { Word } from '../lib/types.ts';
-  import { topicById } from '../lib/data.ts';
+  import { HSK_HUE, topicById, topicHue } from '../lib/data.ts';
   import { hskLevel } from '../lib/settings.svelte.ts';
+  import { HUE_OF, hueVar } from '../lib/theme/themes.ts';
   import Pinyin from '../lib/ui/Pinyin.svelte';
   import type { Anchor } from './geometry.ts';
 
@@ -52,8 +53,8 @@
 >
   <div class="content" class:out={p.swapping}>
   <div class="meta">
-    {#if topic}<span><Icon name={topic.icon} /> {topic.title}</span>{/if}
-    {#if level}<span class="hsk">HSK {level}</span>{/if}
+    {#if topic}<span class="topic" style:--h={hueVar(topicHue(topic))}><Icon name={topic.icon} /> {topic.title}</span>{/if}
+    {#if level}<span class="hsk" style:--h={hueVar(HSK_HUE)}>HSK {level}</span>{/if}
   </div>
 
   <!-- Hover pinyin stays off until the meaning is revealed, so it cannot give the answer away. -->
@@ -76,12 +77,13 @@
 
   <div class="actions">
     <div class="marks">
-      <button onclick={p.onknown} title="Đánh dấu đã biết">✓ Biết rồi</button>
-      <button class:on={p.starred} onclick={p.onstar} title="Lưu vào sổ tay">{p.starred ? '★' : '☆'}</button>
+      <button class="known" onclick={p.onknown} title="Đánh dấu đã biết">✓ Biết rồi</button>
+      <button class="star" class:on={p.starred} onclick={p.onstar} title="Lưu vào sổ tay">{p.starred ? '★' : '☆'}</button>
     </div>
     <button
       class="speak"
       class:off={!p.canSpeak}
+      style:--h={hueVar(HUE_OF.listen)}
       onclick={p.canSpeak ? p.onspeak : p.onsetupvoice}
       title={p.canSpeak ? 'Nghe phát âm' : 'Chưa cài giọng đọc — bấm để cài'}
       aria-label="Nghe phát âm"
@@ -144,8 +146,13 @@
     color: var(--text-2);
     gap: 6px;
   }
+  /* Small text in a hue is mixed toward the text colour so it keeps 4.5:1 on the bubble and on its tint. */
+  .topic { color: color-mix(in srgb, var(--h) 75%, var(--bubble-text)); }
+  .topic :global(.icon) { color: var(--h); }
   .hsk {
-    background: var(--surface-2);
+    background: color-mix(in srgb, var(--h) 16%, var(--bubble-bg));
+    color: color-mix(in srgb, var(--h) 75%, var(--bubble-text));
+    font-weight: 700;
     border-radius: 99px;
     padding: 0 7px;
   }
@@ -170,8 +177,8 @@
     height: 30px;
     border: 0;
     border-radius: 50%;
-    background: var(--surface-2);
-    color: var(--text);
+    background: color-mix(in srgb, var(--h) 16%, var(--bubble-bg));
+    color: var(--h);
     font-size: 15px;
     line-height: 1;
     cursor: pointer;
@@ -214,5 +221,9 @@
     color: var(--text);
   }
   .marks button:hover { background: var(--accent); }
-  .marks button.on { color: #e0a100; }
+  /* --good is lighter than the hues, so its label needs more of the text colour to keep 4.5:1. */
+  .marks .known { --c: var(--good); color: color-mix(in srgb, var(--c) 60%, var(--bubble-text)); }
+  .marks .star.on { --c: var(--hue-amber); color: var(--c); }
+  .marks .known, .marks .star.on { background: color-mix(in srgb, var(--c) 16%, var(--bubble-bg)); }
+  .marks .known:hover, .marks .star.on:hover { background: color-mix(in srgb, var(--c) 20%, var(--bubble-bg)); }
 </style>

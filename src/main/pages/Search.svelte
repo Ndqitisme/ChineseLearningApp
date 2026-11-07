@@ -3,6 +3,7 @@
   import { topics, words } from '../../lib/data.ts';
   import { searchKey } from '../../lib/pinyin.ts';
   import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import WordRow from '../components/WordRow.svelte';
 
   import { untrack } from 'svelte';
@@ -36,14 +37,14 @@
 </script>
 
 <div class="page">
-  <h1><Icon name="nav-search" /> Tra cứu</h1>
+  <h1><Icon name="nav-search" hue={HUE_OF.search} /> Tra cứu</h1>
   <p class="lead">Gõ chữ Hán, pinyin (có hoặc không dấu, ví dụ “mifan”), nghĩa tiếng Việt hoặc âm Hán Việt.</p>
   <!-- svelte-ignore a11y_autofocus -->
   <input class="search" type="search" placeholder="Ví dụ: 米饭 · mifan · cơm · mễ phạn" bind:value={q} autofocus />
   {#if q.trim()}
     <p class="muted">{results.length} kết quả{results.length === 100 ? ' (hiện 100 kết quả đầu)' : ''}</p>
     {#if results.length}
-      <div class="card list">{#each results as w (w.id)}<WordRow word={w} />{/each}</div>
+      <div class="card list">{#each results as w (w.id)}<WordRow word={w} showTopic />{/each}</div>
     {:else}
       <p class="empty">Không tìm thấy. Bộ từ hiện có {index.length} từ (HSK 1–{settings.hskOpen} và {topics.length} chủ đề).</p>
     {/if}

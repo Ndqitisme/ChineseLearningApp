@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { PitchDetector } from 'pitchy';
   import { parseMarked, type Tone } from '../../lib/pinyin.ts';
@@ -84,7 +85,7 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1><Icon name="tones" /> Thanh điệu</h1>
+  <h1><Icon name="tones" hue={HUE_OF.tones} /> Thanh điệu</h1>
   <p class="lead">{deck.title}<br />Chọn thanh cho từng âm tiết, sau đó đọc to để so đường cao độ.</p>
 
   {#if deck.gone}

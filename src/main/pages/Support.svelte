@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   const ACCOUNT = '106875866606';
   let copyState = $state<'' | 'done' | 'failed'>('');
   let numEl = $state<HTMLElement>();
@@ -20,7 +21,7 @@
 </script>
 
 <div class="page">
-  <h1><Icon name="nav-support" /> Ủng hộ tác giả</h1>
+  <h1><Icon name="nav-support" hue={HUE_OF.support} /> Ủng hộ tác giả</h1>
   <p class="lead">Nếu bạn muốn ủng hộ tác giả để có kinh phí làm thêm những dự án phi lợi nhuận có ích cho cộng đồng trong tương lai.</p>
 
   <figure class="card qr">

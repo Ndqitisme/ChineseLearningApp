@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { untrack } from 'svelte';
   import { dataset, words } from '../../lib/data.ts';
@@ -100,7 +101,7 @@
 
 <div class="page">
   <BackButton to="/practice" label="Luyện tập" />
-  <h1><Icon name="build" /> Ghép câu</h1>
+  <h1><Icon name="build" hue={HUE_OF.build} /> Ghép câu</h1>
   <div class="tabs">
     <a class="chip" class:on={mode === 'order'} href="#/build/order{tail}">Sắp xếp thành câu</a>
     <a class="chip" class:on={mode === 'qa'} href="#/build/qa{tail}">Trả lời câu hỏi</a>

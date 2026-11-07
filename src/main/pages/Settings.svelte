@@ -7,7 +7,8 @@
   import { chineseSystemVoices, speak, whenVoicesReady, type VoiceInfo } from '../../lib/speech/index.ts';
   import { packInfo } from '../../lib/speech/native.ts';
   import { theme } from '../../lib/theme/apply.svelte.ts';
-  import { THEMES, type ThemeId } from '../../lib/theme/themes.ts';
+  import { HSK_HUE } from '../../lib/data.ts';
+  import { HUE_OF, THEMES, type ThemeId } from '../../lib/theme/themes.ts';
 
   /** Section to scroll to, e.g. "voice" when opened from the bubble's speaker button. */
   let { section }: { section?: string } = $props();
@@ -72,7 +73,7 @@
 <div class="page">
   <h1><Icon name="nav-settings" /> Cài đặt</h1>
 
-  <h2 class="section-title">Giao diện</h2>
+  <h2 class="section-title"><Icon name="brush" hue="orange" /> Giao diện</h2>
   <div class="card stack">
     <div class="themes">
       {#each THEMES as t (t.id)}
@@ -103,11 +104,11 @@
       <summary>CSS riêng (tuỳ biến mọi thành phần)</summary>
       <textarea rows="6" placeholder={'.bubble { border-radius: 4px; }\n:root { --font-ui: "Comic Sans MS"; }'} value={settings.customCss}
         onchange={(e) => set({ customCss: e.currentTarget.value })}></textarea>
-      <p class="muted small">Áp dụng cho cả app chính và bong bóng của Tiểu Mai.<br />Biến màu: --primary, --accent, --bg, --surface, --text, --bubble-bg, --tone1…--tone5.</p>
+      <p class="muted small">Áp dụng cho cả app chính và bong bóng của Tiểu Mai.<br />Biến màu: --primary, --accent, --bg, --surface, --text, --bubble-bg, --tone1…--tone5.<br />Màu phân loại: --hue-red, --hue-orange, --hue-amber, --hue-green, --hue-teal, --hue-blue, --hue-violet, --hue-pink.</p>
     </details>
   </div>
 
-  <h2 class="section-title">Trợ lý Tiểu Mai</h2>
+  <h2 class="section-title"><Icon name="pet-show-character" hue="teal" /> Trợ lý Tiểu Mai</h2>
   <div class="card stack">
     <label class="row"><input type="checkbox" checked={settings.petEnabled} onchange={(e) => set({ petEnabled: e.currentTarget.checked })} /> Hiện trợ lý trên màn hình</label>
     <label class="row"><input type="checkbox" checked={!settings.petCharacter} onchange={(e) => set({ petCharacter: !e.currentTarget.checked })} /> Ẩn nhân vật Tiểu Mai, chỉ giữ bảng từ vựng (gọn màn hình hơn; kéo bảng bằng dòng chủ đề phía trên)</label>
@@ -134,7 +135,7 @@
     <p class="muted small">Chọn chủ đề và cấp HSK để Tiểu Mai nhắc ở trang <a href="#/topics">Chủ đề</a> (nút <Icon name="bell" />).</p>
   </div>
 
-  <h2 class="section-title" id="hsk">Khoá học HSK</h2>
+  <h2 class="section-title" id="hsk"><Icon name="course" hue={HSK_HUE} /> Khoá học HSK</h2>
   <div class="card stack">
     <div class="row wrap">
       <span class="lbl">Đang mở</span>
@@ -162,7 +163,7 @@
     {#if hskFailed}<p class="small bad">Không mở khoá được. Hãy thử lại.</p>{/if}
   </div>
 
-  <h2 class="section-title" id="voice">Giọng đọc (tuỳ chọn)</h2>
+  <h2 class="section-title" id="voice"><Icon name="speaker" hue={HUE_OF.listen} /> Giọng đọc (tuỳ chọn)</h2>
   <div class="card stack">
     <p class="muted small">App không kèm sẵn giọng đọc.<br />Nguồn có thể dùng: giọng của hệ điều hành, API giọng đọc (online hoặc server chạy trên máy), hoặc gói giọng tải về.</p>
     <div class="row wrap">
@@ -251,7 +252,7 @@
     {/if}
   </div>
 
-  <h2 class="section-title">Khởi động</h2>
+  <h2 class="section-title"><Icon name="play" hue="green" /> Khởi động</h2>
   <div class="card stack">
     <label class="row"><input type="checkbox" checked={autostart} onchange={(e) => toggleAutostart(e.currentTarget.checked)} /> Mở Tiểu Mai cùng máy tính (chỉ hiện trợ lý, không mở cửa sổ này)</label>
     <p class="muted small">Đóng cửa sổ này thì Tiểu Mai vẫn chạy ngầm ở khay hệ thống.<br />Muốn thoát hẳn: chuột phải icon ở khay → Thoát.</p>

@@ -43,6 +43,15 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 input[type='range'] { accent-color: var(--primary); }
 input[type='checkbox'] { accent-color: var(--primary); width: 17px; height: 17px; }
 
+/* Category colour: an element sets --h to a --hue-* token (hueVar in themes.ts); these read it. */
+.disc {
+  display: inline-grid; place-items: center; flex: none; width: 1.75em; height: 1.75em; border-radius: 50%;
+  color: var(--h); background: color-mix(in srgb, var(--h) 15%, var(--surface));
+}
+/* Small text in a hue is mixed toward --text so it stays at 4.5:1 on its tint. */
+.chip.hued { background: color-mix(in srgb, var(--h) 15%, var(--surface)); color: color-mix(in srgb, var(--h) 75%, var(--text)); }
+.chip.hued .icon { color: var(--h); }
+
 .muted { color: var(--text-2); }
 .good { color: var(--good); }
 .bad { color: var(--bad); }

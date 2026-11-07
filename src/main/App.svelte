@@ -10,6 +10,7 @@
   import Rig from '../lib/rig/Rig.svelte';
   import { FRAME } from '../lib/rig/load.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
+  import { HUE_OF, hueVar, type Hue } from '../lib/theme/themes.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
   import TitleBar from './components/TitleBar.svelte';
   import { go, route } from './router.svelte.ts';
@@ -36,16 +37,17 @@
 
   const dueCount = $derived(reviewQueueIds().length);
 
-  const NAV: { path: string; name: string; icon: IconName; label: string }[] = [
-    { path: '/', name: 'home', icon: 'nav-home', label: 'Trang chủ' },
-    { path: '/topics', name: 'topics', icon: 'nav-topics', label: 'Chủ đề' },
-    { path: '/practice', name: 'practice', icon: 'nav-practice', label: 'Luyện tập' },
-    { path: '/review', name: 'review', icon: 'nav-review', label: 'Ôn tập' },
-    { path: '/search', name: 'search', icon: 'nav-search', label: 'Tra cứu' },
-    { path: '/notebook', name: 'notebook', icon: 'nav-notebook', label: 'Sổ tay' },
+  /** Settings has no hue: it is not a place to learn, and nine items would repeat one of the eight hues. */
+  const NAV: { path: string; name: string; icon: IconName; hue?: Hue; label: string }[] = [
+    { path: '/', name: 'home', icon: 'nav-home', hue: HUE_OF.home, label: 'Trang chủ' },
+    { path: '/topics', name: 'topics', icon: 'nav-topics', hue: HUE_OF.topics, label: 'Chủ đề' },
+    { path: '/practice', name: 'practice', icon: 'nav-practice', hue: HUE_OF.practice, label: 'Luyện tập' },
+    { path: '/review', name: 'review', icon: 'nav-review', hue: HUE_OF.review, label: 'Ôn tập' },
+    { path: '/search', name: 'search', icon: 'nav-search', hue: HUE_OF.search, label: 'Tra cứu' },
+    { path: '/notebook', name: 'notebook', icon: 'nav-notebook', hue: HUE_OF.notebook, label: 'Sổ tay' },
     { path: '/settings', name: 'settings', icon: 'nav-settings', label: 'Cài đặt' },
-    { path: '/about', name: 'about', icon: 'nav-about', label: 'Giới thiệu' },
-    { path: '/support', name: 'support', icon: 'nav-support', label: 'Ủng hộ tác giả' },
+    { path: '/about', name: 'about', icon: 'nav-about', hue: HUE_OF.about, label: 'Giới thiệu' },
+    { path: '/support', name: 'support', icon: 'nav-support', hue: HUE_OF.support, label: 'Ủng hộ tác giả' },
   ];
   const ACTIVE: Record<string, string> = { topic: 'topics', hsk: 'topics', word: 'search', quiz: 'practice', write: 'practice', tones: 'practice', build: 'practice' };
   const active = $derived(ACTIVE[route.name] ?? route.name);
@@ -79,7 +81,7 @@
         </button>
         {#each NAV as item (item.path)}
           <a href="#{item.path}" class:on={active === item.name}>
-            <span class="ic"><Icon name={item.icon} /></span>{item.label}
+            <span class="ic" style:--h={item.hue ? hueVar(item.hue) : null}><Icon name={item.icon} /></span>{item.label}
             {#if item.name === 'review' && dueCount}<span class="badge">{dueCount}</span>{/if}
           </a>
         {/each}
@@ -152,7 +154,8 @@
   }
   .side a:hover { background: var(--surface-2); }
   .side a.on { background: var(--primary); color: var(--on-primary); }
-  .ic { width: 22px; text-align: center; }
+  .ic { width: 22px; text-align: center; color: var(--h, var(--text-2)); }
+  .side a.on .ic { color: inherit; }
   .badge {
     margin-left: auto;
     background: var(--bad);

@@ -1,10 +1,14 @@
 <script lang="ts">
+  import Icon from '../../lib/ui/Icon.svelte';
+  import { topicById, topicHue } from '../../lib/data.ts';
   import { progress } from '../../lib/progress.svelte.ts';
   import { TARGET_EXPOSURES } from '../../lib/scheduler.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
 
-  let { word }: { word: Word } = $props();
+  /** showTopic: lists that mix topics (search results) mark each word's topic in its group colour. */
+  let { word, showTopic = false }: { word: Word; showTopic?: boolean } = $props();
+  const topic = $derived(showTopic && word.topics[0] ? topicById.get(word.topics[0]) : undefined);
   const e = $derived(progress.exposure[word.id]);
   const status = $derived(e?.k ? 'known' : (e?.n ?? 0) >= TARGET_EXPOSURES ? 'familiar' : (e?.n ?? 0) > 0 ? 'learning' : 'new');
   const LABEL = { known: 'Đã biết', familiar: 'Đã quen', learning: 'Đang học', new: 'Mới' };
@@ -17,6 +21,7 @@
     <span class="vi">{word.vi}</span>
   </span>
   <span class="hv">{word.hanviet}</span>
+  {#if topic}<span class="tp" title={topic.title}><Icon name={topic.icon} hue={topicHue(topic)} label={topic.title} /></span>{/if}
   {#if e?.s}<span class="star">★</span>{/if}
   <span class="st {status}" title={LABEL[status]}></span>
 </a>
@@ -37,7 +42,8 @@
   .py { font-size: 15px; }
   .vi { font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hv { color: var(--text-2); font-size: 13px; }
-  .star { color: #e0a100; }
+  .tp { font-size: 17px; display: inline-grid; }
+  .star { color: var(--hue-amber); }
   .st { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex: none; }
   .st.learning { background: var(--tone2); }
   .st.familiar { background: var(--tone4); }

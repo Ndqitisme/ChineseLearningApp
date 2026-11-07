@@ -3,6 +3,7 @@
   import { openUrl } from '@tauri-apps/plugin-opener';
   import { dataset, words } from '../../lib/data.ts';
   import { isOpen, settings } from '../../lib/settings.svelte.ts';
+  import { HUE_OF } from '../../lib/theme/themes.ts';
 
   const SOURCES = [
     { name: 'Nhân vật Tiểu Mai', what: 'Bản vẽ nhân vật do AI tạo riêng cho app', license: 'CC0 1.0', url: 'https://creativecommons.org/publicdomain/zero/1.0/' },
@@ -23,7 +24,7 @@
 
 <div class="page">
   <img class="logo" src="/logo/logo.webp" alt="Tiểu Mai — học tiếng Trung" width="180" height="180" />
-  <h1><Icon name="nav-about" /> Giới thiệu</h1>
+  <h1><Icon name="nav-about" hue={HUE_OF.about} /> Giới thiệu</h1>
   <p class="lead">Tiểu Mai (小梅) là ứng dụng mã nguồn mở giúp người Việt học từ vựng tiếng Trung hằng ngày qua một trợ lý trên màn hình.</p>
 
   <div class="card stack">
