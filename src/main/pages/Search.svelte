@@ -2,17 +2,25 @@
   import Icon from '../../lib/ui/Icon.svelte';
   import { topics, words } from '../../lib/data.ts';
   import { searchKey } from '../../lib/pinyin.ts';
-  import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
+  import { hskLevel, isOpenAnyEdition, settings } from '../../lib/settings.svelte.ts';
   import { HUE_OF } from '../../lib/theme/themes.ts';
   import WordRow from '../components/WordRow.svelte';
 
   import { untrack } from 'svelte';
   let { query = '' }: { query?: string } = $props();
   let q = $state(untrack(() => query));
+  // The query lives in the URL so Back from a word page brings the results back. replaceState fires no
+  // hashchange, so typing neither re-mounts the page nor adds a history entry per key.
+  $effect(() => {
+    const term = q.trim();
+    const hash = term ? `#/search/${encodeURIComponent(term)}` : '#/search';
+    if (location.hash !== hash) history.replaceState(history.state, '', hash);
+  });
 
   const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
-  // Precomputed once: folding thousands of entries on every keystroke is wasted work.
-  const index = words.filter(isOpen).map((w) => ({ w, py: searchKey(w.pinyin), vi: fold(w.vi + ' ' + (w.viFull ?? '')), hv: fold(w.hanviet ?? '') }));
+  // Precomputed once: folding thousands of entries on every keystroke is wasted work. Both editions' words are
+  // searchable, so a word stays findable after an edition switch.
+  const index = words.filter(isOpenAnyEdition).map((w) => ({ w, py: searchKey(w.pinyin), vi: fold(w.vi + ' ' + (w.viFull ?? '')), hv: fold(w.hanviet ?? '') }));
 
   const results = $derived.by(() => {
     const term = q.trim();

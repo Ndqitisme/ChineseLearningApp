@@ -5,14 +5,28 @@
 import { settings, type VoiceSlot } from '../settings.svelte.ts';
 import { httpClip, packClip } from './native.ts';
 
-export interface VoiceInfo { id: string; label: string; local: boolean }
+export interface VoiceInfo { id: string; name: string; label: string; local: boolean }
+
+const CHINESE = /^(zh|cmn)([-_](CN|Hans))?/i;
 
 export function chineseSystemVoices(): VoiceInfo[] {
   if (typeof speechSynthesis === 'undefined') return [];
   return speechSynthesis
     .getVoices()
-    .filter((v) => /^(zh|cmn)([-_](CN|Hans))?/i.test(v.lang))
-    .map((v) => ({ id: v.voiceURI, label: `${v.name} (${v.lang})`, local: v.localService }));
+    .filter((v) => CHINESE.test(v.lang))
+    .map((v) => ({ id: v.voiceURI, name: v.name, label: `${v.name} (${v.lang})`, local: v.localService }));
+}
+
+// Voice names carry no gender field. These are the names of the common zh voices: Windows (Huihui, Yaoyao,
+// Kangkang), Microsoft neural (Xiao… female, Yun… male) and macOS (Tingting, Meijia, Sinji, Lili, Li-mu).
+const GENDER: Record<VoiceSlot, RegExp> = {
+  male: /kangkang|\byun|li-?mu|\bmale\b/i,
+  female: /huihui|yaoyao|\bxiao|tingting|meijia|sinji|lili|\bfemale\b/i,
+};
+
+/** "Tự chọn": the first voice whose name says it is the slot's gender; undefined when none does. */
+export function autoVoice<V extends { name: string }>(voices: V[], slot: VoiceSlot): V | undefined {
+  return voices.find((v) => GENDER[slot].test(v.name));
 }
 
 /** Voices load asynchronously in some engines; resolves once the list is populated (or after 1.5 s). */
@@ -74,7 +88,9 @@ export async function speak(text: string, slot: VoiceSlot = settings.speech.slot
     case 'system': {
       await whenVoicesReady();
       const voices = speechSynthesis.getVoices();
-      const voice = voices.find((v) => v.voiceURI === s.voices[slot]) ?? voices.find((v) => /^zh/i.test(v.lang));
+      const zh = voices.filter((v) => CHINESE.test(v.lang));
+      // With no voice of the slot's gender, the other one still reads; Settings says which voice that is.
+      const voice = voices.find((v) => v.voiceURI === s.voices[slot]) ?? autoVoice(zh, slot) ?? zh[0];
       if (!voice) throw new Error('Máy chưa có giọng tiếng Trung. Hãy cài giọng zh-CN trong cài đặt hệ thống.');
       speechSynthesis.cancel();
       const u = (utterance = new SpeechSynthesisUtterance(text));

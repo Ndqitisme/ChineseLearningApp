@@ -2,6 +2,9 @@
 // changes in settings, and a retry once the file is reachable unlocks the level.
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
+// The expected words below come from the 2021 lists.
+export const seed = { 'settings.json': { settings: { hskEdition: 2021 } } };
+
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
   const pet = await t.open('pet');

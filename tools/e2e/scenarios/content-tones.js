@@ -1,6 +1,6 @@
 // Tones and listening on HSK 5 words with no voice installed, then with a voice provider whose calls
 // fail (the mock rejects every TTS command): nothing crashes, and the learner is told when a sound cannot play.
-export const seed = { 'settings.json': { settings: { hskOpen: 5, hsk: [1], settingsVersion: 3, onboarded: true } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, hskOpen: 5, hsk: [1], settingsVersion: 3, onboarded: true } } };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
@@ -22,14 +22,16 @@ export default async function (t) {
     t.assert((await main.$$('.syl')).length === w.syllables.length, 'one tone row per syllable');
   });
 
-  await t.step('right tones are accepted and saved', async () => {
+  // The drill keeps its own score only: picking tones says nothing about recalling the word, so no review card.
+  await t.step('right tones are accepted and counted in the drill score, with no review card', async () => {
     const w = await current();
     const rows = await main.$$('.syl');
     for (const [i, s] of w.syllables.entries()) await (await rows[i].$$('.tone'))[s.tone - 1].click();
     await t.click(main, '.drill .btn.primary', 'Kiểm tra');
     await t.waitFor(main, '.drill .answer', 'Đúng');
+    await t.waitFor(main, '.drill .muted', 'đúng 1');
     const card = (await t.store(main, 'progress.json')).srs?.[w.id];
-    t.assert(card?.reps === 1, `review card after a right answer: ${JSON.stringify(card)}`);
+    t.assert(card === undefined, `the drill wrote a review card: ${JSON.stringify(card)}`);
   });
 
   await t.step('wrong tones show the answer', async () => {
@@ -37,7 +39,8 @@ export default async function (t) {
     await main.waitForFunction(() => !document.querySelector('.drill .answer'));
     const w = await current();
     const rows = await main.$$('.syl');
-    for (const [i, s] of w.syllables.entries()) await (await rows[i].$$('.tone'))[s.tone % 5].click();
+    // Neutral tone for a toned syllable (tone 1 for a neutral one): never a sandhi reading the drill accepts.
+    for (const [i, s] of w.syllables.entries()) await (await rows[i].$$('.tone'))[s.tone === 5 ? 0 : 4].click();
     await t.click(main, '.drill .btn.primary', 'Kiểm tra');
     await t.waitFor(main, '.drill .answer', 'Chưa đúng');
     const py = (await t.text(main, '.drill .answer .pinyin'))?.replace(/\s/g, '');
@@ -52,7 +55,7 @@ export default async function (t) {
   await t.step('Practice sends "Nghe chọn chữ" to Settings when there is no voice', async () => {
     await go('#/practice');
     const href = await main.$$eval('.mode', (ms) => ms.find((m) => m.innerText.includes('Nghe chọn chữ'))?.getAttribute('href'));
-    t.assert(href === '#/settings', `listen card links to ${href}`);
+    t.assert(href === '#/settings/voice', `listen card links to ${href}`);
   });
 
   await t.step('listen quiz opened directly with no voice says why it is silent', async () => {

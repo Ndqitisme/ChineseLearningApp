@@ -4,13 +4,11 @@
   import BackButton from '../components/BackButton.svelte';
   import { PitchDetector } from 'pitchy';
   import { parseMarked, type Tone } from '../../lib/pinyin.ts';
-  import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
-  import { review, Rating } from '../../lib/srs.ts';
-  import { scoreTones, template, TONE_NAME, type ToneResult } from '../../lib/tones.ts';
+  import { acceptedTones, scoreTones, template, TONE_NAME, type ToneResult } from '../../lib/tones.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
-  import { deckFrom, shuffle } from '../deck.ts';
+  import { deckFrom, deckOrigin, shuffle } from '../deck.ts';
 
   import { untrack } from 'svelte';
   let { params }: { params: string[] } = $props();
@@ -23,40 +21,55 @@
   let checked = $state(false);
   let recording = $state(false);
   let result = $state<ToneResult | null>(null);
-  let micError = $state('');
+  let micError = $state<string[]>([]);
   let score = $state(0);
 
   const word = $derived(queue[index]);
   const tones = $derived(word ? word.syllables.map((s) => s.tone) : []);
   const bases = $derived(word ? word.syllables.map((s) => parseMarked(s.py).base) : []);
+  /** Tone sandhi (不对 búduì, 一起 yìqǐ, 你好 níhǎo): the spoken tone counts as right too. */
+  const accepted = $derived(word ? acceptedTones(word.hanzi, word.syllables) : []);
+  const allRight = $derived(picks.every((p, i) => p !== null && accepted[i]?.includes(p)));
   $effect(() => { picks = tones.map(() => null); });
 
-  async function check() {
+  // The drill keeps only its own score: picking tones says nothing about recalling the whole word, so it writes
+  // no review schedule.
+  function check() {
     if (!word) return;
     checked = true;
-    const ok = picks.every((p, i) => p === tones[i]);
-    if (ok) score++;
-    progress.srs[word.id] = review(progress.srs[word.id], ok ? Rating.Good : Rating.Again);
-    progress.reviewDays[today()] = (progress.reviewDays[today()] ?? 0) + 1;
-    await Promise.all([saveProgress('srs'), saveProgress('reviewDays')]);
+    if (allRight) score++;
   }
   function next() {
+    if (recording) return;
     index++;
     checked = false;
     result = null;
   }
 
+  /** getUserMedia failures, by the cause the learner can act on: the state, then what to do. */
+  function micMessage(e: unknown): string[] {
+    const name = e instanceof DOMException ? e.name : '';
+    if (name === 'NotFoundError' || name === 'OverconstrainedError') return ['Không tìm thấy micro.', 'Cắm micro rồi thử lại.'];
+    if (name === 'NotReadableError' || name === 'AbortError') return ['Micro đang được ứng dụng khác dùng.', 'Tắt ứng dụng đó rồi thử lại.'];
+    return ['Tiểu Mai chưa được phép dùng micro.', 'Cho phép trong cài đặt quyền riêng tư của hệ điều hành.'];
+  }
+
   async function record(seconds = 2.2) {
-    micError = '';
+    // Set before any await: a double click must not open two microphone streams.
+    if (recording || !word) return;
+    recording = true;
+    micError = [];
     result = null;
+    // Scored against the word the recording was made for, whatever the page shows by the time it ends.
+    const forIndex = index, forTones = tones;
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-    } catch {
-      micError = 'Không mở được micro. Hãy cho phép Tiểu Mai dùng micro trong cài đặt quyền riêng tư của hệ điều hành.';
+    } catch (e) {
+      micError = micMessage(e);
+      recording = false;
       return;
     }
-    recording = true;
     const ctx = new AudioContext();
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 2048;
@@ -74,7 +87,7 @@
     stream.getTracks().forEach((t) => t.stop());
     await ctx.close();
     recording = false;
-    result = scoreTones(samples, tones);
+    if (index === forIndex) result = scoreTones(samples, forTones);
   }
 
   function path(values: number[], w: number, h: number) {
@@ -84,7 +97,7 @@
 </script>
 
 <div class="page">
-  <BackButton to="/practice" label="Luyện tập" />
+  <BackButton to={deckOrigin(params)} useHistory />
   <h1><Icon name="tones" hue={HUE_OF.tones} /> Thanh điệu</h1>
   <p class="lead">{deck.title}<br />Chọn thanh cho từng âm tiết, sau đó đọc to để so đường cao độ.</p>
 
@@ -106,8 +119,8 @@
                 <button
                   class="tone t{t}"
                   class:on={picks[i] === t}
-                  class:right={checked && tones[i] === t}
-                  class:wrong={checked && picks[i] === t && tones[i] !== t}
+                  class:right={checked && (tones[i] === t || (picks[i] === t && accepted[i].includes(t)))}
+                  class:wrong={checked && picks[i] === t && !accepted[i].includes(t)}
                   disabled={checked}
                   title={TONE_NAME[t as Tone]}
                   onclick={() => (picks[i] = t as Tone)}
@@ -122,7 +135,7 @@
         <button class="btn primary" disabled={picks.some((p) => p === null)} onclick={check}>Kiểm tra</button>
       {:else}
         <div class="answer" data-has-pinyin>
-          {picks.every((p, i) => p === tones[i]) ? 'Đúng' : 'Chưa đúng. Đáp án:'}
+          {allRight ? 'Đúng' : 'Chưa đúng. Đáp án:'}
           <Pinyin text={word.pinyin} syllables={word.syllables} />
         </div>
       {/if}
@@ -134,9 +147,9 @@
         <button class="btn primary" disabled={recording} onclick={() => record()}><Icon name="mic" /> {recording ? 'Đang nghe…' : 'Ghi âm 2 giây'}</button>
         {#if result}<b class="big-score">{result.score}/100</b>{/if}
         <span class="spacer"></span>
-        {#if checked}<button class="btn" onclick={next}>Từ tiếp →</button>{/if}
+        {#if checked}<button class="btn" disabled={recording} onclick={next}>Từ tiếp →</button>{/if}
       </div>
-      {#if micError}<p class="bad">{micError}</p>{/if}
+      {#if micError.length}<p class="bad">{micError[0]}<br />{micError[1]}</p>{/if}
       <svg viewBox="0 0 600 160" class="plot" aria-label="Đường cao độ">
         {#each tones as _, i (i)}
           <line x1={(i / tones.length) * 600} x2={(i / tones.length) * 600} y1="0" y2="160" class="sep" />

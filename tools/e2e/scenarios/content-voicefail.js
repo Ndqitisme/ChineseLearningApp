@@ -1,6 +1,6 @@
 // "Nghe chọn chữ" on an HSK 5 lesson with a voice provider whose calls fail (the mock rejects every
 // TTS command): the quiz still works, and the learner is told the sound could not play.
-export const seed = { 'settings.json': { settings: { hskOpen: 5, hsk: [1], settingsVersion: 3, onboarded: true,
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, hskOpen: 5, hsk: [1], settingsVersion: 3, onboarded: true,
   speech: { provider: 'http', slot: 'female', voices: { female: '', male: '' }, rate: 0.9, autoplayInPet: false,
     http: { preset: 'openai', url: 'http://localhost:8880/v1/audio/speech', apiKey: '', model: 'kokoro', region: '' }, packDir: '' } } } };
 

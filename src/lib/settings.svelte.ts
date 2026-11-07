@@ -1,12 +1,14 @@
-// User settings, shared by both windows through tauri-plugin-store ("settings.json").
+// User settings, shared by both windows through "settings.json" (see durable-store.ts).
 // Store change events reach both windows, so a change in one shows in the other.
-import { load, type Store } from '@tauri-apps/plugin-store';
+import { load, type Store } from './durable-store.ts';
 import { dataset, levelIds, levelOf, loadLevels, wordByHanzi, wordById } from './data.ts';
 import type { ThemeId } from './theme/themes.ts';
 import type { HskEdition, HskLevel, Word } from './types.ts';
 
 export type Mode = 'system' | 'light' | 'dark';
 export type VoiceSlot = 'female' | 'male';
+/** Colour tokens the user changed, kept apart for the light and the dark look. */
+export type TokenOverrides = Record<'light' | 'dark', Record<string, string>>;
 
 export interface SpeechSettings {
   provider: 'none' | 'system' | 'http' | 'pack';
@@ -22,7 +24,7 @@ export interface SpeechSettings {
 export interface Settings {
   theme: ThemeId;
   mode: Mode;
-  tokenOverrides: Record<string, string>;
+  tokenOverrides: TokenOverrides;
   customCss: string;
   petEnabled: boolean;
   /** false = keep only the word bubble on screen, without the character. */
@@ -56,7 +58,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'ocean',
   mode: 'system',
-  tokenOverrides: {},
+  tokenOverrides: { light: {}, dark: {} },
   customCss: '',
   petEnabled: true,
   petCharacter: true,
@@ -73,7 +75,7 @@ export const DEFAULT_SETTINGS: Settings = {
   topics: ['greetings', 'numbers-money', 'dishes', 'drinks', 'restaurant', 'office'],
   hsk: [1],
   hskOpen: 3,
-  hskEdition: 2021,
+  hskEdition: 2025,
   speech: {
     provider: 'none', slot: 'female', voices: { female: '', male: '' }, rate: 0.9, autoplayInPet: false,
     http: { preset: 'openai', url: 'http://localhost:8880/v1/audio/speech', apiKey: '', model: 'kokoro', region: '' },
@@ -81,7 +83,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   onboarded: false,
   writeDemo: true,
-  settingsVersion: 3,
+  settingsVersion: 4,
 };
 
 export const settings: Settings = $state(structuredClone(DEFAULT_SETTINGS));
@@ -93,7 +95,8 @@ let stored: Pick<Settings, 'hskOpen' | 'hsk'> = { hskOpen: DEFAULT_SETTINGS.hskO
 
 export function normalize(s: Settings): Settings {
   const hskOpen = Math.min(6, Math.max(3, Math.trunc(Number(s.hskOpen)) || 3));
-  return { ...s, hskOpen, hskEdition: s.hskEdition === 2025 ? 2025 : 2021, hsk: s.hsk.filter((l) => l >= 1 && l <= hskOpen) };
+  const hskEdition = s.hskEdition === 2021 || s.hskEdition === 2025 ? s.hskEdition : DEFAULT_SETTINGS.hskEdition;
+  return { ...s, hskOpen, hskEdition, hsk: s.hsk.filter((l) => l >= 1 && l <= hskOpen) };
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -109,8 +112,17 @@ function sameTypes<T extends object>(defaults: T, saved: unknown): T {
   return out as T;
 }
 
+const strings = (v: unknown): Record<string, string> =>
+  isRecord(v) ? Object.fromEntries(Object.entries(v).filter(([, x]) => typeof x === 'string')) as Record<string, string> : {};
+
+/** Settings before version 4 held one map of colour overrides for both looks; it becomes the start of each. */
+function tokenOverrides(v: unknown): TokenOverrides {
+  if (isRecord(v) && (isRecord(v.light) || isRecord(v.dark))) return { light: strings(v.light), dark: strings(v.dark) };
+  return { light: strings(v), dark: strings(v) };
+}
+
 export function fromSaved(saved: unknown): Settings {
-  const s = sameTypes(DEFAULT_SETTINGS, saved);
+  const s = { ...sameTypes(DEFAULT_SETTINGS, saved), tokenOverrides: tokenOverrides(isRecord(saved) ? saved.tokenOverrides : undefined) };
   const speech = sameTypes(DEFAULT_SETTINGS.speech, s.speech);
   // normalize() accepts a hand-edited hskOpen such as "5", so it gets the raw value.
   const hskOpen = isRecord(saved) && saved.hskOpen !== undefined ? saved.hskOpen as number : s.hskOpen;
@@ -130,13 +142,14 @@ function merge(saved: unknown) {
 /** What an install saved by an older version must write once, or null when it is current. */
 export function migration(saved: Partial<Settings> | undefined): Partial<Settings> | null {
   const version = saved?.settingsVersion ?? 1;
-  if (!saved || version >= 3) return null;
+  if (!saved || version >= 4) return null;
   // Installs still on the old sakura default move to ocean once. Older installs get hskOpen's default (HSK 1–3) from merge().
-  return { settingsVersion: 3, ...(version < 2 && saved.theme === 'sakura' ? { theme: 'ocean' as const } : {}) };
+  // Version 4 splits the colour overrides by look; fromSaved() already did, so stamping the version saves the new shape.
+  return { settingsVersion: 4, ...(version < 2 && saved.theme === 'sakura' ? { theme: 'ocean' as const } : {}) };
 }
 
 export async function initSettings() {
-  store = await load('settings.json', { autoSave: 300, defaults: {} });
+  store = await load('settings.json');
   const saved = await store.get<Partial<Settings>>('settings');
   merge(saved);
   const patch = migration(saved);
@@ -201,6 +214,16 @@ export function openWord(id: string): Word | undefined {
   void settings.hskEdition;
   const w = wordById.get(id);
   return w && isOpen(w) ? w : undefined;
+}
+/** Topic words always; HSK words while either edition lists them at an open level. Review, the notebook, search
+ * and word pages use this, so switching editions hides none of the learner's words. */
+export const isOpenAnyEdition = (w: Word) =>
+  w.topics.length > 0 || [w.hsk, w.hsk2025].some((level) => level !== undefined && level <= settings.hskOpen);
+/** The word for `id` if it is loaded and open in either edition. */
+export function openWordAnyEdition(id: string): Word | undefined {
+  void settings.hskOpen;
+  const w = wordById.get(id);
+  return w && isOpenAnyEdition(w) ? w : undefined;
 }
 /** The open word written `hanzi`: hover and sentence tiles must not read a locked level's words. */
 export function openByHanzi(hanzi: string): Word | undefined {

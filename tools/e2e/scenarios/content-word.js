@@ -3,7 +3,7 @@
 // 1–3, a topic word's HSK 5 chip explains the lock.
 import { readFileSync } from 'node:fs';
 
-export const seed = { 'settings.json': { settings: { hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true } } };
 const verdicts = new Map(readFileSync('data/hanviet/word-verdicts.tsv', 'utf8').split(/\r?\n/).slice(1).filter(Boolean)
   .map((l) => l.split('\t')).map(([w, v]) => [w, v]));
 

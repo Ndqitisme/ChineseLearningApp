@@ -6,7 +6,8 @@ const core = JSON.parse(readFileSync('src/generated/dataset.json', 'utf8'));
 const p6 = JSON.parse(readFileSync('src/generated/hsk6.json', 'utf8'));
 const p5 = JSON.parse(readFileSync('src/generated/hsk5.json', 'utf8'));
 const w6 = p6.words.find((w) => !core.words.some((c) => c.hanzi.includes(w.hanzi)));
-const topic5 = core.words.find((w) => w.hsk === 5 && w.topics.length);
+// HSK 5 in the default (2025) edition, which the word page's level chip links to.
+const topic5 = core.words.find((w) => w.hsk2025 === 5 && w.topics.length);
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
 /** @param {import('../run.ts').T} t */
@@ -55,8 +56,8 @@ export default async function (t) {
 
   await t.step('9b a topic word tagged HSK 5 links to the locked course', async () => {
     await go(main, `#/word/${encodeURIComponent(topic5.id)}`);
-    await t.waitFor(main, '.chip', 'HSK 5');
-    await t.click(main, '.chip', 'HSK 5');
+    await t.waitFor(main, 'a.chip', 'HSK 5');
+    await t.click(main, 'a.chip', 'HSK 5');
     await t.waitFor(main, '.empty', 'HSK 5 đang khoá');
     console.log(`      ${topic5.hanzi} (${topic5.topics}) shows chip HSK 5 → locked page`);
   });

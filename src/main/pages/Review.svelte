@@ -2,31 +2,44 @@
   import Icon from '../../lib/ui/Icon.svelte';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
   import { TARGET_EXPOSURES } from '../../lib/scheduler.ts';
-  import { openWord } from '../../lib/settings.svelte.ts';
+  import { openWordAnyEdition } from '../../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
   import { previewIntervals, Rating, review, type Grade } from '../../lib/srs.ts';
   import { HUE_OF } from '../../lib/theme/themes.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
-  import { reviewQueueIds } from '../review-queue.ts';
+  import { countNewCard, LEARN_AHEAD_MIN, NEW_PER_DAY, reviewQueueIds } from '../review-queue.svelte.ts';
 
-  let queue = $state<Word[]>(reviewQueueIds().map((id) => openWord(id)).filter((w): w is Word => !!w));
+  let queue = $state<Word[]>(reviewQueueIds().map((id) => openWordAnyEdition(id)).filter((w): w is Word => !!w));
   let flipped = $state(false);
+  /** A grade is being saved: a second key press or click must not grade the same card again. */
+  let grading = false;
+  let flashEl = $state<HTMLElement>();
+  // The card takes focus so Space flips it, also right after arriving from a nav link.
+  $effect(() => { if (word && !flipped) flashEl?.focus({ preventScroll: true }); });
   const word = $derived(queue[0]);
   const intervals = $derived(word ? previewIntervals(progress.srs[word.id]) : null);
 
   async function grade(g: Grade) {
-    if (!word) return;
-    progress.srs[word.id] = review(progress.srs[word.id], g);
+    if (!word || grading) return;
+    grading = true;
+    const graded = word;
+    const isNew = !progress.srs[graded.id];
+    const card = review(progress.srs[graded.id], g);
+    progress.srs[graded.id] = card;
     progress.reviewDays[today()] = (progress.reviewDays[today()] ?? 0) + 1;
-    await Promise.all([saveProgress('srs'), saveProgress('reviewDays')]);
-    // "Again" puts the card back at the end of this session.
-    queue = g === Rating.Again ? [...queue.slice(1), word] : queue.slice(1);
+    if (isNew) countNewCard(graded.id);
+    // A card due again soon ("Again", or a new card's short learning step) comes back at the end of this session.
+    const soon = Date.parse(card.due) - Date.now() <= LEARN_AHEAD_MIN * 60_000;
+    queue = soon ? [...queue.slice(1), graded] : queue.slice(1);
     flipped = false;
+    try { await Promise.all([saveProgress('srs'), saveProgress('reviewDays')]); } finally { grading = false; }
   }
   function onKey(e: KeyboardEvent) {
     if (!word) return;
-    if (!flipped && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); flipped = true; }
+    // Space and Enter on a focused link, button or checkbox belong to that control.
+    const onControl = e.target instanceof Element && !!e.target.closest('a, button, input, select, textarea');
+    if (!flipped && !onControl && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); flipped = true; }
     else if (flipped && ['1', '2', '3', '4'].includes(e.key)) grade(Number(e.key) as Grade);
   }
   const BUTTONS: { g: Grade; label: string; help: string; cls: string }[] = [
@@ -47,6 +60,7 @@
          pinyin could never work on the example sentence. -->
     <div
       class="card flash"
+      bind:this={flashEl}
       role="button"
       tabindex="0"
       onclick={() => (flipped = true)}
@@ -82,7 +96,11 @@
     <div class="card empty-card">
       <div class="big done"><Icon name="done" /></div>
       <h2>Không còn thẻ cần ôn</h2>
-      <p class="muted">Thẻ mới được thêm khi bạn luyện đoán nghĩa, hoặc khi một từ đã hiện đủ {TARGET_EXPOSURES} lần.</p>
+      <p class="muted">
+        Thẻ mới đến từ các bài đoán nghĩa, chọn mặt chữ và nghe chọn chữ.<br />
+        Nút “Thêm vào ôn tập” ở trang từ cũng thêm thẻ.<br />
+        Từ Tiểu Mai đã nhắc đủ {TARGET_EXPOSURES} lần thành thẻ mới, mỗi ngày tối đa {NEW_PER_DAY} từ.
+      </p>
       <a class="btn primary" href="#/quiz/meaning"><Icon name="quiz-meaning" /> Luyện đoán nghĩa</a>
     </div>
   {/if}

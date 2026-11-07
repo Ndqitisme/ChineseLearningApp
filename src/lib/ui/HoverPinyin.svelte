@@ -7,6 +7,9 @@
   import { isHan, toSyllables, type Syllable } from '../pinyin.ts';
   import Pinyin from './Pinyin.svelte';
 
+  /** The assistant window loads no pinyin-pro (PLAN §6): characters outside the dictionary get no tooltip there. */
+  let { dictionaryOnly = false }: { dictionaryOnly?: boolean } = $props();
+
   /** x is the hovered character's centre; top/bottom its edges (viewport px). */
   interface Tip { x: number; top: number; bottom: number; text: string; pinyin: string; syllables: Syllable[]; hanviet?: string; vi?: string }
   let tip = $state<Tip | null>(null);
@@ -38,15 +41,19 @@
     return r && r.startContainer.nodeType === Node.TEXT_NODE ? { node: r.startContainer as Text, offset: r.startOffset } : null;
   }
 
-  /** The caret API returns the nearest insertion point; find the character actually under the pointer. */
+  /** The caret API returns the nearest insertion point; find the character actually under the pointer.
+   * Vertically the whole line box counts, not just the glyph: with line-height above 1 the glyph box leaves
+   * a band above and below it where the pointer is still on that line. */
   function charUnder(node: Text, offset: number, x: number, y: number): number | null {
     const range = document.createRange();
+    const lineHeight = parseFloat(getComputedStyle(node.parentElement!).lineHeight);
     for (const i of [offset, offset - 1]) {
       if (i < 0 || i >= node.data.length) continue;
       range.setStart(node, i);
       range.setEnd(node, i + 1);
       const r = range.getBoundingClientRect();
-      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return i;
+      const band = Number.isFinite(lineHeight) ? Math.max(0, (lineHeight - r.height) / 2) : 0;
+      if (x >= r.left && x <= r.right && y >= r.top - band && y <= r.bottom + band) return i;
     }
     return null;
   }
@@ -59,8 +66,8 @@
         if (w) return { x: 0, top: 0, bottom: 0, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables, hanviet: w.hanviet, vi: w.vi };
       }
     }
-    // pinyin-pro (~300 KB) is only for characters outside the dictionary: load it on first need,
-    // so the assistant window doesn't pay for it until someone hovers such a character.
+    if (dictionaryOnly) return null;
+    // pinyin-pro (~300 KB) is only for characters outside the dictionary: load it on first need.
     if (!pinyinPro) {
       if (!pinyinProLoading) { pinyinProLoading = true; import('pinyin-pro').then((m) => (pinyinPro = m.pinyin)); }
       return null;
@@ -78,11 +85,17 @@
   }
 
   let frame = 0;
+  /** Latest pointer position: several moves can arrive within one frame, and the last one is where it is now. */
+  let px = 0, py = 0;
+  /** The text under the tip as it was shown: a tip whose text has changed (next question) is hidden. */
+  let tipNode: Text | null = null, tipData = '';
   function onMove(e: PointerEvent) {
+    px = e.clientX;
+    py = e.clientY;
     if (frame) return;
-    const { clientX: x, clientY: y } = e;
     frame = requestAnimationFrame(() => {
       frame = 0;
+      const x = px, y = py;
       const caret = caretAt(x, y);
       const el = caret?.node.parentElement;
       if (!caret || !el || el.closest('[data-has-pinyin], [data-hover-pinyin="off"]')) return (tip = null);
@@ -95,16 +108,30 @@
       range.setEnd(caret.node, i + 1);
       const r = range.getBoundingClientRect();
       tip = { ...found, x: r.left + r.width / 2, top: r.top, bottom: r.bottom };
+      tipNode = caret.node;
+      tipData = caret.node.data;
     });
   }
+
+  // Only while a tip shows: content changing under it (Enter to the next question) hides it.
+  $effect(() => {
+    if (!tip) return;
+    const mo = new MutationObserver(() => {
+      if (!tipNode?.isConnected || tipNode.data !== tipData) tip = null;
+    });
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+    return () => mo.disconnect();
+  });
 
   onMount(() => {
     document.addEventListener('pointermove', onMove, { passive: true });
     const hide = () => (tip = null);
     document.addEventListener('scroll', hide, true);
+    document.addEventListener('keydown', hide, true);
     return () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('scroll', hide, true);
+      document.removeEventListener('keydown', hide, true);
     };
   });
 </script>

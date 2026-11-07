@@ -1,6 +1,13 @@
 // The assistant follows an edition switch made in the main window, without reopening: its word pool and the
-// "HSK n" label move with it. Only HSK 2 is on, no topics.
-export const seed = { 'settings.json': { settings: { settingsVersion: 3, onboarded: true, topics: [], hsk: [2], guessFirst: false } } };
+// "HSK n" label move with it. Only HSK 2 is on, no topics. Every HSK 2 word is already familiar, so each turn
+// has a word to show: new words would otherwise wait out their minute gaps and leave the old word up.
+import { readFileSync } from 'node:fs';
+const core = JSON.parse(readFileSync('src/generated/dataset.json', 'utf8'));
+const familiar = Object.fromEntries([...core.hsk[2], ...core.hsk2025[2]].map((id, i) => [id, { n: 5, t: 1000 + i }]));
+export const seed = {
+  'settings.json': { settings: { settingsVersion: 3, onboarded: true, topics: [], hsk: [2], guessFirst: false, hskEdition: 2021 } },
+  'progress.json': { exposure: familiar },
+};
 
 const wait = (page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
 

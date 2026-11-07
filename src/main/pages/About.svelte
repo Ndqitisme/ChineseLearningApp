@@ -28,7 +28,11 @@
   <p class="lead">Tiểu Mai (小梅) là ứng dụng mã nguồn mở giúp người Việt học từ vựng tiếng Trung hằng ngày qua một trợ lý trên màn hình.</p>
 
   <div class="card stack">
-    <div><b>{words.filter(isOpen).length}</b> từ · <b>{dataset.topics.length}</b> chủ đề · HSK 3.0 cấp 1–{settings.hskOpen} (bộ từ bản {settings.hskEdition})</div>
+    <ul class="counts">
+      <li><b>{words.filter(isOpen).length}</b> từ</li>
+      <li><b>{dataset.topics.length}</b> chủ đề</li>
+      <li>HSK 3.0 cấp 1–{settings.hskOpen}, bộ từ bản {settings.hskEdition}</li>
+    </ul>
     <div class="muted">Nghĩa ngắn, câu ví dụ, âm Hán Việt và các chủ đề được biên soạn riêng cho app, một phần do AI viết, chưa có người bản ngữ duyệt.</div>
     <ul class="licenses muted">
       <li>Mã nguồn: MIT</li>
@@ -60,7 +64,7 @@
 <style>
   .logo { display: block; width: 180px; height: 180px; margin: 4px 0 8px; }
   .stack { display: flex; flex-direction: column; gap: 10px; line-height: 1.55; }
-  .licenses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .licenses, .counts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; color: var(--text-2); font-size: 12.5px; padding: 6px 8px; }
   td { padding: 8px; border-top: 1px solid var(--border); }

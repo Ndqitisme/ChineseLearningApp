@@ -5,7 +5,7 @@
   import { openWord, settings } from '../../lib/settings.svelte.ts';
   import { HUE_OF, hueVar } from '../../lib/theme/themes.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
-  import { reviewQueueIds } from '../review-queue.ts';
+  import { reviewQueueIds } from '../review-queue.svelte.ts';
 
   const hour = new Date().getHours();
   const greet = hour < 11 ? { vi: 'Chào buổi sáng', zh: '早上好' } : hour < 18 ? { vi: 'Chào buổi chiều', zh: '下午好' } : { vi: 'Chào buổi tối', zh: '晚上好' };

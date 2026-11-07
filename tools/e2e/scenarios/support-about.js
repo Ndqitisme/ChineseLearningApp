@@ -2,7 +2,7 @@
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
   const main = await t.open('main', '#/about');
-  const line = () => main.$eval('.page .card.stack > div', (d) => d.innerText.trim());
+  const line = () => main.$eval('.page .counts', (d) => d.innerText.split('\n').map((x) => x.trim()).join(' · '));
 
   await t.step('R10 About before unlock', async () => {
     await t.waitFor(main, '.page h1', 'Giới thiệu');
@@ -36,8 +36,8 @@ export default async function (t) {
     await t.waitFor(main, '.page h1', 'Giới thiệu');
     const l = await line();
     console.log(`      after re-lock: ${l}`);
-    // The core also holds 2025 HSK 1–3 words; with the default 2021 lists only topic words and 2021 HSK 1–3 count.
-    const open13 = t.data.words.filter((w) => w.topics.length || (w.hsk && w.hsk <= 3)).length;
+    // The core also holds 2021 HSK 1–3 words; with the default 2025 lists only topic words and 2025 HSK 1–3 count.
+    const open13 = t.data.words.filter((w) => w.topics.length || (w.hsk2025 && w.hsk2025 <= 3)).length;
     t.assert(Number(l.match(/^(\d+)/)?.[1]) === open13, `after re-lock About still counts hidden words: ${l}`);
   });
 }

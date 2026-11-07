@@ -7,7 +7,7 @@
   import { isHan } from '../../lib/pinyin.ts';
   import { progress, saveProgress } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
-  import { hskLevel, isOpen, settings } from '../../lib/settings.svelte.ts';
+  import { hskLevel, isOpenAnyEdition, settings } from '../../lib/settings.svelte.ts';
   import { previewIntervals } from '../../lib/srs.ts';
   import { HUE_OF, hueVar } from '../../lib/theme/themes.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
@@ -17,9 +17,12 @@
   // A link may name a word of a locked level whose pack is not loaded: load the packs to say which level it is in.
   let packsLoaded = $state(settings.hskOpen === 6);
   const known = $derived((void packsLoaded, wordById.get(id)));
-  const word = $derived(known && isOpen(known) ? known : undefined);
+  // Open in either edition: a word found in search, the notebook or review keeps its page after an edition switch.
+  const word = $derived(known && isOpenAnyEdition(known) ? known : undefined);
   const level = $derived(word && hskLevel(word));
   const otherEdition = $derived(settings.hskEdition === 2025 ? 2021 : 2025);
+  /** For a locked word: its level in the chosen edition, else in the other one. */
+  const lockedLevel = $derived(known && (hskLevel(known) ?? levelOf(known, otherEdition)));
   const otherLevel = $derived(word && levelOf(word, otherEdition));
   const e = $derived(word ? progress.exposure[word.id] : undefined);
   const card = $derived(word ? progress.srs[word.id] : undefined);
@@ -88,7 +91,7 @@
             <button class="btn" onclick={() => say('female', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nữ</button>
             <button class="btn" onclick={() => say('male', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nam</button>
           {:else}
-            <a class="btn ghost" href="#/settings"><Icon name="speaker-off" /> Cài giọng đọc…</a>
+            <a class="btn ghost" href="#/settings/voice"><Icon name="speaker-off" /> Cài giọng đọc…</a>
           {/if}
         </div>
         {#if speakError}<p class="bad small">{speakError}</p>{/if}
@@ -123,14 +126,14 @@
       {/if}
     </div>
     <p class="muted small">Đã gặp từ này {e?.n ?? 0} lần.</p>
-  {:else if known && hskLevel(known)}
-    <BackButton to="/search" useHistory />
-    <p class="empty">Từ “{known.hanzi}” thuộc HSK {hskLevel(known)}, cấp này đang khoá. Mở khoá ở trang <a href="#/hsk/{hskLevel(known)}">HSK {hskLevel(known)}</a>.</p>
   {:else if known}
     <BackButton to="/search" useHistory />
-    <p class="empty">Từ “{known.hanzi}” không có trong bộ từ HSK bản {settings.hskEdition}. Đổi bộ từ trong <a href="#/settings/hsk">Cài đặt</a>.</p>
+    <p class="empty">Từ “{known.hanzi}” thuộc HSK {lockedLevel}, cấp này đang khoá.<br />Mở khoá ở trang <a href="#/hsk/{lockedLevel}">HSK {lockedLevel}</a>.</p>
   {:else if packsLoaded}
+    <BackButton to="/search" useHistory />
     <p class="empty">Không tìm thấy từ “{id}”.</p>
+  {:else}
+    <p class="empty">Đang tải…</p>
   {/if}
 </div>
 

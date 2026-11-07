@@ -24,7 +24,6 @@
     "@tauri-apps/plugin-autostart": "^2.7.0",
     "@tauri-apps/plugin-dialog": "^2.4.0",
     "@tauri-apps/plugin-opener": "^2.5.0",
-    "@tauri-apps/plugin-store": "^2.5.0",
     "hanzi-writer": "^3.7.3",
     "pinyin-pro": "^3.29.5",
     "pitchy": "^4.1.0",

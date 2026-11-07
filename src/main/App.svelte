@@ -30,10 +30,13 @@
   import Write from './pages/Write.svelte';
   import Build from './pages/Build.svelte';
   import './app.css';
-  import { reviewQueueIds } from './review-queue.ts';
+  import { reviewQueueIds, startClock } from './review-queue.svelte.ts';
 
   let ready = $state(false);
   let avatar = $state<ReturnType<typeof Rig>>();
+  // She waves once when the window opens; the rig also reports ready after a rebuild for another pixel ratio.
+  let waved = false;
+  const greet = () => { if (!waved) { waved = true; avatar?.emit('appStart'); } };
 
   const dueCount = $derived(reviewQueueIds().length);
 
@@ -61,13 +64,14 @@
 
   onMount(() => {
     const unlisten = listen<string>(EVENTS.navigate, ({ payload }) => go(payload));
+    const stopClock = startClock();
     (async () => {
       await initProgress();
       applyTheme();
       ready = true;
       await getCurrentWindow().show();
     })();
-    return () => { unlisten.then((f) => f()); };
+    return () => { unlisten.then((f) => f()); stopClock(); };
   });
 </script>
 
@@ -77,7 +81,7 @@
     <div class="body">
       <nav class="side">
         <button class="me" onclick={() => avatar?.emit('known')} aria-label="Tiểu Mai">
-          <div class="avatar"><Rig bind:this={avatar} scale={170 / FRAME.h} onready={() => avatar?.emit('appStart')} /></div>
+          <div class="avatar"><Rig bind:this={avatar} scale={170 / FRAME.h} onready={greet} /></div>
         </button>
         {#each NAV as item (item.path)}
           <a href="#{item.path}" class:on={active === item.name}>

@@ -1,6 +1,6 @@
 // HSK 5 lesson quizzes after HSK 1–6 were unlocked and re-locked to 1–5: options are distinct, wrong
 // options come only from open words (never the still-loaded HSK 6 pack), and the right option is marked.
-export const seed = { 'settings.json': { settings: { hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true, mode: 'light' } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true, mode: 'light' } } };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {

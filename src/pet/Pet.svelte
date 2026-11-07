@@ -9,14 +9,17 @@
   import { EVENTS, ipc } from '../lib/ipc.ts';
   import { initProgress, progress, saveProgress, today } from '../lib/progress.svelte.ts';
   import { pickNext, recordExposure } from '../lib/scheduler.ts';
-  import { openWord, settings, updateSettings } from '../lib/settings.svelte.ts';
+  import { openWordAnyEdition, settings, updateSettings } from '../lib/settings.svelte.ts';
   import { onSpeech, speak, speechAvailable } from '../lib/speech/index.ts';
   import Rig from '../lib/rig/Rig.svelte';
   import { FRAME, displayScale, loadRig, type HitRect } from '../lib/rig/load.ts';
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
-  import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spriteOffset, windowSize, type Anchor, type Rect } from './geometry.ts';
+  import {
+    BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor, type Rect, type Spot,
+  } from './geometry.ts';
+  import { inQuietWindow, quietWindowEnd } from './quiet.ts';
   import HoverPinyin from '../lib/ui/HoverPinyin.svelte';
 
   const win = getCurrentWindow();
@@ -26,6 +29,11 @@
   // The rig mounts a tick after `ready`, so the start event goes out once it exists (it queues until drawn).
   let appStarted = false;
   $effect(() => { if (rig && !appStarted) { appStarted = true; rig.emit('appStart'); } });
+  /** A rebuilt or fresh rig scheduler starts awake with no menu: tell it what is held now. */
+  function resendHeldState() {
+    if (sleeping) emit('longIdle');
+    if (menuOpen) emit('menuOpen');
+  }
   // True while the rig draws: the character's click-through rect is reported only then, so a canvas that
   // failed or lost its context never blocks clicks to what is underneath.
   let drawing = $state(false);
@@ -98,17 +106,24 @@
     if (Math.abs(r.pos.x - pos.x) > 1 || Math.abs(r.pos.y - pos.y) > 1) {
       await win.setPosition(new PhysicalPosition(r.pos.x, r.pos.y));
     }
-    try { localStorage.setItem('petPlacement', JSON.stringify(r)); } catch { /* storage unavailable */ }
+    const saved: SavedPlacement = { spot: spotOf(r.pos, scale, winCss, spriteCss, r.anchor), anchor: r.anchor };
+    try { localStorage.setItem(PLACEMENT_KEY, JSON.stringify(saved)); } catch { /* storage unavailable */ }
   }
+
+  // Saved as where her feet are, not as the window's top-left: the window's height follows the bubble, so a
+  // top-left restored with another height leaves her floating. 'petPlacement' holds top-left values; not read.
+  const PLACEMENT_KEY = 'petPlacement2';
+  interface SavedPlacement { spot: Spot; anchor: Anchor }
 
   async function restorePlacement() {
     await win.setSize(new LogicalSize(winCss.w, winCss.h));
     const scale = await win.scaleFactor();
-    let saved: { pos: { x: number; y: number }; anchor: Anchor } | null = null;
-    try { saved = JSON.parse(localStorage.getItem('petPlacement') ?? 'null'); } catch { /* ignore */ }
-    if (saved && (await monitorFromPoint(saved.pos.x + 10, saved.pos.y + 10))) {
+    let saved: SavedPlacement | null = null;
+    try { saved = JSON.parse(localStorage.getItem(PLACEMENT_KEY) ?? 'null'); } catch { /* ignore */ }
+    if (saved?.spot && (await monitorFromPoint(saved.spot.x + 10, saved.spot.bottom - 10))) {
       anchor = saved.anchor;
-      await win.setPosition(new PhysicalPosition(saved.pos.x, saved.pos.y));
+      const pos = windowAt(saved.spot, scale, winCss, spriteCss, saved.anchor);
+      await win.setPosition(new PhysicalPosition(pos.x, pos.y));
       await settle();
       return;
     }
@@ -135,8 +150,11 @@
     }
     await ipc.setHitRects(rects);
   }
+  // A new window size reports again once the resize is applied (see resizing below), and the bubble's own size
+  // changes (example line, Hán Việt, theme, custom CSS) through its ResizeObserver.
   $effect(() => {
-    void [ready, drawing, hit, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter];
+    void [ready, drawing, hit, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter,
+      bubbleRoom, settings.showExample, settings.showHanviet, settings.theme, settings.mode, settings.customCss, menuBottom];
     reportHitRects();
   });
   $effect(() => {
@@ -147,6 +165,7 @@
     const ro = new ResizeObserver(() => {
       const needed = Math.ceil(el.offsetHeight) + 2 * SHADOW_PAD;
       if (needed > bubbleRoom || needed < bubbleRoom - 60) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
+      reportHitRects();
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -176,14 +195,13 @@
     tickTimer = setTimeout(loop, ms);
   }
 
+  /** Set by "Tiếp tục" during quiet hours: she stays awake until that quiet window ends or the user pauses again. */
+  let quietSkippedUntil = 0;
   function inQuietHours(d = new Date()) {
-    if (!settings.quietEnabled) return false;
-    const m = d.getHours() * 60 + d.getMinutes();
-    const [fh, fm] = settings.quietFrom.split(':').map(Number);
-    const [th, tm] = settings.quietTo.split(':').map(Number);
-    const from = fh * 60 + fm, to = th * 60 + tm;
-    return from <= to ? m >= from && m < to : m >= from || m < to;
+    return settings.quietEnabled && d.getTime() >= quietSkippedUntil && inQuietWindow(d, settings.quietFrom, settings.quietTo);
   }
+  /** Paused from the menu or tray, or in quiet hours: the menu then offers "Tiếp tục". */
+  const paused = () => progress.pausedUntil > Date.now() || inQuietHours();
 
   /** Sleep is a state the rig holds until userBack; it is sent once, never while already asleep. */
   function goSleep(why: 'longIdle' | 'quietHours') {
@@ -198,54 +216,91 @@
     emit('userBack');
   }
 
+  /** Idle this long means nobody is looking: words still change, but the showings do not count. */
+  const AWAY_SECS = 60;
+
   async function loop() {
     if (!settings.petEnabled) return; // re-armed by the effect below when re-enabled
     if (progress.pausedUntil > Date.now() || inQuietHours()) {
       goSleep('quietHours');
       return scheduleTick(30_000);
     }
-    const sys = await ipc.systemState().catch(() => ({ busy: false, idleSecs: 0 }));
-    if (sys.busy || busy) return scheduleTick(5_000);
-    if (settings.idlePauseMin > 0 && sys.idleSecs > settings.idlePauseMin * 60) {
+    // The system:busy event can fire before this window listens, so the poll sets busy too. While a fullscreen
+    // app hides her the loop keeps polling, so she comes back even if the event that it closed was missed.
+    const sys = await ipc.systemState().catch(() => null);
+    if (sys) busy = sys.busy;
+    if (!visible) return scheduleTick(5_000);
+    if (!shown) return; // visible again this moment: the show effect restarts the loop
+    if (busy) return scheduleTick(5_000);
+    const idleSecs = sys?.idleSecs ?? 0;
+    if (settings.idlePauseMin > 0 && idleSecs > settings.idlePauseMin * 60) {
       goSleep('longIdle');
       return scheduleTick(3_000);
     }
     wake();
     if (hoveringBubble || menuOpen || dragging) return scheduleTick(3_000);
-    advance();
+    advance(idleSecs < AWAY_SECS);
   }
 
-  /** Next word: straight in if no bubble is open, otherwise a short fade inside the open bubble. */
-  function advance() {
+  /** Next word: straight in if no bubble is open, otherwise a short fade inside the open bubble.
+   * `seen`: someone is at the computer, so the showing counts. */
+  function advance(seen: boolean) {
     clearTimeout(swapTimer);
     scheduleTick(settings.wordSec * 1000 + (bubble ? SWAP_MS : 0));
-    if (!bubble) return showNext();
+    if (!bubble) return showNext(seen);
     swapping = true;
-    swapTimer = setTimeout(() => { showNext(); swapping = false; }, SWAP_MS);
+    swapTimer = setTimeout(() => { showNext(seen); swapping = false; }, SWAP_MS);
   }
 
-  function showNext() {
+  function showNext(seen: boolean) {
     const now = nowMin();
-    const due = Object.entries(progress.srs).filter(([id, c]) => Date.parse(c.due) <= Date.now() && openWord(id)).map(([id]) => id);
-    const pick = pickNext({ pool, exposure: progress.exposure, due, recent, now });
-    nothingOn = !pick;
-    if (!pick) return closeBubble();
+    const due = Object.entries(progress.srs).filter(([id, c]) => Date.parse(c.due) <= Date.now() && openWordAnyEdition(id)).map(([id]) => id);
+    const next = pickNext({ pool, exposure: progress.exposure, due, recent, now });
+    nothingOn = !next && !pool.length && !due.length;
+    if (nothingOn) return closeBubble();
+    // No pick from a non-empty pool: a tiny pool whose every word waits out its gap. The word on screen stays;
+    // with none on screen, the last one shown comes back, not counted, so she never stands there empty.
+    if (!next && bubble) return;
+    const again = next ? undefined : lastShown();
+    const pick = next ?? (again && { id: again, reason: 'learning' as const });
+    if (!pick) return;
     const word = wordById.get(pick.id);
     if (!word) return;
     const seenBefore = (progress.exposure[pick.id]?.n ?? 0) >= 2;
     const revealed = !(settings.guessFirst && seenBefore);
     bubble = { word, revealed };
 
-    recordExposure(progress.exposure, pick.id, now);
-    progress.seenDays[today()] = (progress.seenDays[today()] ?? 0) + 1;
-    saveProgress('exposure');
-    saveProgress('seenDays');
+    // Only showings someone could see count: not while hidden, switched off or with nobody at the computer.
+    if (seen && visible && !again) {
+      recordExposure(progress.exposure, pick.id, now);
+      progress.seenDays[today()] = (progress.seenDays[today()] ?? 0) + 1;
+      saveProgress('exposure');
+      saveProgress('seenDays');
+    }
     recent = [...recent.slice(-9), pick.id];
 
     // Guess mode: she ponders (chin on hand) while the learner tries to recall the meaning.
     emit(revealed ? 'wordShownRevealed' : 'wordShownGuess');
     clearTimeout(revealTimer);
     if (!revealed) revealTimer = setTimeout(reveal, 2600);
+    else autoplay(word);
+  }
+
+  /** The pool word shown most recently: this run's last, or after a restart the latest in the saved exposures. */
+  function lastShown(): string | undefined {
+    const inPool = new Set(pool);
+    const last = recent.at(-1);
+    if (last && inPool.has(last)) return last;
+    let best: string | undefined, t = -Infinity;
+    for (const id of pool) {
+      const e = progress.exposure[id];
+      if (e && e.t > t) { best = id; t = e.t; }
+    }
+    return best;
+  }
+
+  /** In guess mode the word is read only once the meaning shows: hearing it first gives the reading away. */
+  function autoplay(word: Word) {
     if (settings.speech.autoplayInPet && speechAvailable()) speak(word.hanzi).catch(() => {});
   }
 
@@ -253,6 +308,7 @@
     if (!bubble || bubble.revealed) return;
     bubble = { ...bubble, revealed: true };
     emit('reveal');
+    autoplay(bubble.word);
   }
 
   function closeBubble() {
@@ -262,10 +318,12 @@
   }
 
   function nextNow() {
+    // Hidden by a fullscreen app nobody sees a word, so tray "next" does nothing then.
+    if (!visible) return;
     // While asleep the rig treats this as a userBack (wake, then wave); otherwise it is nothing.
     sleeping = false;
     emit('nextNow');
-    advance();
+    advance(true);
   }
 
   // ------------------------------------------------------------------ exposure edits (this window owns them)
@@ -306,20 +364,40 @@
   }
   function resume() {
     emit('click');
-    if (sleeping) { progress.pausedUntil = 0; saveProgress('pausedUntil'); wake(); }
+    if (sleeping) { endPause(); wake(); }
     nextNow();
+  }
+  /** Ends a menu or tray pause; in quiet hours she also stays awake until that quiet window ends. */
+  function endPause() {
+    if (progress.pausedUntil) { progress.pausedUntil = 0; saveProgress('pausedUntil'); }
+    const now = new Date();
+    if (settings.quietEnabled && inQuietWindow(now, settings.quietFrom, settings.quietTo)) quietSkippedUntil = quietWindowEnd(now, settings.quietTo);
   }
   function onSpriteEnter() {
     emit('hoverEnter');
   }
 
   // ------------------------------------------------------------------ menu actions
+  let menuHeight = $state(0);
+  /** Beside her chest, but never past the window's top: at sizes Vừa and Lớn a 250 px window cut the menu off. */
+  const menuBottom = $derived(Math.max(
+    SHADOW_PAD / 2,
+    Math.min(settings.petCharacter ? spriteCss.h * 0.45 : 6, winCss.h - menuHeight - SHADOW_PAD / 2),
+  ));
+
   async function pauseFor(minutes: number) {
-    progress.pausedUntil = minutes ? Date.now() + minutes * 60_000 : 0;
-    await saveProgress('pausedUntil');
     menuOpen = false;
-    if (minutes) goSleep('quietHours');
-    else { wake(); nextNow(); }
+    if (!minutes) {
+      endPause();
+      wake();
+      nextNow();
+      return;
+    }
+    // Pausing again also ends a "Tiếp tục" given during quiet hours.
+    quietSkippedUntil = 0;
+    progress.pausedUntil = Date.now() + minutes * 60_000;
+    goSleep('quietHours');
+    await saveProgress('pausedUntil');
   }
   async function hidePet() {
     menuOpen = false;
@@ -343,13 +421,17 @@
         scheduleTick(1500);
         if (hiddenBefore) emit('fullscreenShow');
       }
-    } else if (shown) {
-      shown = false;
-      hiddenBefore = true;
-      clearTimeout(tickTimer);
-      closeBubble();
-      win.hide();
-      emit('fullscreenHide');
+    } else {
+      if (shown) {
+        shown = false;
+        hiddenBefore = true;
+        closeBubble();
+        win.hide();
+        emit('fullscreenHide');
+      }
+      // Hidden by a fullscreen app (also one open at start-up) the loop only polls until it closes;
+      // switched off, the loop stops at once.
+      scheduleTick(5_000);
     }
   });
 
@@ -365,11 +447,14 @@
     await settle();
   }
   let lastWin = '';
+  // One resize at a time, each reading the window as the previous one left it; click-through rects are
+  // reported once the window has its new size.
+  let resizing = Promise.resolve();
   $effect(() => {
     const key = `${winCss.w}x${winCss.h}`;
     if (!ready || key === lastWin) return;
     lastWin = key;
-    resizeKeepingCorner();
+    resizing = resizing.then(resizeKeepingCorner).then(reportHitRects, (e) => console.error('pet resize', e));
   });
 
   onMount(() => {
@@ -377,6 +462,9 @@
     (async () => {
       await initProgress();
       applyTheme();
+      // A fullscreen app already open at start-up: its system:busy event may have gone out before we listened.
+      const sys = await ipc.systemState().catch(() => null);
+      if (sys) busy = sys.busy;
       await restorePlacement();
       lastWin = `${winCss.w}x${winCss.h}`;
       ready = true;
@@ -468,10 +556,11 @@
       tabindex="-1"
       style:left={anchor.h === 'left' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
       style:right={anchor.h === 'right' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
-      style:bottom="{settings.petCharacter ? spriteCss.h * 0.45 : 6}px"
+      style:bottom="{menuBottom}px"
+      bind:offsetHeight={menuHeight}
     >
       <button role="menuitem" onclick={() => { menuOpen = false; nextNow(); }}><Icon name="pet-next" /> Từ tiếp theo</button>
-      {#if progress.pausedUntil > Date.now()}
+      {#if paused()}
         <button role="menuitem" onclick={() => pauseFor(0)}><Icon name="play" /> Tiếp tục</button>
       {:else}
         <button role="menuitem" onclick={() => pauseFor(30)}><Icon name="pet-sleep" /> Tạm dừng 30 phút</button>
@@ -498,13 +587,13 @@
     onpointerenter={onSpriteEnter}
     oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
   >
-    {#if ready}<Rig bind:this={rig} scale={spriteScale} {mirror} hidden={!visible} onready={() => { drawing = true; if (sleeping) emit('longIdle'); }} onlost={() => (drawing = false)} />{/if}
+    {#if ready}<Rig bind:this={rig} scale={spriteScale} {mirror} hidden={!visible} onready={() => { drawing = true; resendHeldState(); }} onrestart={resendHeldState} onlost={() => (drawing = false)} />{/if}
     {#if sleeping}<span class="zzz" aria-hidden="true">z<small>z</small></span>{/if}
   </div>
   {/if}
 </div>
 
-<HoverPinyin />
+<HoverPinyin dictionaryOnly />
 
 <!-- A press on the bubble that never became a drag must not linger. -->
 <svelte:window onpointerup={() => (down = null)} />

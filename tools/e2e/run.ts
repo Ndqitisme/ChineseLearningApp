@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import puppeteer, { type BrowserContext, type Page } from 'puppeteer-core';
 import { createServer } from 'vite';
 import type { Dataset, LevelPack } from '../../src/lib/types.ts';
+import { freshProfile, saveProfileAnswer } from '../chrome-profile.ts';
 
 const CHROME = process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const SCENARIO_DIR = 'tools/e2e/scenarios';
@@ -24,7 +25,8 @@ const MONITOR = {
 
 type Label = 'main' | 'pet';
 type Seed = Record<string, Record<string, unknown>>;
-interface ScenarioModule { default: (t: T) => Promise<void>; seed?: Seed }
+/** `system`: what system_state reports at start, e.g. { busy: true } for a fullscreen app already open. */
+interface ScenarioModule { default: (t: T) => Promise<void>; seed?: Seed; system?: { busy?: boolean; idleSecs?: number } }
 
 const mockSource = readFileSync('tools/e2e/tauri-mock.js', 'utf8');
 const dataset = JSON.parse(readFileSync('src/generated/dataset.json', 'utf8')) as Dataset;
@@ -48,12 +50,14 @@ export class T {
   private base: string;
   private dir: string;
   private seed: Seed | undefined;
+  private system: ScenarioModule['system'];
 
-  constructor(ctx: BrowserContext, base: string, dir: string, seed: Seed | undefined) {
+  constructor(ctx: BrowserContext, base: string, dir: string, seed: Seed | undefined, system?: ScenarioModule['system']) {
     this.ctx = ctx;
     this.base = base;
     this.dir = dir;
     this.seed = seed;
+    this.system = system;
   }
 
   /** `loadTimeout` is longer only for the warm-up, when Vite transforms everything cold. */
@@ -61,7 +65,7 @@ export class T {
     const page = await this.ctx.newPage();
     this.watch(page, label);
     await page.setViewport(label === 'pet' ? PET_START : MAIN_DEFAULT);
-    await page.evaluateOnNewDocument(`(${mockSource})(${JSON.stringify({ label, seed: this.seed ?? null, monitor: MONITOR })})`);
+    await page.evaluateOnNewDocument(`(${mockSource})(${JSON.stringify({ label, seed: this.seed ?? null, system: this.system ?? null, monitor: MONITOR })})`);
     await page.goto(`${this.base}/${label === 'pet' ? 'pet' : 'index'}.html${hash}`, { waitUntil: 'domcontentloaded', timeout: loadTimeout });
     await this.waitReady(page, label, loadTimeout);
     this.pages.set(label, page);
@@ -130,7 +134,7 @@ export class T {
     throw new AssertionError(`no ${selector}${text ? ` containing "${text}"` : ''} to click`);
   }
 
-  /** Persisted plugin-store file content, as the next app start would read it. */
+  /** Persisted store file content (settings.json, progress.json), as the next app start would read it. */
   store(page: Page, path: string): Promise<Record<string, any>> {
     return page.evaluate((p) => JSON.parse(localStorage.getItem(`e2e:store:${p}`) ?? '{}'), path);
   }
@@ -235,7 +239,8 @@ async function main() {
   await server.listen();
   const base = server.resolvedUrls!.local[0].replace(/\/$/, '');
   // A CDP call into a page that never answers (a navigating window) waits out protocolTimeout: 60 s, not the default 180.
-  const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 60_000, args: [
+  const profile = freshProfile('tieumai-e2e-');
+  const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, userDataDir: profile, protocolTimeout: 60_000, args: [
     '--lang=vi-VN',
     // Both app windows are on screen at once; keep Chrome from throttling the tab that is "behind".
     '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
@@ -243,7 +248,10 @@ async function main() {
 
   // Children outlive a stopped shell on Windows, so every run has a deadline and closes Chrome and Vite on a stop signal.
   let closing: Promise<void> | undefined;
-  const close = () => (closing ??= browser.close().catch(() => {}).then(() => server.close()));
+  const close = () => (closing ??= browser.close().catch(() => {}).then(() => {
+    saveProfileAnswer(profile);
+    rmSync(profile, { recursive: true, force: true });
+  }).then(() => server.close()));
   const abort = (why: string) => { console.error(`\n${why}: closing Chrome and the app server`); close().finally(() => process.exit(2)); };
   const deadlineMin = Number(process.env.E2E_DEADLINE_MIN) || 20;
   setTimeout(() => abort(`run exceeded ${deadlineMin} min (E2E_DEADLINE_MIN)`), deadlineMin * 60_000).unref();
@@ -266,7 +274,7 @@ async function main() {
       console.log(`▶ ${name}`);
       const mod = (await import(pathToFileURL(resolve(SCENARIO_DIR, file)).href)) as ScenarioModule;
       const ctx = await browser.createBrowserContext();
-      const t = new T(ctx, base, dir, mod.seed);
+      const t = new T(ctx, base, dir, mod.seed, mod.system);
       const started = Date.now();
       try {
         await mod.default(t);

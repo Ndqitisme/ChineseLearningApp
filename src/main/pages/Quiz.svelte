@@ -3,13 +3,13 @@
   import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { progress, saveProgress, today } from '../../lib/progress.svelte.ts';
-  import { speak, speechAvailable } from '../../lib/speech/index.ts';
+  import { onSpeech, speak, speechAvailable } from '../../lib/speech/index.ts';
   import { gradeFromAnswer, review } from '../../lib/srs.ts';
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
-  import { deckFrom, distractors, shuffle } from '../deck.ts';
+  import { deckFrom, deckOrigin, distractors, shuffle } from '../deck.ts';
 
-  import { untrack } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   /** params: [mode, ...deck params] — mode is "meaning" | "hanzi" | "listen". */
   let { params }: { params: string[] } = $props();
   type Mode = 'meaning' | 'hanzi' | 'listen';
@@ -25,7 +25,12 @@
   let picked = $state<string | null>(null);
   let correct = $state(0);
   let started = 0;
+  /** Listen mode: the answer time starts when the word is first heard, not when a clip starts loading. */
+  let waitingForSound = false;
   let speakError = $state('');
+  onMount(() => onSpeech((phase) => {
+    if (phase === 'start' && waitingForSound) { waitingForSound = false; started = performance.now(); }
+  }));
 
   function say(hanzi: string) {
     speakError = '';
@@ -38,8 +43,12 @@
     index = 0;
     correct = 0;
     picked = null;
-    started = performance.now();
+    startTimer();
     if (mode === 'listen' && questions[0]) say(questions[0].word.hanzi);
+  }
+  function startTimer() {
+    started = performance.now();
+    waitingForSound = mode === 'listen';
   }
   newRound();
 
@@ -57,20 +66,20 @@
   function next() {
     index++;
     picked = null;
-    started = performance.now();
+    startTimer();
     if (mode === 'listen' && questions[index]) say(questions[index].word.hanzi);
   }
   function onKey(e: KeyboardEvent) {
     if (!q) return;
     if (!picked && ['1', '2', '3', '4'].includes(e.key)) choose(q.options[Number(e.key) - 1]);
-    else if (picked && (e.key === 'Enter' || e.key === ' ')) next();
+    else if (picked && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); next(); }
   }
 </script>
 
 <svelte:window onkeydown={onKey} />
 
 <div class="page">
-  <BackButton to="/practice" label="Luyện tập" />
+  <BackButton to={deckOrigin(params.slice(1))} useHistory />
   <h1><Icon name={mode === 'meaning' ? 'quiz-meaning' : mode === 'hanzi' ? 'quiz-hanzi' : 'quiz-listen'} hue={HUE_OF[mode]} /> {mode === 'meaning' ? 'Đoán nghĩa' : mode === 'hanzi' ? 'Chọn mặt chữ' : 'Nghe chọn chữ'}</h1>
   <p class="lead">{deck.title}<br />Gợi ý phím: 1–4 để chọn đáp án, Enter để sang câu tiếp.</p>
 
@@ -118,7 +127,7 @@
     {#if picked}<div class="row next"><button class="btn primary" onclick={next}>Tiếp →</button></div>{/if}
   {:else}
     <div class="card done">
-      <div class="big"><Icon name={correct >= 8 ? 'result-great' : correct >= 5 ? 'result-good' : 'result-try'} /></div>
+      <div class="big"><Icon name={correct >= 0.8 * questions.length ? 'result-great' : correct >= 0.5 * questions.length ? 'result-good' : 'result-try'} /></div>
       <h2>Đúng {correct}/{questions.length} câu</h2>
       <p class="muted">Kết quả đã được ghi vào lịch ôn tập.</p>
       <div class="row center">

@@ -30,7 +30,11 @@ export default async function (t) {
     t.assert(!files.includes('TieuMaiKai-ext.woff2'), `extension font fetched on HSK 1–3 pages: ${files}`);
   });
 
-  const word = t.packs[6].words.find((w) => [...w.hanzi].every((c) => ext.has(c)) && w.hanzi.length >= 2);
+  // A word the HSK 6 course lists under the default (2025) edition; the pack a word ships in follows its lowest
+  // level in either edition, so look it up across all packs.
+  const course6 = new Set(t.packs[6].ids2025);
+  const all = [...t.data.words, ...t.packs[4].words, ...t.packs[5].words, ...t.packs[6].words];
+  const word = all.find((w) => course6.has(w.id) && [...w.hanzi].every((c) => ext.has(c)) && w.hanzi.length >= 2);
   await t.step(`HSK 6 word ${word.hanzi} on its course page draws with TieuMai Kai`, async () => {
     await go(`#/hsk/6`);
     await t.waitFor(main, '.lesson');

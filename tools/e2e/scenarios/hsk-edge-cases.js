@@ -8,7 +8,7 @@ const w6 = p6.words.find((w) => !core.words.some((c) => c.hanzi.includes(w.hanzi
 const wait = (page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
-export const seed = { 'settings.json': { settings: { settingsVersion: 3, hskOpen: 3, hsk: [], topics: [], onboarded: true } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, settingsVersion: 3, hskOpen: 3, hsk: [], topics: [], onboarded: true } } };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
@@ -73,9 +73,9 @@ export default async function (t) {
   await t.step('R6 after the word page loaded every pack, HSK 4–6 stays hidden elsewhere', async () => {
     await go(main, '#/about');
     await t.waitFor(main, '.card b');
-    const line = await t.text(main, '.card > div');
+    const line = (await t.text(main, '.counts'))?.split('\n').map((x) => x.trim()).join(' · ');
     console.log(`      about: ${line}`);
-    // The core also holds 2025 HSK 1–3 words; with the default 2021 lists only topic words and 2021 HSK 1–3 count.
+    // The core also holds 2025 HSK 1–3 words; with the 2021 lists (seeded) only topic words and 2021 HSK 1–3 count.
     const open13 = core.words.filter((w) => w.topics.length || (w.hsk && w.hsk <= 3)).length;
     check(line?.startsWith(`${open13} từ`) && line.includes('cấp 1–3'), `about "${line}"`);
     await go(main, `#/search/${w6.hanzi}`);

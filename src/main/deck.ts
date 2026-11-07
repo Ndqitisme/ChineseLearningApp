@@ -1,7 +1,7 @@
 // Which words a practice session draws from, and how wrong answers are chosen.
 import { studyPool, topicById, words } from '../lib/data.ts';
 import { progress } from '../lib/progress.svelte.ts';
-import { hskIds, hskLevel, isOpen, openWord, settings } from '../lib/settings.svelte.ts';
+import { hskIds, hskLevel, isOpen, openWord, openWordAnyEdition, settings } from '../lib/settings.svelte.ts';
 import type { HskLevel, Word } from '../lib/types.ts';
 
 export interface Deck {
@@ -39,7 +39,9 @@ export function deckFrom(params: string[]): Deck {
     return { title, words: byIds(ids.slice((n - 1) * LESSON_SIZE, n * LESSON_SIZE)) };
   }
   if (kind === 'starred') {
-    return { title: '★ Sổ tay', words: byIds(Object.keys(progress.exposure).filter((id) => progress.exposure[id].s)) };
+    // The notebook keeps its words across an edition switch, like the Notebook page.
+    const ids = Object.keys(progress.exposure).filter((id) => progress.exposure[id].s);
+    return { title: '★ Sổ tay', words: ids.map((id) => openWordAnyEdition(id)).filter((w): w is Word => !!w) };
   }
   // Counted after byIds: words of re-locked or not-loaded levels do not make the deck playable.
   const seen = byIds(Object.entries(progress.exposure)
@@ -48,6 +50,15 @@ export function deckFrom(params: string[]): Deck {
     .map(([id]) => id));
   if (seen.length >= 8) return { title: 'Từ đã gặp', words: seen };
   return { title: 'Từ đang học', words: byIds(studyPool(settings.topics, settings.hsk, settings.hskEdition).slice(0, 40)) };
+}
+
+/** The page a practice on these deck params belongs to: where Back goes when this window has no history. */
+export function deckOrigin(params: string[]): string {
+  const [kind, arg] = params;
+  if (kind === 'topic') return `/topic/${arg}`;
+  if (kind === 'hsk') return `/hsk/${arg}`;
+  if (kind === 'starred') return '/notebook';
+  return '/practice';
 }
 
 export function shuffle<T>(items: T[]): T[] {

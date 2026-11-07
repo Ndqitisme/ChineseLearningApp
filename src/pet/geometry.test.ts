@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, snap, spriteOffset, windowSize, type Anchor } from './geometry.ts';
+import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor } from './geometry.ts';
 
 const workArea = { x: 0, y: 0, w: 1920, h: 1040 };
 const spriteCss = { w: 115, h: 210 };
@@ -70,6 +70,25 @@ describe('bubbleInset', () => {
       const tailMid = top + tail + 8;
       if (eyes - top >= 20) expect(Math.abs(tailMid - eyes), `sprite ${sprite.h}, bubble ${bh}`).toBeLessThanOrEqual(1);
       else expect(tail).toBe(12);
+    }
+  });
+});
+
+describe('saved placement', () => {
+  it('keeps her feet on the taskbar when the window comes back with another height', () => {
+    for (const scale of [1, 1.25, 1.5]) {
+      // Saved while a tall bubble made the window 460 px high, standing on the taskbar.
+      const tall = { w: 300, h: 460 };
+      const placed = defaultPlacement(workArea, scale, tall, spriteCss);
+      const saved = spotOf(placed.pos, scale, tall, spriteCss, placed.anchor);
+      expect(saved.bottom).toBe(workArea.y + workArea.h);
+      // Restored with the base bubble: a shorter window.
+      const short = windowSize(spriteCss, BASE_BUBBLE_ROOM);
+      const pos = windowAt(saved, scale, short, spriteCss, placed.anchor);
+      const r = snap({ windowPos: pos, scale, winCss: short, spriteCss, anchor: placed.anchor, workArea });
+      const feet = spotOf(r.pos, scale, short, spriteCss, r.anchor);
+      expect(Math.abs(feet.bottom - (workArea.y + workArea.h)), `scale ${scale}`).toBeLessThanOrEqual(1);
+      expect(Math.abs(feet.x - saved.x), `scale ${scale}`).toBeLessThanOrEqual(1);
     }
   });
 });

@@ -80,6 +80,7 @@
     </div>
     {#if failed}<p class="small bad">Không mở khoá được. Hãy thử lại.</p>{/if}
   {:else}
+    <BackButton to="/topics" label="Chủ đề" />
     <p class="empty">Không tìm thấy chủ đề này.</p>
   {/if}
 </div>

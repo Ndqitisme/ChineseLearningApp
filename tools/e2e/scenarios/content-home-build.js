@@ -14,7 +14,7 @@ const learning = [w5[1], w6[1]];
 const yesterday = new Date(Date.now() - 86_400_000).toISOString();
 const card = { due: yesterday, stability: 3, difficulty: 5, elapsed_days: 3, scheduled_days: 3, learning_steps: 0, reps: 2, lapses: 0, state: 2, last_review: yesterday };
 export const seed = {
-  'settings.json': { settings: { hskOpen: 6, hsk: [1], petEnabled: false, settingsVersion: 3, onboarded: true } },
+  'settings.json': { settings: { hskEdition: 2021, hskOpen: 6, hsk: [1], petEnabled: false, settingsVersion: 3, onboarded: true } },
   'progress.json': {
     exposure: Object.fromEntries([...familiar.map((w, i) => [w.id, { n: 5, t: nowMin - 10 - i }]), ...learning.map((w, i) => [w.id, { n: 1, t: nowMin - 1 - i }])]),
     srs: { [w5[2].id]: card, [w6[2].id]: card },

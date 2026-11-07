@@ -15,7 +15,7 @@ const targets = [...new Set([
 ].map((w) => w.id))];
 const pool = [4, 5, 6].flatMap((l) => pack(l).ids);
 export const seed = {
-  'settings.json': { settings: { hskOpen: 6, hsk: [4, 5, 6], topics: [], mode: 'dark', guessFirst: false, showHanviet: true, showExample: true, settingsVersion: 3, onboarded: true } },
+  'settings.json': { settings: { hskEdition: 2021, hskOpen: 6, hsk: [4, 5, 6], topics: [], mode: 'dark', guessFirst: false, showHanviet: true, showExample: true, settingsVersion: 3, onboarded: true } },
   'progress.json': { exposure: Object.fromEntries(pool.filter((id) => !targets.includes(id)).map((id) => [id, { n: 6, t: 1, k: true }])) },
 };
 

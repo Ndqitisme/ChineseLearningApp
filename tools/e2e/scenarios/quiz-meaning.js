@@ -44,8 +44,37 @@ export default async function (t) {
     t.assert(right.some((r) => shown?.endsWith(r)), `correct option not highlighted: "${shown}"`);
   });
 
-  await t.step('Enter goes on', async () => {
+  await t.step('hover the answered prompt: its tooltip shows', async () => {
+    const p = await main.$eval('.prompt', (el) => {
+      const r = document.createRange();
+      r.setStart(el.firstChild, 0);
+      r.setEnd(el.firstChild, 1);
+      const b = r.getBoundingClientRect();
+      return { x: b.left + b.width / 2, y: b.top + b.height / 2 };
+    });
+    await main.mouse.move(p.x - 30, p.y);
+    await main.mouse.move(p.x, p.y, { steps: 3 });
+    await t.waitFor(main, '.tip');
+  });
+
+  await t.step('Enter goes on and the old tooltip goes with it', async () => {
     await main.keyboard.press('Enter');
     await t.waitFor(main, '.count', 'Câu 3/');
+    await main.waitForFunction(() => !document.querySelector('.tip'), { timeout: 3000 });
+  });
+
+  await t.step('Enter on the focused "Tiếp" button moves on one question only', async () => {
+    await main.keyboard.press('1');
+    await t.waitFor(main, '.next .btn');
+    await main.focus('.next .btn');
+    await main.keyboard.press('Enter');
+    await t.waitFor(main, '.count', 'Câu 4/');
+    await main.evaluate(() => new Promise((r) => setTimeout(r, 300)));
+    t.assert((await t.text(main, '.count'))?.startsWith('Câu 4/'), `skipped to ${await t.text(main, '.count')}`);
+  });
+
+  await t.step('Back returns to the topic the quiz came from', async () => {
+    await main.click('.back-btn');
+    await main.waitForFunction(() => location.hash === '#/topic/greetings', { timeout: 3000 });
   });
 }

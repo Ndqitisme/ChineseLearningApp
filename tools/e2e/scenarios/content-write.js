@@ -2,7 +2,7 @@
 // stroke hint redraw the board, and drawing each stroke along its median completes every word.
 import { readFileSync } from 'node:fs';
 
-export const seed = { 'settings.json': { settings: { hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true, writeDemo: false } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, hskOpen: 6, hsk: [1], settingsVersion: 3, onboarded: true, writeDemo: false } } };
 const strokes = (ch) => JSON.parse(readFileSync(`public/strokes/${ch}.json`, 'utf8'));
 const isHan = (c) => /\p{Script=Han}/u.test(c);
 

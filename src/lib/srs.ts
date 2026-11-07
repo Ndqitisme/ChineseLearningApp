@@ -51,7 +51,3 @@ export function gradeFromAnswer(correct: boolean, ms: number): Grade {
   if (!correct) return Rating.Again;
   return ms > 8000 ? Rating.Hard : Rating.Good;
 }
-
-export function isDue(json: SrsCardJson | undefined, now = Date.now()): boolean {
-  return !!json && Date.parse(json.due) <= now;
-}

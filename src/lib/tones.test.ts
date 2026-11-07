@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { scoreTones } from './tones.ts';
+import { toSyllables } from './pinyin.ts';
+import { acceptedTones, scoreTones } from './tones.ts';
 
 /** Synthetic pitch track: f(t) for t in [0,1], 40 frames, in Hz around a 200 Hz voice. */
 const track = (f: (t: number) => number, frames = 40) => Array.from({ length: frames }, (_, i) => 200 * 2 ** (f(i / (frames - 1)) / 12));
@@ -33,5 +34,35 @@ describe('scoreTones', () => {
     expect(scoreTones([null, null, null], [1]).score).toBe(0);
     const withGaps = [null, ...track((t) => t * 6), null];
     expect(scoreTones(withGaps, [2]).score).toBeGreaterThan(60);
+  });
+});
+
+describe('acceptedTones', () => {
+  const accepted = (hanzi: string, ...py: string[]) => acceptedTones(hanzi, toSyllables(py));
+
+  it('accepts bú for 不 before a 4th tone, and only bù elsewhere', () => {
+    expect(accepted('不对', 'bù', 'duì')).toEqual([[2, 4], [4]]);
+    expect(accepted('不好', 'bù', 'hǎo')).toEqual([[4], [3]]);
+    // Written with the spoken tone: the citation tone is right too.
+    expect(accepted('不是', 'bú', 'shì')).toEqual([[2, 4], [4]]);
+  });
+
+  it('accepts yì before tones 1–3 and yí before a 4th or neutral tone', () => {
+    expect(accepted('一起', 'yī', 'qǐ')).toEqual([[1, 4], [3]]);
+    expect(accepted('一样', 'yī', 'yàng')).toEqual([[1, 2], [4]]);
+    expect(accepted('一个', 'yī', 'ge')).toEqual([[1, 2], [5]]);
+    expect(accepted('一样', 'yí', 'yàng')).toEqual([[1, 2], [4]]);
+    expect(accepted('第一', 'dì', 'yī')).toEqual([[4], [1]]);
+  });
+
+  it('accepts a 2nd tone for a 3rd tone before another 3rd', () => {
+    expect(accepted('你好', 'nǐ', 'hǎo')).toEqual([[2, 3], [3]]);
+    expect(accepted('可以', 'kě', 'yǐ')).toEqual([[2, 3], [3]]);
+    expect(accepted('很好', 'hěn', 'hǎo')).toEqual([[2, 3], [3]]);
+    expect(accepted('米饭', 'mǐ', 'fàn')).toEqual([[3], [4]]);
+  });
+
+  it('leaves syllables alone when characters and syllables do not line up', () => {
+    expect(accepted('一点儿', 'yī', 'diǎnr')).toEqual([[1], [3]]);
   });
 });

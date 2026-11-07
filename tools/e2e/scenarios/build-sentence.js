@@ -18,10 +18,13 @@ export default async function (t) {
       rest = rest.slice(tiles[i].text.length);
     }
   }
+  // Two example sentences can share a Vietnamese meaning: take the one whose characters are the tiles on the board.
   const sentenceFor = async () => {
     const prompt = (await t.text(main, '.ask b')).replace(/^“|”$/g, '');
-    const w = t.data.words.find((x) => x.ex?.vi === prompt);
-    t.assert(w, `no example sentence means "${prompt}"`);
+    const chars = (s) => [...s.replace(SEPARATORS, '')].sort().join('');
+    const board = chars((await poolTiles()).map((x) => x.text).join(''));
+    const w = t.data.words.find((x) => x.ex?.vi === prompt && chars(x.ex.zh) === board);
+    t.assert(w, `no example sentence means "${prompt}" with tiles ${board}`);
     return w.ex.zh;
   };
 

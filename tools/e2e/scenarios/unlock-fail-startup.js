@@ -1,6 +1,6 @@
 // An install with HSK 4 open whose pack cannot be read at start-up: the main window should still
 // come up (HSK 1–3 at least), not stay blank.
-export const seed = { 'settings.json': { settings: { settingsVersion: 3, hskOpen: 4, hsk: [1, 4], onboarded: true } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, settingsVersion: 3, hskOpen: 4, hsk: [1, 4], onboarded: true } } };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {

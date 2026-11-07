@@ -17,7 +17,8 @@ export function applyTheme() {
       const root = document.documentElement;
       const t = theme.current;
       const tokens = theme.dark ? t.dark : t.light;
-      for (const name of TOKENS) root.style.setProperty(`--${name}`, settings.tokenOverrides[name] ?? tokens[name]);
+      const overrides = settings.tokenOverrides[theme.dark ? 'dark' : 'light'];
+      for (const name of TOKENS) root.style.setProperty(`--${name}`, overrides[name] ?? tokens[name]);
       root.style.setProperty('--radius', `${t.radius}px`);
       root.dataset.theme = theme.dark ? 'dark' : 'light';
       root.style.colorScheme = theme.dark ? 'dark' : 'light';

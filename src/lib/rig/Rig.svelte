@@ -6,7 +6,7 @@
   import { FRAME, loadRig } from './load.ts';
   import { RigPlayer, Timeline, startLoop, type Loop, type MotionSpec } from './rig-player.js';
 
-  let { scale, mirror = false, hidden = false, onready, onlost }: {
+  let { scale, mirror = false, hidden = false, onready, onrestart, onlost }: {
     /** CSS px per frame px. */
     scale: number;
     mirror?: boolean;
@@ -14,6 +14,9 @@
     /** The rig draws from now on; also after a rebuild (a monitor with another pixel ratio), when the
      * scheduler starts empty again, so the parent re-sends any held state such as sleep. */
     onready?: () => void;
+    /** The scheduler was replaced by a fresh one (see FRESH_MS) and starts in plain idle. Called before the event
+     * that caused it, so the parent can re-send held state (sleep, open menu) first. */
+    onrestart?: () => void;
     /** Nothing is drawn any more (the WebGL context was lost); onready follows if it comes back. */
     onlost?: () => void;
   } = $props();
@@ -35,6 +38,7 @@
       timeline = new Timeline(spec!, { seed: Date.now() >>> 0 });
       loop = startLoop(player, timeline);
       loop.setHidden(hidden);
+      onrestart?.();
     }
     timeline.emit(loop.t(), name, data);
     loop.poke();

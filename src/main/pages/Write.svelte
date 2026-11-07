@@ -7,7 +7,7 @@
   import type { Word } from '../../lib/types.ts';
   import Pinyin from '../../lib/ui/Pinyin.svelte';
   import HanziStroke from '../components/HanziStroke.svelte';
-  import { deckFrom, shuffle } from '../deck.ts';
+  import { deckFrom, deckOrigin, shuffle } from '../deck.ts';
 
   import { untrack } from 'svelte';
   let { params }: { params: string[] } = $props();
@@ -42,7 +42,7 @@
 </script>
 
 <div class="page">
-  <BackButton to="/practice" label="Luyện tập" />
+  <BackButton to={deckOrigin(params)} useHistory />
   <h1><Icon name="write" hue={HUE_OF.write} /> Viết theo nét</h1>
   <p class="lead">{deck.title}<br />Xem mẫu thứ tự nét rồi vẽ lại bằng chuột. Sai 3 lần ở một nét thì nét đó tự hiện gợi ý.</p>
 

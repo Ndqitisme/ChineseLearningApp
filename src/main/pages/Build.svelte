@@ -7,7 +7,7 @@
   import { plain, score, tiles, type Score } from '../../lib/sentence.ts';
   import { isOpen } from '../../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
-  import { deckFrom, shuffle } from '../deck.ts';
+  import { deckFrom, deckOrigin, shuffle } from '../deck.ts';
 
   /** params: [mode, ...deck params]; mode "order" rebuilds example sentences, "qa" answers questions. */
   let { params }: { params: string[] } = $props();
@@ -89,6 +89,10 @@
   }
   function onKey(e: KeyboardEvent) {
     if (!item) return;
+    // Enter on a focused link or enabled button (Tiếp, Xoá hết, a tab) activates that control instead. Tiles are
+    // the board itself: a clicked tile keeps focus, and Enter then still checks the answer.
+    const control = e.target instanceof Element ? e.target.closest('a, button:not(.tile)') : null;
+    if (e.key === 'Enter' && control && !(control as HTMLButtonElement).disabled) return;
     if (e.key === 'Enter') { e.preventDefault(); if (result) next(); else if (complete) check(); }
     else if (e.key === 'Backspace' && !result && picked.length) { e.preventDefault(); picked = picked.slice(0, -1); }
   }
@@ -100,7 +104,7 @@
 <svelte:window onkeydown={onKey} />
 
 <div class="page">
-  <BackButton to="/practice" label="Luyện tập" />
+  <BackButton to={deckOrigin(deckParams)} useHistory />
   <h1><Icon name="build" hue={HUE_OF.build} /> Ghép câu</h1>
   <div class="tabs">
     <a class="chip" class:on={mode === 'order'} href="#/build/order{tail}">Sắp xếp thành câu</a>

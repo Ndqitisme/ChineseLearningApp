@@ -9,7 +9,7 @@
   import { LESSON_SIZE } from '../deck.ts';
 
   const LEVELS = [1, 2, 3, 4, 5, 6] as const;
-  const EDITIONS: HskEdition[] = [2021, 2025];
+  const EDITIONS: HskEdition[] = [2025, 2021];
   /** Level whose pack is loading; 0 when idle. */
   let unlocking = $state(0);
   let failed = $state(false);

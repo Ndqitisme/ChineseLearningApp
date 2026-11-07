@@ -1,6 +1,6 @@
 // Tone feedback without reference audio: compare the learner's pitch contour with the
 // textbook shape of each tone (Chao tone letters, 1 = lowest … 5 = highest).
-import type { Tone } from './pinyin.ts';
+import type { Syllable, Tone } from './pinyin.ts';
 
 export const TONE_SHAPE: Record<Tone, number[]> = {
   1: [5, 5, 5],
@@ -17,6 +17,31 @@ export const TONE_NAME: Record<Tone, string> = {
   4: 'thanh 4 (đi xuống mạnh)',
   5: 'thanh nhẹ',
 };
+
+/**
+ * Tones a learner may pick for each syllable: the written one, and the spoken one where tone sandhi changes it.
+ * 不 is bú before a 4th tone; 一 is yí before a 4th or neutral tone and yì before the others; a 3rd tone before
+ * another 3rd is said as a 2nd. Words list the citation tone (不对 bùduì), sometimes the spoken one (一样 yíyàng).
+ */
+export function acceptedTones(hanzi: string, syllables: Syllable[]): Tone[][] {
+  const chars = [...hanzi];
+  const aligned = chars.length === syllables.length;
+  return syllables.map((s, i) => {
+    const out = new Set<Tone>([s.tone]);
+    const next = syllables[i + 1]?.tone;
+    const ch = aligned ? chars[i] : '';
+    if (ch === '不' && (s.tone === 4 || s.tone === 2)) {
+      out.add(4);
+      if (next === 4) out.add(2);
+    }
+    if (ch === '一' && s.tone !== 5) {
+      out.add(1);
+      if (next !== undefined) out.add(next === 4 || next === 5 ? 2 : 4);
+    }
+    if (s.tone === 3 && next === 3) out.add(2);
+    return [...out].sort();
+  });
+}
 
 export function resample(values: number[], n: number): number[] {
   if (values.length === 0) return [];

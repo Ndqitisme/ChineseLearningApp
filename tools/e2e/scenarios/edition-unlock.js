@@ -1,5 +1,6 @@
 // Under 2025, unlocking HSK 4 on Topics loads pack 4 and its course lists the 2025 ids, including a word that is
-// 2025 HSK 4 but 2021 HSK 6. Switching to 2021 serves the 2021 ids and locks that word again.
+// 2025 HSK 4 but 2021 HSK 6. Switching to 2021 serves the 2021 ids; that word's page stays open, since its 2025
+// level is open.
 import { readFileSync } from 'node:fs';
 
 const p4 = JSON.parse(readFileSync('src/generated/hsk4.json', 'utf8'));
@@ -57,7 +58,7 @@ export default async function (t) {
     t.assert(c[0] === 'HSK 4' && c.includes('Bản 2021: HSK 6'), `chips ${c}`);
   });
 
-  await t.step('switch to 2021: HSK 4 serves the 2021 ids, the moved word is locked at HSK 6', async () => {
+  await t.step('switch to 2021: HSK 4 serves the 2021 ids; the moved word keeps its page (2025 HSK 4 is open)', async () => {
     await go('#/topics');
     await t.click(main, '.edition .chip', 'Bản 2021');
     await main.waitForFunction(() => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.hskEdition === 2021, { timeout: 5000 });
@@ -65,7 +66,9 @@ export default async function (t) {
     t.assert(JSON.stringify(got) === JSON.stringify(p4.ids), `2021 HSK 4 rows (${got.length}) differ from ids at ${got.findIndex((id, i) => id !== p4.ids[i])}`);
     t.assert(!got.includes(moved.id), `${moved.id} still in the 2021 HSK 4 course`);
     await open(moved.id);
-    await t.waitFor(main, 'p.empty', 'thuộc HSK 6, cấp này đang khoá');
+    await t.waitFor(main, '.hero .vi', moved.vi);
+    const c = await t.texts(main, '.chips .chip');
+    t.assert(c[0] === 'HSK 6' && c.includes('Bản 2025: HSK 4'), `chips under 2021 ${c}`);
   });
 
   await t.step('restart under 2021 with HSK 1–4: pack 4 loads again, counts are right', async () => {

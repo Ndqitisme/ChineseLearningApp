@@ -1,5 +1,5 @@
-// Search follows the edition: a 2025-only word is found only under 2025, a 2021-only word only under 2021, by hanzi
-// and toneless pinyin. Results never include a word the chosen edition does not list, except topic words.
+// Search keeps words of both editions: a 2025-only and a 2021-only word are found under either edition, by hanzi
+// and toneless pinyin. Results never include a word of a locked level (HSK 4–6 in both editions here).
 export const seed = { 'settings.json': { settings: { settingsVersion: 3, onboarded: true, petEnabled: false } } };
 
 /** @param {import('../run.ts').T} t */
@@ -23,28 +23,39 @@ export default async function (t) {
     await t.click(main, '.chip', `Bản ${e}`);
     await main.waitForFunction((v) => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.hskEdition === v, { timeout: 5000 }, e);
   };
-  const outside = (ids, e) => ids.filter((id) => { const w = byId.get(id); return w && !w.topics.length && !(e === 2025 ? w.hsk2025 : w.hsk); });
+  const locked = (ids) => ids.filter((id) => { const w = byId.get(id); return w && !w.topics.length && !((w.hsk ?? 9) <= 3 || (w.hsk2025 ?? 9) <= 3); });
 
   for (const e of [2021, 2025, 2021]) {
-    await t.step(`${e}: ${only2025.hanzi} (2025-only) and ${only2021.hanzi} (2021-only)`, async () => {
+    await t.step(`${e}: ${only2025.hanzi} (2025-only) and ${only2021.hanzi} (2021-only) are both found`, async () => {
       await setEdition(e);
-      for (const [w, listed] of [[only2025, e === 2025], [only2021, e === 2021]]) {
+      for (const w of [only2025, only2021]) {
         for (const q of [w.hanzi, toneless(w)]) {
           const ids = await search(q);
-          t.assert(ids.includes(w.id) === listed, `search "${q}" under ${e}: ${w.id} ${listed ? 'missing' : 'shown'} (${ids.slice(0, 8)})`);
-          const leak = outside(ids, e);
-          t.assert(!leak.length, `search "${q}" under ${e} shows words outside that edition: ${leak.slice(0, 5)}`);
+          t.assert(ids.includes(w.id), `search "${q}" under ${e}: ${w.id} missing (${ids.slice(0, 8)})`);
+          const leak = locked(ids);
+          t.assert(!leak.length, `search "${q}" under ${e} shows words of locked levels: ${leak.slice(0, 5)}`);
         }
       }
     });
   }
 
-  await t.step('2025: a search with no hit names the open levels', async () => {
-    await setEdition(2025);
+  await t.step('a search with no hit names the open levels', async () => {
     await go('#/');
-    await go(`#/search/${encodeURIComponent(only2021.hanzi)}`);
-    await t.waitFor(main, 'p.muted', 'kết quả');
-    const empty = await t.text(main, 'p.empty');
-    console.log(`      2025 search ${only2021.hanzi}: ${empty ?? '(results)'}`);
+    await go(`#/search/${encodeURIComponent('zzzz')}`);
+    await t.waitFor(main, 'p.empty', 'HSK 1–3');
+  });
+
+  await t.step('Back from a word page brings the typed query and its results back', async () => {
+    await go('#/');
+    await go('#/search');
+    await main.waitForSelector('input.search');
+    await main.type('input.search', toneless(only2021));
+    await t.waitFor(main, 'a.row');
+    await main.waitForFunction((q) => decodeURIComponent(location.hash) === `#/search/${q}`, { timeout: 3000 }, toneless(only2021));
+    await main.click('a.row');
+    await main.waitForFunction(() => location.hash.startsWith('#/word/'), { timeout: 3000 });
+    await main.evaluate(() => history.back());
+    await main.waitForFunction((q) => document.querySelector('input.search')?.value === q, { timeout: 3000 }, toneless(only2021));
+    await t.waitFor(main, 'a.row');
   });
 }

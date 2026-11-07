@@ -1,7 +1,9 @@
 // HSK 4–6 on a fresh install: 1–3 open, 4–6 locked; unlocking 4 then 6 shows loading, counts and lessons of 25.
 // Lesson quiz and write links serve exactly that lesson, and the state survives a reload of both windows.
 const LESSON = 25;
-const wait = (page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
+// Fresh apart from the edition: the expected counts and lessons below come from the 2021 lists.
+export const seed = { 'settings.json': { settings: { hskEdition: 2021 } } };
+const wait =(page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
 /** @param {import('../run.ts').T} t */
@@ -135,7 +137,7 @@ export default async function (t) {
   await t.step('7f About page counts match the open levels', async () => {
     await go(main, '#/about');
     await t.waitFor(main, 'b');
-    const line = await main.evaluate(() => [...document.querySelectorAll('div')].find((d) => /^\d+ từ · \d+ chủ đề · HSK/.test(d.innerText.trim()))?.innerText.trim());
+    const line = (await t.text(main, '.counts'))?.split('\n').map((x) => x.trim()).join(' · ');
     console.log(`      About: ${line}`);
     if (line && /cấp 1–3/.test(line) && !line.startsWith(String(t.data.words.length))) {
       t.problems.push(`assertion: About says "${line}" with HSK 1–6 open (count includes 4–6, label says 1–3)`);

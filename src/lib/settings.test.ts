@@ -1,20 +1,36 @@
 import { describe, expect, it } from 'vitest';
 import hsk5 from '../generated/hsk5.json';
 import { words } from './data.ts';
-import { DEFAULT_SETTINGS, fromSaved, hskOpenPatch, isOpen, migration, normalize, openWord, setHskOpen, settings, type Settings } from './settings.svelte.ts';
+import { DEFAULT_SETTINGS, fromSaved, hskOpenPatch, isOpen, isOpenAnyEdition, migration, normalize, openWord, openWordAnyEdition, setHskOpen, settings, type Settings } from './settings.svelte.ts';
 import type { LevelPack } from './types.ts';
 
 const pack5 = hsk5 as unknown as LevelPack;
 const withDefaults = (patch: Partial<Settings>): Settings => ({ ...DEFAULT_SETTINGS, ...patch });
 
 describe('settings migration', () => {
-  it('moves only pre-v2 installs off the old sakura default, and stamps v3', () => {
-    expect(migration({ settingsVersion: 1, theme: 'sakura' })).toEqual({ settingsVersion: 3, theme: 'ocean' });
-    expect(migration({ theme: 'sakura' })).toEqual({ settingsVersion: 3, theme: 'ocean' });
+  it('moves only pre-v2 installs off the old sakura default, and stamps v4', () => {
+    expect(migration({ settingsVersion: 1, theme: 'sakura' })).toEqual({ settingsVersion: 4, theme: 'ocean' });
+    expect(migration({ theme: 'sakura' })).toEqual({ settingsVersion: 4, theme: 'ocean' });
     // A version 2 install on sakura chose it, so it is kept.
-    expect(migration({ settingsVersion: 2, theme: 'sakura' })).toEqual({ settingsVersion: 3 });
-    expect(migration({ settingsVersion: 3 })).toBeNull();
+    expect(migration({ settingsVersion: 2, theme: 'sakura' })).toEqual({ settingsVersion: 4 });
+    expect(migration({ settingsVersion: 3 })).toEqual({ settingsVersion: 4 });
+    expect(migration({ settingsVersion: 4 })).toBeNull();
     expect(migration(undefined)).toBeNull();
+  });
+
+  it('copies a version 3 colour override map to both the light and the dark look', () => {
+    const v3 = { settingsVersion: 3, tokenOverrides: { primary: '#ff0000', bg: 7 } } as unknown as Partial<Settings>;
+    expect(fromSaved(v3).tokenOverrides).toEqual({ light: { primary: '#ff0000' }, dark: { primary: '#ff0000' } });
+    const v4 = { settingsVersion: 4, tokenOverrides: { light: { primary: '#ff0000' }, dark: { bg: '#000000' } } };
+    expect(fromSaved(v4).tokenOverrides).toEqual(v4.tokenOverrides);
+    expect(fromSaved({ tokenOverrides: { light: { primary: '#fff' } } }).tokenOverrides).toEqual({ light: { primary: '#fff' }, dark: {} });
+  });
+
+  it('keeps a saved edition and reads a damaged one as the 2025 default', () => {
+    expect(DEFAULT_SETTINGS.hskEdition).toBe(2025);
+    expect(fromSaved({ hskEdition: 2021 }).hskEdition).toBe(2021);
+    expect(fromSaved({ hskEdition: 1999 }).hskEdition).toBe(2025);
+    expect(fromSaved({ hskEdition: '2021' }).hskEdition).toBe(2025);
   });
 
   it('opens HSK 1–3 for an install saved before hskOpen existed', () => {
@@ -36,7 +52,7 @@ describe('normalize', () => {
 describe('fromSaved', () => {
   it('keeps saved fields and drops ones of the wrong type, so a damaged file cannot stop start-up', () => {
     expect(fromSaved({ hsk: null, topics: null, speech: null, tokenOverrides: null, mode: 42, wordSec: 30 })).toMatchObject({
-      hsk: DEFAULT_SETTINGS.hsk, topics: DEFAULT_SETTINGS.topics, speech: DEFAULT_SETTINGS.speech, tokenOverrides: {}, mode: 'system', wordSec: 30,
+      hsk: DEFAULT_SETTINGS.hsk, topics: DEFAULT_SETTINGS.topics, speech: DEFAULT_SETTINGS.speech, tokenOverrides: { light: {}, dark: {} }, mode: 'system', wordSec: 30,
     });
     expect(fromSaved({ speech: { provider: 'http', voices: null, http: 'x' } }).speech).toEqual({ ...DEFAULT_SETTINGS.speech, provider: 'http' });
     expect(fromSaved({ hskOpen: '5', hsk: [1, 6] })).toMatchObject({ hskOpen: 5, hsk: [1] });
@@ -75,11 +91,29 @@ describe('unlock and re-lock', () => {
     const only2025 = words.find((w) => !w.hsk && w.hsk2025 === 5 && !w.topics.length)!;
     const only2021 = words.find((w) => w.hsk === 1 && !w.hsk2025 && !w.topics.length)!;
     const moved = words.find((w) => w.hsk === 6 && w.hsk2025 === 4 && !w.topics.length)!;
-    expect(settings.hskEdition).toBe(2021);
+    settings.hskEdition = 2021;
     expect([isOpen(only2025), isOpen(only2021), isOpen(moved)]).toEqual([false, true, false]);
     settings.hskEdition = 2025;
     expect([isOpen(only2025), isOpen(only2021), isOpen(moved)]).toEqual([true, false, true]);
-    settings.hskEdition = 2021;
     await setHskOpen(3);
+  });
+
+  it('keeps words of either edition open for review, notebook and search, within the open levels', async () => {
+    const only2025 = words.find((w) => !w.hsk && w.hsk2025 === 3 && !w.topics.length)!;
+    const only2021 = words.find((w) => w.hsk === 1 && !w.hsk2025 && !w.topics.length)!;
+    await setHskOpen(5);
+    const moved = words.find((w) => w.hsk === 6 && w.hsk2025 === 4 && !w.topics.length)!;
+    const high = words.find((w) => w.hsk === 5 && w.hsk2025 === 5 && !w.topics.length)!;
+    for (const edition of [2021, 2025] as const) {
+      settings.hskEdition = edition;
+      expect([only2025, only2021, moved, high].map(isOpenAnyEdition), `${edition}`).toEqual([true, true, true, true]);
+      expect(openWordAnyEdition(only2025.id)?.id).toBe(only2025.id);
+    }
+    // A re-locked level stays hidden whatever the edition: moved is 2025 HSK 4, high is HSK 5 in both.
+    await setHskOpen(4);
+    expect([isOpenAnyEdition(moved), isOpenAnyEdition(high)]).toEqual([true, false]);
+    await setHskOpen(3);
+    expect([isOpenAnyEdition(moved), openWordAnyEdition(high.id)]).toEqual([false, undefined]);
+    settings.hskEdition = DEFAULT_SETTINGS.hskEdition;
   });
 });

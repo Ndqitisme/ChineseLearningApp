@@ -9,6 +9,9 @@ const pack4 = new Set(p4.words.map((w) => w.hanzi));
 const wait = (page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
+// The expected words below come from the 2021 lists.
+export const seed = { 'settings.json': { settings: { hskEdition: 2021 } } };
+
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
   const pet = await t.open('pet');

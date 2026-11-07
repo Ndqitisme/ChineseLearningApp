@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 const pack = (l) => JSON.parse(readFileSync(`src/generated/hsk${l}.json`, 'utf8'));
 const core = JSON.parse(readFileSync('src/generated/dataset.json', 'utf8'));
 const coreHanzi = new Set(core.words.map((w) => w.hanzi));
-// Pack-only words of that level in the 2021 lists (the default), whose characters appear in no core word,
+// Pack-only words of that level in the 2021 lists (seeded), whose characters appear in no core word,
 // so a hanzi search cannot hit the core.
 const only = (l) => pack(l).words.filter((w) => w.hsk === l && ![...coreHanzi].some((h) => h.includes(w.hanzi)));
 const w5 = only(5);
@@ -24,7 +24,7 @@ const exposure = { [star5.id]: { n: 1, t: nowMin - 500, s: 1 } };
 seen5.forEach((w, i) => { exposure[w.id] = { n: 1, t: nowMin - i }; });
 
 export const seed = {
-  'settings.json': { settings: { settingsVersion: 3, hskOpen: 5, hsk: [1, 5], topics: ['greetings'], onboarded: true } },
+  'settings.json': { settings: { hskEdition: 2021, settingsVersion: 3, hskOpen: 5, hsk: [1, 5], topics: ['greetings'], onboarded: true } },
   'progress.json': { srs: { [due5.id]: card(3), [due4.id]: card(4) }, exposure },
 };
 
@@ -39,7 +39,10 @@ export default async function (t) {
   const check = (cond, msg) => { if (!cond) t.problems.push(`assertion: ${msg}`); };
   const settingsOf = async () => (await t.store(main, 'settings.json')).settings ?? {};
   const hidden = new Set([...pack(4).words, ...pack(5).words].map((w) => w.hanzi));
-  const hiddenIds = new Set([...pack(4).ids, ...pack(5).ids].filter((id) => !core.words.some((w) => w.id === id && w.topics.length)));
+  // Search, review and the notebook keep words either edition lists at an open level: a 2021 HSK 4 word that the
+  // 2025 lists put at HSK 1–3 stays visible after the re-lock.
+  const stillOpen = (w) => w.topics.length || (w.hsk2025 && w.hsk2025 <= 3);
+  const hiddenIds = new Set([...pack(4).ids, ...pack(5).ids].filter((id) => !core.words.some((w) => w.id === id && stillOpen(w))));
   const rowIds = async () => (await main.$$eval('a.row', (els) => els.map((a) => decodeURIComponent(a.getAttribute('href').replace('#/word/', '')))));
   const homeDue = () => main.$eval('a.stat.link b', (b) => b.textContent.trim());
   const bubbleWords = async (n) => {

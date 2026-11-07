@@ -6,7 +6,7 @@ const p5 = JSON.parse(readFileSync('src/generated/hsk5.json', 'utf8'));
 const packHanzi = new Set([...p4.words, ...p5.words].map((w) => w.hanzi));
 const wait = (page, ms) => page.evaluate((m) => new Promise((r) => setTimeout(r, m)), ms);
 
-export const seed = { 'settings.json': { settings: { settingsVersion: 3, hskOpen: 4, hsk: [4], topics: [], onboarded: true } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, settingsVersion: 3, hskOpen: 4, hsk: [4], topics: [], onboarded: true } } };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {

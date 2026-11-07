@@ -43,6 +43,21 @@ export function spriteOffset(anchor: Anchor, win: Size, sprite: Size) {
   };
 }
 
+/** Where she stands: the sprite's left edge and its feet, physical px. Placement is saved as this rather than the
+ * window's top-left, because the window's height follows the bubble and her feet must stay on the taskbar. */
+export interface Spot { x: number; bottom: number }
+
+export function spotOf(windowPos: { x: number; y: number }, scale: number, winCss: Size, spriteCss: Size, anchor: Anchor): Spot {
+  const off = spriteOffset(anchor, winCss, spriteCss);
+  return { x: windowPos.x + off.x * scale, bottom: windowPos.y + (off.y + spriteCss.h) * scale };
+}
+
+/** The window position that puts the sprite at `spot` with the current window size. */
+export function windowAt(spot: Spot, scale: number, winCss: Size, spriteCss: Size, anchor: Anchor) {
+  const off = spriteOffset(anchor, winCss, spriteCss);
+  return { x: Math.round(spot.x - off.x * scale), y: Math.round(spot.bottom - (off.y + spriteCss.h) * scale) };
+}
+
 export function anchorFor(sprite: Rect, workArea: Rect): Anchor {
   return { h: sprite.x + sprite.w / 2 > workArea.x + workArea.w / 2 ? 'right' : 'left' };
 }

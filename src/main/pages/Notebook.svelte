@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
   import { progress } from '../../lib/progress.svelte.ts';
-  import { openWord } from '../../lib/settings.svelte.ts';
+  import { openWordAnyEdition } from '../../lib/settings.svelte.ts';
   import { HUE_OF } from '../../lib/theme/themes.ts';
   import type { Word } from '../../lib/types.ts';
   import WordRow from '../components/WordRow.svelte';
@@ -9,7 +9,7 @@
   const starred = $derived(
     Object.entries(progress.exposure)
       .filter(([, e]) => e.s)
-      .map(([id]) => openWord(id))
+      .map(([id]) => openWordAnyEdition(id))
       .filter((w): w is Word => !!w),
   );
 </script>

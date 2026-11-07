@@ -3,7 +3,7 @@
   import type { IconName } from '../../lib/ui/icon-names.ts';
   import { speechAvailable } from '../../lib/speech/index.ts';
   import { HUE_OF, hueVar, type Hue } from '../../lib/theme/themes.ts';
-  import { reviewQueueIds } from '../review-queue.ts';
+  import { reviewQueueIds } from '../review-queue.svelte.ts';
 
   const due = $derived(reviewQueueIds().length);
   const modes = $derived<{ href: string; icon: IconName; hue: Hue; title: string; desc: string; off?: boolean }[]>([
@@ -22,7 +22,7 @@
   <p class="lead">Luyện nghĩa, mặt chữ, nghe, cách viết, thanh điệu và ghép câu.</p>
   <div class="grid">
     {#each modes as m (m.href)}
-      <a class="card mode" class:off={m.off} href={m.off ? '#/settings' : m.href} style:--h={hueVar(m.hue)}>
+      <a class="card mode" class:off={m.off} href={m.off ? '#/settings/voice' : m.href} style:--h={hueVar(m.hue)}>
         <span class="disc"><Icon name={m.icon} /></span><b>{m.title}</b><span class="muted">{m.desc}</span>
       </a>
     {/each}

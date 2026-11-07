@@ -1,5 +1,5 @@
 // Hand-edited or odd saved values: hskOpen out of range and as a string, assistant levels above it.
-export const seed = { 'settings.json': { settings: { settingsVersion: 3, hskOpen: '9', hsk: [1, 6, 7], topics: [] } } };
+export const seed = { 'settings.json': { settings: { hskEdition: 2021, settingsVersion: 3, hskOpen: '9', hsk: [1, 6, 7], topics: [] } } };
 const go = (page, hash) => page.evaluate((h) => { location.hash = h; }, hash);
 
 /** @param {import('../run.ts').T} t */

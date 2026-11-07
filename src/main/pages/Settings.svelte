@@ -4,7 +4,7 @@
   import { disable as disableAutostart, enable as enableAutostart, isEnabled as autostartEnabled } from '@tauri-apps/plugin-autostart';
   import { open as openDialog } from '@tauri-apps/plugin-dialog';
   import { setHskOpen, settings, updateSettings, type Settings, type SpeechSettings, type VoiceSlot } from '../../lib/settings.svelte.ts';
-  import { chineseSystemVoices, speak, whenVoicesReady, type VoiceInfo } from '../../lib/speech/index.ts';
+  import { autoVoice, chineseSystemVoices, speak, whenVoicesReady, type VoiceInfo } from '../../lib/speech/index.ts';
   import { packInfo } from '../../lib/speech/native.ts';
   import { theme } from '../../lib/theme/apply.svelte.ts';
   import { HSK_HUE } from '../../lib/data.ts';
@@ -61,12 +61,14 @@
     { name: 'bg', label: 'Nền' },
     { name: 'bubble-border', label: 'Viền bong bóng' },
   ];
+  /** Colour edits apply to the look on screen now: light and dark keep their own. */
+  const look = $derived(theme.dark ? 'dark' : 'light');
   const currentToken = (name: string) =>
-    settings.tokenOverrides[name] ?? (theme.dark ? theme.current.dark : theme.current.light)[name as 'bg'];
+    settings.tokenOverrides[look][name] ?? (theme.dark ? theme.current.dark : theme.current.light)[name as 'bg'];
   function setToken(name: string, value: string | null) {
-    const next = { ...settings.tokenOverrides };
+    const next = { ...settings.tokenOverrides[look] };
     if (value === null) delete next[name]; else next[name] = value;
-    set({ tokenOverrides: next });
+    set({ tokenOverrides: { ...settings.tokenOverrides, [look]: next } });
   }
 </script>
 
@@ -98,8 +100,9 @@
           <input type="color" value={currentToken(tk.name)} oninput={(e) => setToken(tk.name, e.currentTarget.value)} />{tk.label}
         </label>
       {/each}
-      {#if Object.keys(settings.tokenOverrides).length}<button class="btn ghost" onclick={() => set({ tokenOverrides: {} })}>Về mặc định</button>{/if}
+      {#if Object.keys(settings.tokenOverrides[look]).length}<button class="btn ghost" onclick={() => set({ tokenOverrides: { ...settings.tokenOverrides, [look]: {} } })}>Về mặc định</button>{/if}
     </div>
+    <p class="muted small">Màu tự chỉnh chỉ áp dụng cho chế độ {look === 'dark' ? 'tối' : 'sáng'}.</p>
     <details>
       <summary>CSS riêng (tuỳ biến mọi thành phần)</summary>
       <textarea rows="6" placeholder={'.bubble { border-radius: 4px; }\n:root { --font-ui: "Comic Sans MS"; }'} value={settings.customCss}
@@ -111,7 +114,7 @@
   <h2 class="section-title"><Icon name="pet-show-character" hue="teal" /> Trợ lý Tiểu Mai</h2>
   <div class="card stack">
     <label class="row"><input type="checkbox" checked={settings.petEnabled} onchange={(e) => set({ petEnabled: e.currentTarget.checked })} /> Hiện trợ lý trên màn hình</label>
-    <label class="row"><input type="checkbox" checked={!settings.petCharacter} onchange={(e) => set({ petCharacter: !e.currentTarget.checked })} /> Ẩn nhân vật Tiểu Mai, chỉ giữ bảng từ vựng (gọn màn hình hơn; kéo bảng bằng dòng chủ đề phía trên)</label>
+    <label class="row"><input type="checkbox" checked={!settings.petCharacter} onchange={(e) => set({ petCharacter: !e.currentTarget.checked })} /> Ẩn nhân vật, chỉ giữ bảng từ</label>
     <div class="row">
       <span class="lbl">Kích thước</span>
       {#each [2, 3, 4] as s (s)}<button class="chip" class:on={settings.petScale === s} onclick={() => set({ petScale: s })}>{['Nhỏ', 'Vừa', 'Lớn'][s - 2]}</button>{/each}
@@ -146,17 +149,19 @@
     </div>
     <div class="row wrap">
       <span class="lbl">Bộ từ</span>
-      {#each [2021, 2025] as const as e (e)}
+      {#each [2025, 2021] as const as e (e)}
         <button class="chip" class:on={settings.hskEdition === e} onclick={() => set({ hskEdition: e })}>Bản {e}</button>
       {/each}
     </div>
     <p class="muted small">
-      Bản 2021: chuẩn HSK 3.0 đầu tiên, nhiều từ hơn ở cấp 1–3.<br />
-      Bản 2025: đề cương chính thức công bố tháng 11/2025, dùng cho kỳ thi HSK mới.<br />
-      Đổi bộ từ không ảnh hưởng tiến độ ôn tập.
+      Bản 2025: danh sách chính, theo đề cương của kỳ thi HSK mới.<br />
+      Bản 2021: dành cho người học theo giáo trình cũ.<br />
+      Trợ lý và các khoá HSK dùng bản đang chọn.<br />
+      Ôn tập, sổ tay và tra cứu giữ từ của cả hai bản.
     </p>
     <p class="muted small">
-      Chọn mức thấp hơn thì danh sách từ của các cấp cao hơn tạm ẩn và trợ lý ngừng nhắc các cấp đó.<br />
+      Chọn mức thấp hơn thì từ của các cấp cao hơn tạm ẩn ở mọi trang, kể cả ôn tập và sổ tay.<br />
+      Trợ lý ngừng nhắc các cấp đó.<br />
       Từ trong chủ đề vẫn hiện đủ, kể cả từ thuộc cấp cao hơn.<br />
       Tiến độ ôn tập vẫn được giữ.
     </p>
@@ -173,23 +178,29 @@
       {/each}
     </div>
 
+    {#snippet installHint(missing: string)}
+      <div class="hint">
+        {missing}<br />
+        Windows: <b>Cài đặt → Thời gian & ngôn ngữ → Giọng nói → Thêm giọng nói</b>, chọn “Chinese (Simplified, China)” (giọng nữ Huihui, giọng nam Kangkang).<br />
+        macOS: <b>Cài đặt hệ thống → Trợ năng → Nội dung được đọc</b>.<br />
+        Cài xong thì mở lại trang này.
+      </div>
+    {/snippet}
     {#if settings.speech.provider === 'system'}
       {#if voices.length}
-        {#each [['female', 'Giọng nữ'], ['male', 'Giọng nam']] as [slot, label] (slot)}
+        {#each [['female', 'Giọng nữ', 'nữ'], ['male', 'Giọng nam', 'nam']] as [slot, label, gender] (slot)}
           <label class="row"><span class="lbl">{label}</span>
             <select value={settings.speech.voices[slot as VoiceSlot]} onchange={(e) => setVoice(slot as VoiceSlot, e.currentTarget.value)}>
               <option value="">Tự chọn</option>
               {#each voices as v (v.id)}<option value={v.id}>{v.label}</option>{/each}
             </select>
             <button class="btn" onclick={() => test(slot as VoiceSlot)}><Icon name="play" /> Thử</button></label>
+          {#if !settings.speech.voices[slot as VoiceSlot] && !autoVoice(voices, slot as VoiceSlot)}
+            {@render installHint(`Máy chưa có giọng ${gender} tiếng Trung, đang đọc bằng ${voices[0].name}.`)}
+          {/if}
         {/each}
       {:else}
-        <div class="hint">
-          Máy chưa có giọng tiếng Trung.<br />
-          Windows: <b>Cài đặt → Thời gian & ngôn ngữ → Giọng nói → Thêm giọng nói</b>, chọn “Chinese (Simplified, China)” (giọng nữ Huihui, giọng nam Kangkang).<br />
-          macOS: <b>Cài đặt hệ thống → Trợ năng → Nội dung được đọc</b>.<br />
-          Cài xong thì mở lại trang này.
-        </div>
+        {@render installHint('Máy chưa có giọng tiếng Trung.')}
       {/if}
     {:else if settings.speech.provider === 'http'}
       <div class="row wrap">
@@ -222,8 +233,7 @@
       <p class="muted small">
         {#if settings.speech.http.preset === 'custom'}URL dạng GET trả về file âm thanh; dùng {'{text}'} và {'{voice}'} làm chỗ điền.
         {:else if settings.speech.http.preset === 'openai'}Chạy giọng offline trên máy: ví dụ server Kokoro-FastAPI ở http://localhost:8880/v1/audio/speech (giọng zf_xiaoyi, zm_yunjian…).
-        {:else}Dùng key của dịch vụ Azure AI Speech của bạn.<br />API key lưu trong máy (settings.json).{/if}
-        <br />Mỗi câu chỉ gọi API một lần rồi lưu cache.
+        {:else}Dùng key của dịch vụ Azure AI Speech của bạn.<br />API key chỉ lưu trên máy này.{/if}
       </p>
     {:else if settings.speech.provider === 'pack'}
       <div class="row wrap">
