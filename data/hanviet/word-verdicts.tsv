@@ -60,7 +60,7 @@ word	verdict	hanviet	reason
 杯子	hide		ghép từng chữ, không phải từ tiếng Việt
 北	show	bắc	1 chữ
 北边	hide		ghép từng chữ, không phải từ tiếng Việt
-北部	show	bắc bộ	từ HV có trong tiếng Việt
+北部	hide		kiểm từ điển: 'bắc bộ' là tên vùng Bắc Bộ, không phải 'phần phía bắc' nói chung
 北方	hide		kiểm chéo: không phải từ tiếng Việt thông dụng
 北京	show	Bắc Kinh	từ HV có trong tiếng Việt
 背	show	bối	1 chữ
@@ -467,7 +467,7 @@ word	verdict	hanviet	reason
 否定	show	phủ định	từ HV có trong tiếng Việt
 否认	show	phủ nhận	từ HV có trong tiếng Việt
 服务	show	phục vụ	từ HV có trong tiếng Việt
-服务员	show	phục vụ viên	từ HV có trong tiếng Việt (giữ theo ví dụ đã duyệt)
+服务员	hide		kiểm từ điển: tiếng Việt dùng 'nhân viên phục vụ'; 'phục vụ viên' hiếm dùng
 服装	hide		không chắc
 福	show	phúc	1 chữ
 父母	hide		văn chương, tiếng Việt nói cha mẹ
@@ -583,8 +583,8 @@ word	verdict	hanviet	reason
 管	show	quản	1 chữ
 管理	show	quản lý	từ HV có trong tiếng Việt
 光	show	quang	1 chữ
-光明	show	quang minh	từ HV có trong tiếng Việt
-广播	show	quảng bá	từ HV có trong tiếng Việt
+光明	hide		kiểm từ điển: 'quang minh' ít dùng và nghĩa khác (quang minh chính đại)
+广播	hide		kiểm từ điển: 'quảng bá' tiếng Việt là quảng bá sản phẩm, khác nghĩa phát thanh
 广场	show	quảng trường	từ HV có trong tiếng Việt
 广大	hide		'quảng đại' tiếng Việt thường nghĩa rộng lượng, khác
 广告	show	quảng cáo	từ HV có trong tiếng Việt
@@ -891,7 +891,7 @@ word	verdict	hanviet	reason
 开业	hide		kiểm chéo: không phải từ tiếng Việt thông dụng
 开展	hide		nghĩa tiếng Việt khác, tiếng Việt nói 'triển khai'
 看	show	khán	1 chữ
-看病	show	khám bệnh	từ HV thông dụng, cùng nghĩa
+看病	hide		kiểm từ điển: 'khám bệnh' không phải âm Hán Việt từng chữ (看 = khán)
 看到	hide		ghép từng chữ, không phải từ tiếng Việt
 看法	hide		ghép từng chữ, không phải từ tiếng Việt
 看见	hide		ghép từng chữ, không phải từ tiếng Việt
@@ -1525,7 +1525,7 @@ word	verdict	hanviet	reason
 所	show	sở	1 chữ
 所以	hide		nghĩa tiếng Việt khác
 所有	hide		nghĩa HSK là tất cả, sở hữu lệch nghĩa
-所长	show	sở trưởng	từ HV có trong tiếng Việt
+所长	hide		kiểm từ điển: 'sở trưởng' hiếm dùng
 他	show	tha	1 chữ
 他们	hide		ghép từng chữ, không phải từ tiếng Việt
 它	show	tha	1 chữ
@@ -1630,7 +1630,7 @@ word	verdict	hanviet	reason
 外交	show	ngoại giao	từ HV có trong tiếng Việt
 外卖	hide		ghép từng chữ, không phải từ tiếng Việt
 外面	hide		ghép từng chữ, không phải từ tiếng Việt
-外文	show	ngoại văn	từ HV có trong tiếng Việt
+外文	hide		kiểm từ điển: 'ngoại văn' là sách báo tiếng nước ngoài, khác nghĩa
 外语	show	ngoại ngữ	từ HV có trong tiếng Việt
 完	show	hoàn	1 chữ
 完成	show	hoàn thành	từ HV có trong tiếng Việt
@@ -2993,7 +2993,7 @@ word	verdict	hanviet	reason
 当作	hide		ghép từng chữ, không phải từ tiếng Việt
 挡	show		1 chữ
 党	show		1 chữ
-档	show		1 chữ
+档	hide		kiểm từ điển: không nguồn nào xác nhận âm cho nghĩa hồ sơ
 档案	hide		ghép từng chữ, không phải từ tiếng Việt
 导游	hide		từ Hán Việt hiếm/không dùng trong tiếng Việt hiện đại
 导致	hide		ghép từng chữ, không phải từ tiếng Việt
@@ -3102,7 +3102,7 @@ word	verdict	hanviet	reason
 蹲	show		1 chữ
 多半	hide		ghép từng chữ, không phải từ tiếng Việt
 多次	hide		ghép từng chữ, không phải từ tiếng Việt
-多方面	show	đa phương diện	từ HV có trong tiếng Việt
+多方面	hide		kiểm từ điển: 'đa phương diện' không có trong từ điển
 多媒体	hide		ghép từng chữ, không phải từ tiếng Việt
 多年	hide		từ Hán Việt hiếm/không dùng trong tiếng Việt hiện đại
 多样	show	đa dạng	common Vietnamese Han-Viet word with equivalent meaning
@@ -3527,7 +3527,7 @@ word	verdict	hanviet	reason
 基督教	show	cơ đốc giáo	common Vietnamese Han-Viet word with equivalent meaning
 基金	hide		không chắc
 激动	hide		nghĩa tiếng Việt khác
-激烈	show	kịch liệt	từ HV có trong tiếng Việt
+激烈	hide		kiểm từ điển: 'kịch liệt' là âm của 劇烈; 激 đọc là kích
 激情	hide		không chắc
 及格	hide		ghép từng chữ, không phải từ tiếng Việt
 吉利	hide		không chắc
@@ -4892,7 +4892,7 @@ word	verdict	hanviet	reason
 信念	hide		từ Hán Việt hiếm/không dùng trong tiếng Việt hiện đại
 信箱	hide		ghép từng chữ, không phải từ tiếng Việt
 信仰	show	tín ngưỡng	common Vietnamese Han-Viet word with equivalent meaning
-信用	show	tín dụng	common Vietnamese Han-Viet word with equivalent meaning
+信用	hide		kiểm từ điển: 'tín dụng' là tín dụng ngân hàng, khác nghĩa 'sự đáng tin'
 行程	show	hành trình	common Vietnamese Han-Viet word with equivalent meaning
 行驶	hide		nghĩa tiếng Việt khác
 行业	hide		ghép từng chữ, không phải từ tiếng Việt

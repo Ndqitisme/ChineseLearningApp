@@ -1,5 +1,6 @@
 // Data audit: real Sino-Vietnamese words that are hidden as "ghép từng chữ".
-const missed = { 宗教: 'tôn giáo', 诊断: 'chẩn đoán', 词汇: 'từ vựng', 激烈: 'kịch liệt', 公主: 'công chúa', 大使: 'đại sứ', 成分: 'thành phần', 效率: 'hiệu suất', 征服: 'chinh phục', 调动: 'điều động' };
+// 激烈 is left out: "kịch liệt" is the reading of 劇烈, and 激 reads "kích" (word-verdicts.tsv).
+const missed = { 宗教: 'tôn giáo', 诊断: 'chẩn đoán', 词汇: 'từ vựng', 公主: 'công chúa', 大使: 'đại sứ', 成分: 'thành phần', 效率: 'hiệu suất', 征服: 'chinh phục', 调动: 'điều động' };
 
 /** @param {import('../run.ts').T} t */
 export default async function (t) {
