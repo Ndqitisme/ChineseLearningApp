@@ -50,7 +50,7 @@
   <h1><Icon name="nav-search" hue={HUE_OF.search} /> Tra cứu</h1>
   <p class="lead">Gõ chữ Hán, pinyin (có hoặc không dấu, ví dụ “mifan”), nghĩa tiếng Việt hoặc âm Hán&nbsp;Việt.</p>
   <!-- svelte-ignore a11y_autofocus -->
-  <input class="search glass glass-focus" use:glass={{ blur: 0, specular: theme.dark ? 0.2 : LIGHT_SPECULAR, saturate: 1.1 }} type="search" placeholder="Ví dụ: 米饭 · mifan · cơm · mễ phạn" bind:value={q} autofocus />
+  <input class="search glass glass-focus" use:glass={{ blur: 0, specular: theme.dark ? 0.2 : LIGHT_SPECULAR, saturate: 1.1 }} type="search" placeholder="Ví dụ: 米饭 · mifan · cơm" bind:value={q} autofocus />
   {#if q.trim()}
     <p class="muted">{results.length} kết quả{results.length === 100 ? ' (hiện 100 kết quả đầu)' : ''}</p>
     {#if results.length}
