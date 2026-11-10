@@ -11,7 +11,7 @@ export default async function (t) {
   const primary = () => main.evaluate(() => document.documentElement.style.getPropertyValue('--primary').trim());
 
   await t.step('the old map moves to both looks, version 4', async () => {
-    await main.waitForFunction(() => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.settingsVersion === 4, { timeout: 5000 });
+    await main.waitForFunction(() => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.settingsVersion === 5, { timeout: 5000 });
     const s = await saved();
     t.assert(JSON.stringify(s.tokenOverrides) === '{"light":{"primary":"#ff0000"},"dark":{"primary":"#ff0000"}}', `overrides ${JSON.stringify(s.tokenOverrides)}`);
     t.assert((await primary()) === '#ff0000', `light --primary ${await primary()}`);

@@ -96,10 +96,10 @@
           <Switch checked={settings.petEnabled} onchange={(on) => updateSettings({ petEnabled: on })} />
           Bảng gợi ý
         </label>
-        <!-- The character lives on the panel: without the panel the switch is disabled and keeps its value. -->
+        <!-- The skin lives on the panel: without the panel the switch is disabled and keeps its value. -->
         <label class="pet-toggle" class:off={!settings.petEnabled}>
-          <Switch checked={settings.petCharacter} disabled={!settings.petEnabled} onchange={(on) => updateSettings({ petCharacter: on })} />
-          Trợ lý
+          <Switch checked={settings.petSkinOn} disabled={!settings.petEnabled} onchange={(on) => updateSettings({ petSkinOn: on })} />
+          Skin
         </label>
       </nav>
       <main class="content" bind:this={content}>
@@ -206,9 +206,8 @@
     padding: 1px 7px;
     box-shadow: inset 0 1px 0 rgb(var(--glass-white) / .35);
   }
-  /* Track at the nav rows' left edge and label on their label column (12px padding + 22px icon + 10px gap = 44px in):
-     a 34px track leaves the same 10px before the label as icon to label in the rows above. */
-  .pet-toggle { --switch-w: 34px; display: flex; gap: 10px; align-items: center; font-size: 12.5px; font-weight: 700; color: color-mix(in srgb, var(--text-2) 70%, var(--text)); padding: 0; cursor: pointer; transition: color .2s ease; }
+  /* A row like the nav rows above: the label starts on their icon column and the track ends at their right padding. */
+  .pet-toggle { --switch-w: 34px; display: flex; flex-direction: row-reverse; justify-content: space-between; gap: 10px; align-items: center; font-size: 12.5px; font-weight: 700; color: color-mix(in srgb, var(--text-2) 70%, var(--text)); padding: 0 12px; cursor: pointer; transition: color .2s ease; }
   .pet-toggle + .pet-toggle { margin-top: 6px; }
   .pet-toggle.off { color: var(--text-2); cursor: default; }
   @media (prefers-reduced-motion: reduce) { .pet-toggle { transition: none; } }

@@ -13,6 +13,7 @@
   import { theme } from '../../lib/theme/apply.svelte.ts';
   import { HSK_HUE } from '../../lib/data.ts';
   import { HUE_OF, THEMES, type ThemeId } from '../../lib/theme/themes.ts';
+  import { PET_SKINS } from '../../pet/skins.ts';
 
   /** Section to scroll to, e.g. "voice" when opened from the bubble's speaker button. */
   let { section }: { section?: string } = $props();
@@ -32,6 +33,9 @@
   });
 
   const set = (patch: Partial<Settings>) => updateSettings(patch);
+  const skinOn = $derived(settings.petEnabled && settings.petSkinOn);
+  /** Size applies to the character only. */
+  const character = $derived(skinOn && settings.petSkin === 'assistant');
   const setSpeech = (patch: Partial<SpeechSettings>) => updateSettings({ speech: { ...settings.speech, ...patch } });
   const setVoice = (slot: VoiceSlot, id: string) => setSpeech({ voices: { ...settings.speech.voices, [slot]: id } });
 
@@ -124,14 +128,17 @@
     </details>
   </div>
 
-  <h2 class="section-title"><Icon name="pet-show-character" hue="teal" /> Bảng gợi ý và trợ lý</h2>
+  <h2 class="section-title"><Icon name="pet-show-character" hue="teal" /> Bảng gợi ý</h2>
   <div class="card glass stack">
     <label class="row"><Switch checked={settings.petEnabled} onchange={(on) => set({ petEnabled: on })} /> Hiện bảng gợi ý trên màn hình</label>
-    <!-- The character lives on the panel: without the panel the switch is disabled and keeps its value. -->
-    <label class="row" class:off={!settings.petEnabled}><Switch checked={settings.petCharacter} disabled={!settings.petEnabled} onchange={(on) => set({ petCharacter: on })} /> Hiện trợ lý</label>
-    <div class="row">
-      <span class="lbl">Kích thước</span>
-      {#each [2, 3, 4] as s (s)}<button class="chip glass glass-press" class:on={settings.petScale === s} use:glass={{ when: !(settings.petScale === s) }} onclick={() => set({ petScale: s })}>{['Nhỏ', 'Vừa', 'Lớn'][s - 2]}</button>{/each}
+    <!-- The skin lives on the panel: without the panel the switch is disabled and keeps its value. -->
+    <label class="row" class:off={!settings.petEnabled}><Switch checked={settings.petSkinOn} disabled={!settings.petEnabled} onchange={(on) => set({ petSkinOn: on })} /> Skin</label>
+    <div class="row fields" class:off={!skinOn}><span class="lbl">Kiểu skin</span>
+      <Select label="Kiểu skin" value={settings.petSkin} disabled={!skinOn} options={PET_SKINS.map((k) => ({ value: k.id, label: k.label }))} onchange={(v) => set({ petSkin: v })} /></div>
+    <p class="muted small">Trợ lý: nhân vật đứng cạnh bảng gợi ý.<br />Viền: trang trí quanh khung chữ.<br />Tắt Skin thì bảng gợi ý chỉ còn khung chữ trơn.</p>
+    <div class="row" class:off={!character}>
+      <span class="lbl">Cỡ trợ lý</span>
+      {#each [2, 3, 4] as s (s)}<button class="chip glass glass-press" class:on={settings.petScale === s} use:glass={{ when: !(settings.petScale === s) }} disabled={!character} onclick={() => set({ petScale: s })}>{['Nhỏ', 'Vừa', 'Lớn'][s - 2]}</button>{/each}
     </div>
     <label class="row"><span class="lbl">Mỗi từ hiện trong</span>
       <Range min={8} max={60} value={settings.wordSec} oninput={(v) => set({ wordSec: v })} />

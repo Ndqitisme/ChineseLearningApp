@@ -102,8 +102,9 @@
   .bubble.glass-solid {
     position: relative;
     width: 264px;
-    /* 14px on the right and bottom: the speaker sits concentric with the bubble's corner. */
-    padding: 10px 14px 14px;
+    /* 14px on every side: the speaker sits concentric with the bottom right corner, and the level chip clears the top
+       left corner's rim band (at 10px it touched it). */
+    padding: 14px;
     /* 6% primary in the fill, so the white top-left rim can show on a light bubble. Opaque: the tail's base lies over the
        body, and at 98 % that strip was denser than the body around it. */
     --glass-tint: color-mix(in srgb, var(--primary) var(--pet-tint), var(--bubble-bg));
@@ -196,6 +197,8 @@
     place-items: center;
     width: 26px;
     height: 26px;
+    /* The button's default inline padding left a 14px track for the 18px icon, which then started at its left edge. */
+    padding: 0;
     border: 0;
     border-radius: 50%;
     background: color-mix(in srgb, var(--h) 16%, var(--bubble-bg));

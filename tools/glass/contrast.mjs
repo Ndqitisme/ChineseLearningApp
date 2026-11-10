@@ -17,7 +17,7 @@
 // rendered-ink check: a muted regular hint at 15-16px read 3.9:1 on its ink while its declared colour passed.
 // Each page (and each bubble window) is measured in a window of its own and stored by a hash of its inputs (deps.mjs):
 // a page whose files did not change is read back, not measured again. NOCACHE=1 measures everything.
-// Usage: GLASS=refract|fallback|reduced [NOCACHE=1] [ONLY=ocean-dark,...] [PAGES_ONLY=#/a,#/b] [SIZES=1400x900,...] [PET_ONLY=1] node contrast.mjs [out.json]
+// Usage: GLASS=refract|fallback|reduced [NOCACHE=1] [ONLY=ocean-dark,...] [PAGES_ONLY=#/a,#/b] [SIZES=1400x900,...] [PET_ONLY=1] [PET_SKIN=leaf|bamboo|off] node contrast.mjs [out.json]
 import { writeFileSync } from 'node:fs';
 import { WORK, seedFor, sleep, start } from './harness.mjs';
 import { data } from './harness.mjs';
@@ -27,6 +27,9 @@ const GLASS = process.env.GLASS ?? 'refract';
 const OUT = process.argv[2] ?? `${WORK}/contrast-${GLASS}.json`;
 const QUERY = GLASS === 'fallback' ? '?glass=fallback' : '';
 const MEDIA = GLASS === 'reduced' ? [{ name: 'prefers-reduced-transparency', value: 'reduce' }] : [];
+// PET_SKIN=leaf measures the bubble with that skin (off: the skin switch off); unset, the default character skin.
+const PET_SKIN = process.env.PET_SKIN;
+const SKIN_SETTINGS = !PET_SKIN ? {} : PET_SKIN === 'off' ? { petSkinOn: false } : { petSkinOn: true, petSkin: PET_SKIN };
 const longest = data.words.filter((w) => w.ex && w.topics.length).sort((a, b) => b.vi.length - a.vi.length)[0];
 const PAGES = ['#/', '#/topics', '#/topic/greetings', '#/hsk/1', `#/word/${longest.id}`, '#/practice', '#/quiz/meaning', '#/review', '#/write', '#/build/order', '#/tones', '#/search/ni', '#/notebook', '#/settings', '#/about', '#/support'];
 const PRACTICE = ['#/quiz/meaning', '#/review', '#/write', '#/build/order', '#/tones'];
@@ -409,8 +412,8 @@ try {
     // Assistant bubble: on a pure white and a pure black desktop (the 10% that shows through), in the guess state (a seen
     // word, meaning hidden) and revealed. The guess state comes first: the first bubble window of a browser is where the
     // bubble once rendered soft (its label at 3.4:1).
-    for (const desk of process.env.PAGES_ONLY && !process.env.PET ? [] : ['#ffffff', '#000000']) for (const guess of [true, false]) await unit('pet', { theme, mode, glass: GLASS, desk, guess }, async (add) => {
-      const w = await h.open({ label: 'pet', media: MEDIA, seed: seedFor({ theme, mode, settings: { guessFirst: guess } }) });
+    for (const desk of process.env.PAGES_ONLY && !process.env.PET ? [] : ['#ffffff', '#000000']) for (const guess of [true, false]) await unit('pet', { theme, mode, glass: GLASS, desk, guess, ...(PET_SKIN ? { skin: PET_SKIN } : {}) }, async (add) => {
+      const w = await h.open({ label: 'pet', media: MEDIA, seed: seedFor({ theme, mode, settings: { guessFirst: guess, ...SKIN_SETTINGS } }) });
       try {
         await w.page.waitForSelector(guess ? '.bubble .guess' : '.bubble .vi', { timeout: 20_000 });
         await h.syncPet(w.page); await h.settle(w.page, 300);
@@ -425,7 +428,7 @@ try {
         // The bubble reveals the meaning by itself 2.6 s after a guess word shows: stop its timers so the pill's hover and
         // press are measured on the guess state, not on a bubble that changed under them.
         if (guess) await w.page.evaluate(() => { const top = setTimeout(() => {}, 0); for (let i = 0; i <= top; i++) clearTimeout(i); });
-        await measure(w.page, false, (m) => add({ theme, mode, glass: GLASS, page: `pet on ${desk}`, state: guess ? 'guess' : '', ...m }));
+        await measure(w.page, false, (m) => add({ theme, mode, glass: GLASS, page: `pet${PET_SKIN ? ` ${PET_SKIN}` : ''} on ${desk}`, state: guess ? 'guess' : '', ...m }));
         if (guess) await controlStates(w.page, '.bubble .guess', 0, (m) => add({ theme, mode, glass: GLASS, page: `pet on ${desk}`, ...m }), { rest: false, focus: false });
       } finally { await w.close(); }
     });

@@ -16,6 +16,7 @@
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
+  import { skinFrame } from './skins.ts';
   import {
     BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor, type Rect, type Spot,
   } from './geometry.ts';
@@ -37,7 +38,10 @@
   // True while the rig draws: the character's click-through rect is reported only then, so a canvas that
   // failed or lost its context never blocks clicks to what is underneath.
   let drawing = $state(false);
-  $effect(() => { if (!settings.petCharacter) drawing = false; });
+  /** The character stands beside the bubble only with the skin switch on and her skin chosen; other skins are borders. */
+  const character = $derived(settings.petSkinOn && settings.petSkin === 'assistant');
+  const Frame = $derived(settings.petSkinOn ? skinFrame(settings.petSkin) : undefined);
+  $effect(() => { if (!character) drawing = false; });
 
   let ready = $state(false);
   let anchor = $state<Anchor>({ h: 'right' });
@@ -65,14 +69,14 @@
   /** Grows when a bubble (long meaning, example sentence) needs more height than the default. */
   let bubbleRoom = $state(BASE_BUBBLE_ROOM);
   const spriteCss = $derived(
-    !settings.petCharacter ? { w: BUBBLE_ONLY_W, h: 0 }
+    !character ? { w: BUBBLE_ONLY_W, h: 0 }
     : { w: Math.round(FRAME.w * spriteScale), h: Math.round(FRAME.h * spriteScale) },
   );
   // The art faces the image right; on the right edge it is mirrored so she looks toward the middle of the screen.
   const mirror = $derived(anchor.h === 'right');
   const visible = $derived(settings.petEnabled && !(busy && settings.hideOnFullscreen));
-  const winCss = $derived(settings.petCharacter ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
-  const slotInset = $derived(settings.petCharacter ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: SHADOW_PAD, top: SHADOW_PAD, tail: 0 });
+  const winCss = $derived(character ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
+  const slotInset = $derived(character ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: SHADOW_PAD, top: SHADOW_PAD, tail: 0 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
   // Packs load once the shared settings unlock them; the main window does the unlocking.
   let loadedOpen = $state(settings.hskOpen);
@@ -153,7 +157,7 @@
   // A new window size reports again once the resize is applied (see resizing below), and the bubble's own size
   // changes (example line, Hán Việt, theme, custom CSS) through its ResizeObserver.
   $effect(() => {
-    void [ready, drawing, hit, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, settings.petCharacter,
+    void [ready, drawing, hit, mirror, sleeping, nothingOn, bubble, menuOpen, anchor.h, spriteCss, bubble?.revealed, character,
       bubbleRoom, settings.showExample, settings.showHanviet, settings.theme, settings.mode, settings.customCss, menuBottom];
     reportHitRects();
   });
@@ -383,7 +387,7 @@
   const menuBottom = $derived(Math.max(
     SHADOW_PAD,
     // Its top edge stays clear of the bubble's top edge (24px lower), so the two outlines never merge.
-    Math.min(settings.petCharacter ? spriteCss.h * 0.45 : 6, winCss.h - menuHeight - (slotInset.top + 24)),
+    Math.min(character ? spriteCss.h * 0.45 : 6, winCss.h - menuHeight - (slotInset.top + 24)),
   ));
 
   async function pauseFor(minutes: number) {
@@ -404,9 +408,9 @@
     menuOpen = false;
     await updateSettings({ petEnabled: false });
   }
-  async function toggleCharacter() {
+  async function toggleSkin() {
     menuOpen = false;
-    await updateSettings({ petCharacter: !settings.petCharacter });
+    await updateSettings({ petSkinOn: !settings.petSkinOn });
   }
 
   // ------------------------------------------------------------------ lifecycle
@@ -508,7 +512,7 @@
 </script>
 
 <div class="stage" style:width="{winCss.w}px" style:height="{winCss.h}px">
-  {#if bubble || (sleeping && !settings.petCharacter) || (nothingOn && !sleeping)}
+  {#if bubble || (sleeping && !character) || (nothingOn && !sleeping)}
     <div
       class="bubble-slot"
       bind:this={bubbleEl}
@@ -526,7 +530,7 @@
         {anchor}
         {starred}
         canSpeak={speechAvailable()}
-        tail={settings.petCharacter}
+        tail={character}
         tailTop={slotInset.tail}
         showHanviet={settings.showHanviet}
         showExample={settings.showExample}
@@ -540,6 +544,7 @@
         onreveal={reveal}
         onhover={(inside) => { hoveringBubble = inside; if (inside) emit('hoverBubble'); }}
       />
+      {#if Frame}<div class="frame" aria-hidden="true"><Frame /></div>{/if}
       {:else if !sleeping}
         <button class="nap glass-solid glass-press glass-arc" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
       {:else}
@@ -555,8 +560,8 @@
       onanimationend={reportHitRects}
       role="menu"
       tabindex="-1"
-      style:left={anchor.h === 'left' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
-      style:right={anchor.h === 'right' ? `${settings.petCharacter ? spriteCss.w * 0.7 : 6}px` : null}
+      style:left={anchor.h === 'left' ? `${character ? spriteCss.w * 0.7 : 6}px` : null}
+      style:right={anchor.h === 'right' ? `${character ? spriteCss.w * 0.7 : 6}px` : null}
       style:bottom="{menuBottom}px"
       bind:offsetHeight={menuHeight}
     >
@@ -567,12 +572,12 @@
         <button role="menuitem" onclick={() => pauseFor(30)}><Icon name="pet-sleep" /> Tạm dừng 30 phút</button>
       {/if}
       <button role="menuitem" onclick={() => { menuOpen = false; ipc.openMain(); }}><Icon name="pet-open" /> Mở Tiểu Mai</button>
-      <button role="menuitem" onclick={toggleCharacter}><Icon name={settings.petCharacter ? 'pet-hide-character' : 'pet-show-character'} /> {settings.petCharacter ? 'Ẩn trợ lý' : 'Hiện trợ lý'}</button>
+      <button role="menuitem" onclick={toggleSkin}><Icon name={settings.petSkinOn ? 'pet-hide-character' : 'pet-show-character'} /> {settings.petSkinOn ? 'Tắt Skin' : 'Bật Skin'}</button>
       <button role="menuitem" onclick={hidePet}><Icon name="pet-hide" /> Ẩn bảng gợi ý</button>
     </div>
   {/if}
 
-  {#if settings.petCharacter}
+  {#if character}
   <div
     class="sprite-slot"
     class:sleeping
@@ -630,6 +635,12 @@
   }
   .bubble-slot {
     position: absolute;
+  }
+  /* A skin's border around the bubble: FRAME_OUT (frames/leaves.ts) on every side, inside the window's SHADOW_PAD. */
+  .frame {
+    position: absolute;
+    inset: -11px;
+    pointer-events: none;
   }
   .nap {
     border: 0;

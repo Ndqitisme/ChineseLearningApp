@@ -3,6 +3,7 @@
 import { load, type Store } from './durable-store.ts';
 import { dataset, levelIds, levelOf, loadLevels, wordByHanzi, wordById } from './data.ts';
 import type { ThemeId } from './theme/themes.ts';
+import { PET_SKINS, type PetSkin } from '../pet/skins.ts';
 import type { HskEdition, HskLevel, Word } from './types.ts';
 
 export type Mode = 'system' | 'light' | 'dark';
@@ -27,8 +28,9 @@ export interface Settings {
   tokenOverrides: TokenOverrides;
   customCss: string;
   petEnabled: boolean;
-  /** false = keep only the word bubble on screen, without the character. */
-  petCharacter: boolean;
+  /** false = a plain word bubble: no character and no border. */
+  petSkinOn: boolean;
+  petSkin: PetSkin;
   petScale: number;
   /** Seconds each word stays in the bubble. */
   wordSec: number;
@@ -61,7 +63,8 @@ export const DEFAULT_SETTINGS: Settings = {
   tokenOverrides: { light: {}, dark: {} },
   customCss: '',
   petEnabled: true,
-  petCharacter: true,
+  petSkinOn: true,
+  petSkin: 'assistant',
   petScale: 3,
   wordSec: 18,
   guessFirst: true,
@@ -83,7 +86,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   onboarded: false,
   writeDemo: true,
-  settingsVersion: 4,
+  settingsVersion: 5,
 };
 
 export const settings: Settings = $state(structuredClone(DEFAULT_SETTINGS));
@@ -96,7 +99,8 @@ let stored: Pick<Settings, 'hskOpen' | 'hsk'> = { hskOpen: DEFAULT_SETTINGS.hskO
 export function normalize(s: Settings): Settings {
   const hskOpen = Math.min(6, Math.max(3, Math.trunc(Number(s.hskOpen)) || 3));
   const hskEdition = s.hskEdition === 2021 || s.hskEdition === 2025 ? s.hskEdition : DEFAULT_SETTINGS.hskEdition;
-  return { ...s, hskOpen, hskEdition, hsk: s.hsk.filter((l) => l >= 1 && l <= hskOpen) };
+  const petSkin = PET_SKINS.some((k) => k.id === s.petSkin) ? s.petSkin : DEFAULT_SETTINGS.petSkin;
+  return { ...s, hskOpen, hskEdition, petSkin, hsk: s.hsk.filter((l) => l >= 1 && l <= hskOpen) };
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -121,8 +125,14 @@ function tokenOverrides(v: unknown): TokenOverrides {
   return { light: strings(v), dark: strings(v) };
 }
 
+/** Settings before version 5 had one switch for the character; it becomes the skin switch, with the character skin. */
+function oldCharacterSwitch(saved: unknown): Partial<Settings> {
+  if (!isRecord(saved) || typeof saved.petCharacter !== 'boolean' || typeof saved.petSkinOn === 'boolean') return {};
+  return { petSkinOn: saved.petCharacter, petSkin: 'assistant' };
+}
+
 export function fromSaved(saved: unknown): Settings {
-  const s = { ...sameTypes(DEFAULT_SETTINGS, saved), tokenOverrides: tokenOverrides(isRecord(saved) ? saved.tokenOverrides : undefined) };
+  const s = { ...sameTypes(DEFAULT_SETTINGS, saved), ...oldCharacterSwitch(saved), tokenOverrides: tokenOverrides(isRecord(saved) ? saved.tokenOverrides : undefined) };
   const speech = sameTypes(DEFAULT_SETTINGS.speech, s.speech);
   // normalize() accepts a hand-edited hskOpen such as "5", so it gets the raw value.
   const hskOpen = isRecord(saved) && saved.hskOpen !== undefined ? saved.hskOpen as number : s.hskOpen;
@@ -142,10 +152,11 @@ function merge(saved: unknown) {
 /** What an install saved by an older version must write once, or null when it is current. */
 export function migration(saved: Partial<Settings> | undefined): Partial<Settings> | null {
   const version = saved?.settingsVersion ?? 1;
-  if (!saved || version >= 4) return null;
+  if (!saved || version >= 5) return null;
   // Installs still on the old sakura default move to ocean once. Older installs get hskOpen's default (HSK 1–3) from merge().
-  // Version 4 splits the colour overrides by look; fromSaved() already did, so stamping the version saves the new shape.
-  return { settingsVersion: 4, ...(version < 2 && saved.theme === 'sakura' ? { theme: 'ocean' as const } : {}) };
+  // Version 4 splits the colour overrides by look and version 5 turns the character switch into the skin switch;
+  // fromSaved() already did both, so stamping the version saves the new shape.
+  return { settingsVersion: 5, ...(version < 2 && saved.theme === 'sakura' ? { theme: 'ocean' as const } : {}) };
 }
 
 export async function initSettings() {

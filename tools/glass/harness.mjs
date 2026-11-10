@@ -89,7 +89,7 @@ export function seedFor({ theme = 'ocean', mode = 'light', settings = {}, progre
   for (const id of greetings.slice(0, 3)) srs[id] = { due: '2020-01-01T00:00:00Z', stability: 2, difficulty: 5, elapsed_days: 0, scheduled_days: 1, learning_steps: 0, reps: 2, lapses: 0, state: 2 };
   const today = new Date().toISOString().slice(0, 10);
   return {
-    'settings.json': { settings: { settingsVersion: 4, onboarded: true, theme, mode, petEnabled: true, hskOpen: 3, showExample: true, showHanviet: true, ...settings } },
+    'settings.json': { settings: { settingsVersion: 5, onboarded: true, theme, mode, petEnabled: true, hskOpen: 3, showExample: true, showHanviet: true, ...settings } },
     'progress.json': progress ?? { exposure, srs, seenDays: { [today]: 14 }, reviewDays: { [today]: 5 } },
   };
 }

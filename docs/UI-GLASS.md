@@ -223,7 +223,7 @@ Chứng minh trên sản phẩm thật, ở kích thước thật, mỗi con s�
   - Thẻ đang mở danh sách nổi lên trên các thẻ sau nó.
 - Công tắc: `src/lib/ui/Switch.svelte`. Thanh trượt: `src/lib/ui/Range.svelte`.
 - Ô chọn, ô giờ, ô CSS riêng và mẫu theme đang chọn có mép khúc xạ 4 px: mép sâu hơn bán kính góc gập thành vệt sáng chéo ở bốn góc.
-- Hai công tắc cuối thanh bên ("Bảng gợi ý", "Trợ lý") thẳng cột nhãn với các mục thanh bên. Công tắc "Trợ lý" chỉ bấm được khi bảng gợi ý đang bật; tắt bảng thì nó xám đi và giữ nguyên giá trị (tên gọi ở `docs/PLAN.md` mục 3).
+- Hai công tắc cuối thanh bên ("Bảng gợi ý", "Skin"): nhãn thẳng cột icon của các mục thanh bên, công tắc sát lề phải của chúng. Công tắc "Skin" chỉ bấm được khi bảng gợi ý đang bật; tắt bảng thì nó xám đi và giữ nguyên giá trị (tên gọi ở `docs/PLAN.md` mục 3).
 - Một cột nội dung cho mọi trang (`.page`, tối đa 1080 px): nút quay lại, tiêu đề và mép thẻ không xê dịch khi chuyển trang.
 - Tên chủ đề và nghĩa trong đáp án xuống dòng giữa các cụm (`src/lib/ui/Phrases.svelte`), để từ hai âm tiết không bị tách.
 - Pinyin viết liền (câu ví dụ, câu chuẩn ghép câu) tách âm tiết bằng `splitWritten` (`src/lib/pinyin.ts`) để tô màu từng âm tiết.
@@ -246,4 +246,5 @@ Chứng minh trên sản phẩm thật, ở kích thước thật, mỗi con s�
 - Bong bóng có lớp riêng từ lúc nghỉ (`will-change: transform`), để chữ không đổi kiểu khử răng cưa khi nút trong đó có lớp riêng.
 - Hiệu ứng bật lên (scale 0,6 → 1) không vượt quá 1: vượt quá thì lớp `will-change: transform` giữ tỉ lệ raster của lúc bật lên và cả bong bóng mềm đi.
 - Huy hiệu HSK pha 14 % màu tím vào chính mặt bong bóng, có viền 1 px.
+- Skin viền (cỏ lá, trúc): SVG và gradient tĩnh, không `filter`, không animation; nằm ngoài mép bong bóng tối đa 11 px, trong `SHADOW_PAD`. Màu pha từ `--hue-green`, `--hue-amber`, `--bubble-border` về trắng (theme sáng) hoặc đen (theme tối) thành tông giữa có mép tối, để đọc được trên desktop trắng lẫn đen.
 - Câu ví dụ chữ Hán ở theme tối trông đậm hơn theme sáng: chấp nhận, đó là cách Chrome vẽ chữ sáng trên nền tối.

@@ -350,7 +350,7 @@ async function lightStates(page, shot) {
   await shot('settings-hover-switch', 'settings', 'switch hovered', 'hover');
   await page.evaluate(() => document.querySelector('.content .switch').closest('.card').previousElementSibling.scrollIntoView({ block: 'start' })); await sleep(200);
   await page.click('.content .switch'); await sleep(300);
-  await shot('settings-switch-toggled', 'settings', 'Bảng gợi ý turned off here: "Hiện trợ lý" greys out and keeps its value', 'toggled');
+  await shot('settings-switch-toggled', 'settings', 'Bảng gợi ý turned off here: "Skin" and the skin list grey out and keep their values', 'toggled');
   await page.click('.content .switch'); await sleep(300);
   await page.click('.select-trigger'); await sleep(200);
   await page.keyboard.press('Escape');
@@ -380,16 +380,16 @@ async function lightStates(page, shot) {
   await shot('search-focus', 'search', 'search field focused with results', 'focus');
   // Sidebar switches: panel on with the character on, then off; panel off with the character switch disabled.
   await goto(page, '#/');
-  await shot('sidebar-panel-on-character-on', 'home', 'sidebar: Bảng gợi ý on, Trợ lý on', 'switches');
+  await shot('sidebar-panel-on-character-on', 'home', 'sidebar: Bảng gợi ý on, Skin on', 'switches');
   await page.click('.pet-toggle:nth-of-type(2) .switch'); await sleep(350);
-  await shot('sidebar-panel-on-character-off', 'home', 'sidebar: Bảng gợi ý on, Trợ lý off', 'switches');
+  await shot('sidebar-panel-on-character-off', 'home', 'sidebar: Bảng gợi ý on, Skin off', 'switches');
   await page.click('.pet-toggle:nth-of-type(1) .switch'); await sleep(350);
-  await shot('sidebar-panel-off', 'home', 'sidebar: Bảng gợi ý off, Trợ lý disabled (grey, keeps its value); home status lines', 'switches');
+  await shot('sidebar-panel-off', 'home', 'sidebar: Bảng gợi ý off, Skin disabled (grey, keeps its value); home status lines', 'switches');
   await page.click('.pet-toggle:nth-of-type(1) .switch'); await sleep(350);
-  await shot('sidebar-panel-on-again', 'home', 'sidebar: panel on again, Trợ lý re-enabled with its kept value (off)', 'switches');
+  await shot('sidebar-panel-on-again', 'home', 'sidebar: panel on again, Skin re-enabled with its kept value (off)', 'switches');
   await goto(page, '#/settings');
   await page.evaluate(() => document.querySelector('.content .switch').closest('.card').previousElementSibling.scrollIntoView({ block: 'start' })); await sleep(200);
-  await shot('settings-pet-rows', 'settings', 'Bảng gợi ý và trợ lý rows (panel on, Trợ lý off)', 'switches');
+  await shot('settings-pet-rows', 'settings', 'Bảng gợi ý rows (panel on, Skin off)', 'switches');
   await goto(page, '#/write');
   await page.hover('.tools .btn'); await sleep(200);
   await shot('write-hover-tool', 'write', 'tool pill hovered', 'hover');
@@ -463,14 +463,14 @@ const sets = [
   { theme: 'ocean', mode: 'light', size: SMALL, states },
   { theme: 'ocean', mode: 'dark', size: SMALL, settings: { petEnabled: false }, states: async (page, shot) => {
     await goto(page, '#/');
-    await shot('sidebar-panel-off', 'home', 'sidebar: Bảng gợi ý off, Trợ lý disabled (dark)', 'switches');
+    await shot('sidebar-panel-off', 'home', 'sidebar: Bảng gợi ý off, Skin disabled (dark)', 'switches');
     await page.click('.pet-toggle:nth-of-type(1) .switch'); await sleep(350);
-    await shot('sidebar-panel-on-character-on', 'home', 'sidebar: Bảng gợi ý on, Trợ lý on (dark)', 'switches');
+    await shot('sidebar-panel-on-character-on', 'home', 'sidebar: Bảng gợi ý on, Skin on (dark)', 'switches');
     await page.click('.pet-toggle:nth-of-type(2) .switch'); await sleep(350);
-    await shot('sidebar-panel-on-character-off', 'home', 'sidebar: Bảng gợi ý on, Trợ lý off (dark)', 'switches');
+    await shot('sidebar-panel-on-character-off', 'home', 'sidebar: Bảng gợi ý on, Skin off (dark)', 'switches');
     await goto(page, '#/settings');
     await page.evaluate(() => document.querySelector('.content .switch').closest('.card').previousElementSibling.scrollIntoView({ block: 'start' })); await sleep(200);
-    await shot('settings-pet-rows', 'settings', 'Bảng gợi ý và trợ lý rows (dark)', 'switches');
+    await shot('settings-pet-rows', 'settings', 'Bảng gợi ý rows (dark)', 'switches');
     await controlStates(page, shot, '.content .row:has(input[type=time]) .switch', 'settings-switch', 'settings');
     await controlStates(page, shot, '.content .row:has(.chip) .chip:not(.on)', 'settings-chip', 'settings');
     await controlStates(page, shot, '.select-trigger', 'settings-listbox', 'settings');
@@ -538,7 +538,9 @@ try {
     for (const [tag, settings, media, focus, mode = 'light'] of [
       ['guess', { guessFirst: true }, [], 'guess state (meaning hidden) when a seen word comes up', 'dark'],
       ['guess', { guessFirst: true }, [], 'guess state (meaning hidden) when a seen word comes up'],
-      ['bubble-only', { petCharacter: false, guessFirst: false }, [], 'character hidden: bubble without tail'],
+      ['bubble-only', { petSkinOn: false, guessFirst: false }, [], 'Skin off: plain bubble without tail'],
+      ['skin-leaf', { petSkin: 'leaf', guessFirst: false }, [], 'skin Viền cỏ lá: no character, vine border'],
+      ['skin-bamboo', { petSkin: 'bamboo', guessFirst: false }, [], 'skin Viền trúc: no character, bamboo border'],
       ['reduced-transparency', { guessFirst: false }, [{ name: 'prefers-reduced-transparency', value: 'reduce' }], 'solid bubble'],
       ['large', { guessFirst: false, petScale: 4 }, [], 'size Lớn'],
     ]) {

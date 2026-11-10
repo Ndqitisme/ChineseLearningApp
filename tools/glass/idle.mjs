@@ -46,7 +46,7 @@ try {
   await h.syncPet(pet.page);
   await measure(pet.page, 'pet: bubble + character');
   await pet.close();
-  const pet2 = await h.open({ label: 'pet', seed: seedFor({ theme: 'ocean', mode: 'light', settings: { guessFirst: false, petCharacter: false, wordSec: 60 } }) });
+  const pet2 = await h.open({ label: 'pet', seed: seedFor({ theme: 'ocean', mode: 'light', settings: { guessFirst: false, petSkinOn: false, wordSec: 60 } }) });
   await pet2.page.waitForSelector('.bubble .vi', { timeout: 20_000 });
   await h.syncPet(pet2.page);
   await measure(pet2.page, 'pet: bubble only (character hidden), wordSec 60');

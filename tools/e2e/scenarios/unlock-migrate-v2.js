@@ -1,5 +1,5 @@
 // A settings object saved by a v2 install (before HSK 4–6) keeps every choice the learner made,
-// gains hskOpen 3 and settingsVersion 4, and the app shows HSK 1–3 with their own bells.
+// gains hskOpen 3 and settingsVersion 5, and the app shows HSK 1–3 with their own bells.
 export const seed = {
   'settings.json': { settings: {
     settingsVersion: 2, theme: 'sakura', mode: 'dark', topics: ['drinks', 'office'], hsk: [2, 3], wordSec: 30,
@@ -16,7 +16,7 @@ export default async function (t) {
   const saved = seed['settings.json'].settings;
 
   await t.step('12a v2 settings migrate to v4 and keep the choices', async () => {
-    await main.waitForFunction(() => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.settingsVersion === 4);
+    await main.waitForFunction(() => JSON.parse(localStorage.getItem('e2e:store:settings.json') ?? '{}').settings?.settingsVersion === 5);
     const s = (await t.store(main, 'settings.json')).settings;
     for (const k of ['theme', 'mode', 'wordSec', 'petScale', 'showExample', 'guessFirst', 'onboarded', 'quietEnabled', 'quietFrom']) {
       t.assert(JSON.stringify(s[k]) === JSON.stringify(saved[k]), `${k}: ${JSON.stringify(s[k])} != ${JSON.stringify(saved[k])}`);
@@ -40,7 +40,7 @@ export default async function (t) {
     await t.reload('main');
     await t.reload('pet');
     const s = (await t.store(main, 'settings.json')).settings;
-    t.assert(s.theme === 'sakura' && s.settingsVersion === 4 && s.hskOpen === 3, `after reload ${JSON.stringify({ theme: s.theme, v: s.settingsVersion, o: s.hskOpen })}`);
+    t.assert(s.theme === 'sakura' && s.settingsVersion === 5 && s.hskOpen === 3, `after reload ${JSON.stringify({ theme: s.theme, v: s.settingsVersion, o: s.hskOpen })}`);
     await t.waitFor(pet, '.stage');
   });
 }

@@ -5,7 +5,7 @@ const hhmm = (d) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinu
 const now = Date.now();
 export const seed = {
   'settings.json': { settings: {
-    settingsVersion: 4, onboarded: true, petCharacter: false, wordSec: 8, guessFirst: false, topics: ['greetings'], hsk: [],
+    settingsVersion: 5, onboarded: true, petSkinOn: false, wordSec: 8, guessFirst: false, topics: ['greetings'], hsk: [],
     quietEnabled: true, quietFrom: hhmm(new Date(now - 60 * 60_000)), quietTo: hhmm(new Date(now + 60 * 60_000)),
   } },
 };

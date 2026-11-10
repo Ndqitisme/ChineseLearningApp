@@ -61,15 +61,16 @@ Kiểu dữ liệu nằm ở `src/lib/types.ts`.
 
 ## 3. Bảng gợi ý và trợ lý
 
-- **Tên gọi:** bảng gợi ý là cửa sổ bong bóng từ (`settings.petEnabled`); trợ lý là nhân vật (`settings.petCharacter`). Mọi chữ trong app dùng đúng hai tên này.
-- **Bật, tắt:** thanh bên của app chính có hai công tắc "Bảng gợi ý" và "Trợ lý". Khi bảng gợi ý tắt, công tắc trợ lý xám và không bấm được; bật bảng gợi ý thì nó chuyển dần sang màu thường và giữ giá trị cũ. Cài đặt có hai dòng cùng nghĩa, cùng chiều.
+- **Tên gọi:** bảng gợi ý là cửa sổ bong bóng từ (`settings.petEnabled`); trợ lý là nhân vật; Skin là cách trang trí bảng gợi ý (`settings.petSkinOn` bật/tắt, `settings.petSkin` là kiểu). Mọi chữ trong app dùng đúng các tên này.
+- **Skin:** "Trợ lý" (`assistant`, nhân vật đứng cạnh bong bóng), "Viền cỏ lá" (`leaf`), "Viền trúc" (`bamboo`). Skin viền không có nhân vật: cửa sổ chỉ chứa bong bóng, không có đuôi, viền SVG tĩnh nằm trong lề `SHADOW_PAD`. Tắt Skin thì còn bong bóng trơn. Danh sách skin ở `src/pet/skins.ts`; thêm skin viền là thêm một mục kèm component trong `src/pet/frames/`. Cỡ nhân vật chỉ áp dụng cho skin Trợ lý.
+- **Bật, tắt:** thanh bên của app chính có hai công tắc "Bảng gợi ý" và "Skin". Khi bảng gợi ý tắt, công tắc Skin xám và không bấm được; bật bảng gợi ý thì nó chuyển dần sang màu thường và giữ giá trị cũ. Cài đặt có hai dòng cùng nghĩa, cùng chiều, và dòng chọn kiểu skin (xám khi Skin hay bảng gợi ý tắt).
 - **Vị trí:** mặc định đứng trên taskbar ở góc phải. Kéo đi đâu cũng được; kéo chỉ bắt đầu khi chuột đã di quá vài px để click vẫn là click. Thả gần mép thì hít vào mép theo vùng làm việc của màn hình. Nhớ vị trí theo từng màn hình, lưu theo chỗ chân cô đứng để đổi cỡ nhân vật không làm cô lơ lửng.
 - **Bong bóng** ở cạnh nhân vật, ngang đầu; tự đổi bên theo nửa màn hình đang đứng. Kéo được từ mọi chỗ trên bong bóng trừ nút.
 - **Click xuyên:** phần trong suốt không chặn chuột. Rust hỏi vị trí chuột khoảng 15 lần/giây và chỉ nhận chuột khi con trỏ nằm trên vùng nhân vật, bong bóng hay menu mà trang báo lên. Wayland không có API này nên cửa sổ luôn nhận chuột.
 - **Nhịp:** mỗi từ ở lại `wordSec` giây, nội dung mờ đi rồi từ mới hiện lên; khung bong bóng không tắt đi bật lại.
 - **Đoán trước:** với từ đã gặp nhiều lần, chữ hiện trước, nghĩa hiện sau khoảng 2,5 giây. Bật tự đọc thì từ được đọc khi nghĩa hiện ra.
 - **Trên bong bóng:** nút loa, "Biết rồi" (giảm tần suất), sao (lưu sổ tay); bấm chữ để mở trang từ. Rê chuột lên bong bóng thì giữ từ đang hiện.
-- **Menu chuột phải:** từ tiếp theo, tạm dừng 30 phút, mở app, ẩn hoặc hiện trợ lý, ẩn bảng gợi ý. Đang tạm dừng hoặc trong giờ yên lặng thì menu có "Tiếp tục".
+- **Menu chuột phải:** từ tiếp theo, tạm dừng 30 phút, mở app, bật hoặc tắt Skin, ẩn bảng gợi ý. Đang tạm dừng hoặc trong giờ yên lặng thì menu có "Tiếp tục".
 - **Tự tạm dừng:** có app toàn màn hình hoặc trình chiếu (kiểm cả lúc khởi động), không chạm máy quá `idlePauseMin` phút, giờ yên lặng, hoặc tạm dừng từ tray hay menu. Khi tạm dừng cô ngủ.
 - Toàn màn hình và rảnh tay chỉ phát hiện được trên Windows (`src-tauri/src/system.rs`, mục 10).
 - **Tiếp tục trong giờ yên lặng** có hiệu lực tới hết khung giờ đó; tạm dừng lại thì huỷ.

@@ -8,13 +8,14 @@ const pack5 = hsk5 as unknown as LevelPack;
 const withDefaults = (patch: Partial<Settings>): Settings => ({ ...DEFAULT_SETTINGS, ...patch });
 
 describe('settings migration', () => {
-  it('moves only pre-v2 installs off the old sakura default, and stamps v4', () => {
-    expect(migration({ settingsVersion: 1, theme: 'sakura' })).toEqual({ settingsVersion: 4, theme: 'ocean' });
-    expect(migration({ theme: 'sakura' })).toEqual({ settingsVersion: 4, theme: 'ocean' });
+  it('moves only pre-v2 installs off the old sakura default, and stamps v5', () => {
+    expect(migration({ settingsVersion: 1, theme: 'sakura' })).toEqual({ settingsVersion: 5, theme: 'ocean' });
+    expect(migration({ theme: 'sakura' })).toEqual({ settingsVersion: 5, theme: 'ocean' });
     // A version 2 install on sakura chose it, so it is kept.
-    expect(migration({ settingsVersion: 2, theme: 'sakura' })).toEqual({ settingsVersion: 4 });
-    expect(migration({ settingsVersion: 3 })).toEqual({ settingsVersion: 4 });
-    expect(migration({ settingsVersion: 4 })).toBeNull();
+    expect(migration({ settingsVersion: 2, theme: 'sakura' })).toEqual({ settingsVersion: 5 });
+    expect(migration({ settingsVersion: 3 })).toEqual({ settingsVersion: 5 });
+    expect(migration({ settingsVersion: 4 })).toEqual({ settingsVersion: 5 });
+    expect(migration({ settingsVersion: 5 })).toBeNull();
     expect(migration(undefined)).toBeNull();
   });
 
@@ -24,6 +25,22 @@ describe('settings migration', () => {
     const v4 = { settingsVersion: 4, tokenOverrides: { light: { primary: '#ff0000' }, dark: { bg: '#000000' } } };
     expect(fromSaved(v4).tokenOverrides).toEqual(v4.tokenOverrides);
     expect(fromSaved({ tokenOverrides: { light: { primary: '#fff' } } }).tokenOverrides).toEqual({ light: { primary: '#fff' }, dark: {} });
+  });
+
+  it('turns the old character switch into the skin switch with the character skin', () => {
+    expect(fromSaved({ settingsVersion: 4, petCharacter: false })).toMatchObject({ petSkinOn: false, petSkin: 'assistant' });
+    expect(fromSaved({ settingsVersion: 4, petCharacter: true })).toMatchObject({ petSkinOn: true, petSkin: 'assistant' });
+    // Never set, or damaged: the defaults.
+    expect(fromSaved({ settingsVersion: 4 })).toMatchObject({ petSkinOn: true, petSkin: 'assistant' });
+    expect(fromSaved({ settingsVersion: 4, petCharacter: 'no' })).toMatchObject({ petSkinOn: true, petSkin: 'assistant' });
+    // The new fields win over a stale old one.
+    expect(fromSaved({ petCharacter: false, petSkinOn: true, petSkin: 'leaf' })).toMatchObject({ petSkinOn: true, petSkin: 'leaf' });
+    expect('petCharacter' in fromSaved({ petCharacter: false })).toBe(false);
+  });
+
+  it('reads an unknown skin as the character skin', () => {
+    expect(fromSaved({ petSkin: 'bamboo' }).petSkin).toBe('bamboo');
+    expect(fromSaved({ petSkin: 'gold' }).petSkin).toBe('assistant');
   });
 
   it('keeps a saved edition and reads a damaged one as the 2025 default', () => {

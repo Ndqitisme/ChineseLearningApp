@@ -3,11 +3,12 @@
 
   /** A listbox on the app's glass, in place of the browser's native select list (square, opaque, system colours).
    *  Keyboard: arrows, Home/End, Enter or Space to pick, Esc to close, letters jump to the first matching option. */
-  let { value, options, onchange, label }: {
+  let { value, options, onchange, label, disabled = false }: {
     value: V;
     options: { value: V; label: string }[];
     onchange: (value: V) => void;
     label?: string;
+    disabled?: boolean;
   } = $props();
 
   const id = `select-${Math.random().toString(36).slice(2, 9)}`;
@@ -91,6 +92,7 @@
     aria-expanded={open}
     aria-controls={id}
     aria-label={label}
+    {disabled}
     onclick={() => (open ? close() : show())}
     onkeydown={onTriggerKey}
   ><span class="sizer" aria-hidden="true">{#each options as o (o.value)}<span>{o.label}</span>{/each}</span><span class="current">{current}</span></button>
@@ -131,6 +133,10 @@
      options less than the trigger) fits inside that width exactly. */
   .select-trigger { display: inline-grid; align-items: center; }
   .sizer, .current { grid-area: 1 / 1; }
+  /* Disabled: the greyed label of the row's other controls, on a fainter face (200 ms). */
+  .select-trigger { transition: color .2s ease, opacity .2s ease; }
+  .select-trigger:disabled { color: var(--text-2); opacity: .7; cursor: default; }
+  @media (prefers-reduced-motion: reduce) { .select-trigger { transition: none; } }
   .sizer { display: grid; visibility: hidden; height: 0; overflow: hidden; }
   .sizer > span { grid-area: 1 / 1; }
   .panel {
