@@ -18,10 +18,11 @@ const EYES = 0.12;
 const TAIL = 16;
 /** The bubble's tail reaches this far past the bubble's side toward her (Bubble.svelte .tail). */
 export const TAIL_REACH = 11;
-/** Clear space between the tail tip and the sprite frame, CSS px. Her raised hand reaches the frame's edge when she
- * waves; a fraction of the frame width left the tip touching the fingers at some sizes. */
-export const HAND_CLEAR = 6;
-const bubbleSide = (sprite: Size) => Math.round(sprite.w + TAIL_REACH + HAND_CLEAR);
+/** The tail tip sits this far inside the sprite frame, as a fraction of the frame's width: standing, she fills the
+ * middle of the frame, and a bubble kept outside it looked detached from her. Her raised hand crosses the tip while she
+ * waves. */
+export const FRAME_OVERLAP = 0.1;
+const bubbleSide = (sprite: Size) => Math.round(sprite.w * (1 - FRAME_OVERLAP) + TAIL_REACH);
 
 /** Window size in CSS px: the sprite with the bubble beside her, toward the middle of the screen. */
 export function windowSize(sprite: Size, room = BASE_BUBBLE_ROOM): Size {
