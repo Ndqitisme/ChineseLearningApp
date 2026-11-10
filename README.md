@@ -4,14 +4,26 @@
 
 Ứng dụng desktop mã nguồn mở giúp người Việt học từ vựng tiếng Trung thông dụng trong đời sống, ăn uống và công việc.
 
-Một trợ lý đứng ở cạnh màn hình và luôn hiện một từ: chữ Hán, pinyin tô màu theo thanh điệu, nghĩa tiếng Việt và âm Hán Việt. Cửa sổ chính có các bài luyện và lịch ôn tập.
+Bảng gợi ý ở cạnh màn hình luôn hiện một từ: chữ Hán, pinyin tô màu theo thanh điệu, nghĩa tiếng Việt và âm Hán Việt.
+Trợ lý Tiểu Mai đứng cạnh bảng.
+Cửa sổ chính có các bài luyện và lịch ôn tập.
 
 <p align="center"><img src="docs/assistant.png" alt="Trợ lý Tiểu Mai" width="640" /></p>
 
 ## Tính năng
 
-- **Trợ lý chạy nền:** tự ẩn khi có ứng dụng toàn màn hình, ngủ khi máy không được dùng hoặc trong giờ yên lặng. Kéo được tới bất kỳ đâu trên màn hình.
-- **Từ vựng:** HSK 3.0 cấp 1–6 theo bộ từ bản 2025, cùng 22 chủ đề có câu ví dụ. Bộ bản 2021 chọn được trong Cài đặt. Mặc định mở HSK 1–3; HSK 4–6 mở thêm trong app.
+- **Bảng gợi ý và trợ lý chạy nền:**
+  - Bảng gợi ý luôn hiện một từ ở cạnh màn hình.
+  - Trợ lý là nhân vật đứng cạnh bảng; tắt riêng được.
+  - Bật, tắt cả hai ngay ở thanh bên của app.
+  - Kéo được tới bất kỳ đâu trên màn hình.
+  - Ngủ trong giờ yên lặng.
+  - Tự ẩn khi có ứng dụng toàn màn hình (chỉ trên Windows).
+  - Ngủ khi máy không được dùng (chỉ trên Windows).
+- **Từ vựng:**
+  - HSK 3.0 cấp 1–6 theo bộ từ bản 2025, cùng 22 chủ đề có câu ví dụ.
+  - Bộ bản 2021 chọn được trong Cài đặt.
+  - Mặc định mở HSK 1–3; HSK 4–6 mở thêm trong app.
 - **Luyện tập:** đoán nghĩa, chọn mặt chữ, nghe chọn chữ, viết theo thứ tự nét, ghép câu, luyện thanh điệu (thu âm và so cao độ).
 - **Ôn tập** theo lịch FSRS, **sổ tay** từ đã lưu.
 - **Tra cứu** theo chữ Hán, pinyin (có hoặc không dấu), nghĩa tiếng Việt hoặc âm Hán Việt.
@@ -39,7 +51,8 @@ Yêu cầu:
 
 - Node.js 22.18+ và pnpm.
 - Rust stable.
-- Windows: WebView2 (có sẵn trên Windows 10/11). Có thể dùng toolchain `x86_64-pc-windows-gnu` thay cho Visual Studio Build Tools.
+- Windows: WebView2 (có sẵn trên Windows 10/11).
+- Windows: dùng được toolchain `x86_64-pc-windows-gnu` thay cho Visual Studio Build Tools.
 - Linux: các gói hệ thống liệt kê trong `.github/workflows/build.yml`.
 
 ```bash
@@ -56,6 +69,7 @@ Các lệnh khác:
 |---|---|
 | `pnpm check` | Kiểm kiểu TypeScript/Svelte |
 | `pnpm test` | Chạy unit test |
+| `pnpm e2e` | Chạy bộ kiểm giao diện trên Chrome ([tools/e2e/README.md](tools/e2e/README.md)) |
 | `pnpm data:fonts` | Cắt font theo bộ chữ đang dùng (cần Python có `fonttools` và `brotli`) |
 | `pnpm perf` | Đo CPU/RAM của app đang chạy (Windows) |
 | `pnpm skin:rig` | Dựng lại rig nhân vật từ bản vẽ nguồn và chạy bộ kiểm ([docs/CHARACTER.md](docs/CHARACTER.md)) |
@@ -72,14 +86,16 @@ Cấu trúc chính: `src/main/` (cửa sổ chính), `src/pet/` (cửa sổ tr�
 | [hanzi-writer-data](https://github.com/chanind/hanzi-writer-data) | Thứ tự nét | Arphic Public License |
 | `data/` | Chủ đề, câu ví dụ, nghĩa ngắn, bảng Hán Việt HSK 1–3 (biên soạn cho dự án) | CC BY-SA 4.0 |
 
-Nghĩa ngắn, câu ví dụ và âm Hán Việt một phần do AI viết và soát, chưa có người bản ngữ duyệt lại. Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật và cùng nghĩa (学生 học sinh, 电话 điện thoại); khi chưa chắc thì ẩn.
+Nghĩa ngắn, câu ví dụ và âm Hán Việt một phần do AI viết và soát, chưa có người bản ngữ duyệt lại.
+Dòng "Hán Việt" chỉ hiện với từ Hán Việt có thật và cùng nghĩa (学生 học sinh, 电话 điện thoại); khi chưa chắc thì ẩn.
 
 Nhân vật trợ lý là bản vẽ 2D tạo bằng AI cho dự án.
 App ghép các phần của bản vẽ và cho chúng chuyển động bằng WebGL.
 
 ## Đóng góp
 
-Sửa nội dung từ vựng trong `data/` (chủ đề, âm Hán Việt, sửa nghĩa, sửa pinyin), rồi chạy `pnpm data:build` để kiểm. Báo lỗi và góp ý qua GitHub Issues hoặc Pull Request.
+Sửa nội dung từ vựng trong `data/` (chủ đề, âm Hán Việt, sửa nghĩa, sửa pinyin), rồi chạy `pnpm data:build` để kiểm.
+Báo lỗi qua GitHub Issues; gửi sửa đổi bằng Pull Request.
 
 ## Giấy phép
 

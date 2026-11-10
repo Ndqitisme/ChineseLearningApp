@@ -59,16 +59,19 @@ Kiểu dữ liệu nằm ở `src/lib/types.ts`.
 - Từ có cấp thấp nhất (ở một trong hai bộ) từ 3 trở xuống nằm trong dữ liệu chính; còn lại nằm trong gói `src/generated/hsk{4,5,6}.json`, nạp khi mở khoá.
 - Khoá của `progress.srs` là id từ; mỗi từ một thẻ FSRS.
 
-## 3. Trợ lý
+## 3. Bảng gợi ý và trợ lý
 
+- **Tên gọi:** bảng gợi ý là cửa sổ bong bóng từ (`settings.petEnabled`); trợ lý là nhân vật (`settings.petCharacter`). Mọi chữ trong app dùng đúng hai tên này.
+- **Bật, tắt:** thanh bên của app chính có hai công tắc "Bảng gợi ý" và "Trợ lý". Khi bảng gợi ý tắt, công tắc trợ lý xám và không bấm được; bật bảng gợi ý thì nó chuyển dần sang màu thường và giữ giá trị cũ. Cài đặt có hai dòng cùng nghĩa, cùng chiều.
 - **Vị trí:** mặc định đứng trên taskbar ở góc phải. Kéo đi đâu cũng được; kéo chỉ bắt đầu khi chuột đã di quá vài px để click vẫn là click. Thả gần mép thì hít vào mép theo vùng làm việc của màn hình. Nhớ vị trí theo từng màn hình, lưu theo chỗ chân cô đứng để đổi cỡ nhân vật không làm cô lơ lửng.
 - **Bong bóng** ở cạnh nhân vật, ngang đầu; tự đổi bên theo nửa màn hình đang đứng. Kéo được từ mọi chỗ trên bong bóng trừ nút.
 - **Click xuyên:** phần trong suốt không chặn chuột. Rust hỏi vị trí chuột khoảng 15 lần/giây và chỉ nhận chuột khi con trỏ nằm trên vùng nhân vật, bong bóng hay menu mà trang báo lên. Wayland không có API này nên cửa sổ luôn nhận chuột.
 - **Nhịp:** mỗi từ ở lại `wordSec` giây, nội dung mờ đi rồi từ mới hiện lên; khung bong bóng không tắt đi bật lại.
 - **Đoán trước:** với từ đã gặp nhiều lần, chữ hiện trước, nghĩa hiện sau khoảng 2,5 giây. Bật tự đọc thì từ được đọc khi nghĩa hiện ra.
 - **Trên bong bóng:** nút loa, "Biết rồi" (giảm tần suất), sao (lưu sổ tay); bấm chữ để mở trang từ. Rê chuột lên bong bóng thì giữ từ đang hiện.
-- **Menu chuột phải:** từ tiếp theo, tạm dừng 30 phút, mở app, ẩn nhân vật nhưng giữ bảng từ, ẩn trợ lý. Đang tạm dừng hoặc trong giờ yên lặng thì menu có "Tiếp tục".
+- **Menu chuột phải:** từ tiếp theo, tạm dừng 30 phút, mở app, ẩn hoặc hiện trợ lý, ẩn bảng gợi ý. Đang tạm dừng hoặc trong giờ yên lặng thì menu có "Tiếp tục".
 - **Tự tạm dừng:** có app toàn màn hình hoặc trình chiếu (kiểm cả lúc khởi động), không chạm máy quá `idlePauseMin` phút, giờ yên lặng, hoặc tạm dừng từ tray hay menu. Khi tạm dừng cô ngủ.
+- Toàn màn hình và rảnh tay chỉ phát hiện được trên Windows (`src-tauri/src/system.rs`, mục 10).
 - **Tiếp tục trong giờ yên lặng** có hiệu lực tới hết khung giờ đó; tạm dừng lại thì huỷ.
 - **Tính lượt hiện:** một lượt chỉ được tính khi người dùng đang dùng máy (rảnh tay dưới 60 giây) và cô đang hiện. Lúc cô ẩn, "Từ tiếp theo" ở tray không làm gì.
 - **Chuyển động:** đứng yên giữ một khung, chỉ cử động khi có sự kiện; yêu cầu chi tiết ở [CHARACTER.md](CHARACTER.md).
@@ -77,6 +80,7 @@ Kiểu dữ liệu nằm ở `src/lib/types.ts`.
 
 - Danh sách màn hình và chế độ luyện: README, mục Tính năng.
 - Pinyin khi rê chuột: một bộ lắng nghe `pointermove` ở `document`, giới hạn theo `requestAnimationFrame` và luôn dùng vị trí chuột mới nhất; `caretPositionFromPoint` cho ký tự dưới con trỏ, cả chiều cao dòng tính là trúng chữ. Vùng đã hiện pinyin gắn `data-has-pinyin`; vùng mà pinyin là đáp án gắn `data-hover-pinyin="off"`. Cửa sổ trợ lý chỉ tra từ điển của app, chữ ngoài từ điển không có gợi ý.
+- Giao diện kính (khúc xạ trên Chromium, bản thay thế trên WebKit), công tắc, thanh trượt, danh sách chọn: [UI-GLASS.md](UI-GLASS.md).
 - Theme là bộ design token dạng biến CSS: 5 theme, mỗi theme có bản sáng và tối; người dùng sửa được từng token (riêng cho chế độ sáng và tối) hoặc dán CSS riêng. UI mới chỉ dùng token, không viết màu cứng.
 - Đổi bộ HSK chỉ đổi nhóm từ, cấp và bài học. Ôn tập, sổ tay, tra cứu và trang từ giữ từ của cả hai bộ; khoá cấp vẫn áp dụng, từ chủ đề luôn mở.
 - Icon là mask CSS tô bằng `currentColor` (`src/lib/ui/Icon.svelte`); không dùng emoji.
@@ -142,12 +146,17 @@ App không mang sẵn âm thanh. Có 3 loại nhà cung cấp, mỗi loại gán
 
 - Nguồn và giấy phép: README, mục Dữ liệu và giấy phép; chi tiết ở `THIRD_PARTY_NOTICES.md`.
 - `tools/data/sources.lock.json` ghim URL, commit và sha256 của mọi nguồn tải về. Nguồn mới phải ghim bằng `pnpm data:fetch --update`.
-- `pnpm data:build` dừng với lỗi khi thiếu file TSV trong `data/`, thiếu dữ liệu nét của một chữ đang hiện, hoặc font TieuMai Kai thiếu một ký tự Hán hay pinyin trong dữ liệu và UI.
+- `pnpm data:build` dừng với lỗi khi thiếu file TSV trong `data/`, thiếu dữ liệu nét của một chữ đang hiện, hoặc font TieuMai Kai thiếu một ký tự Hán hay pinyin trong dữ liệu và UI, kể cả chữ Hán trong nghĩa tiếng Việt.
 - Lỗi font thì chạy `pnpm data:fonts` (Python có fonttools) rồi build lại. Chữ Hán mới viết trong UI phải thêm vào `ui_han` trong `tools/data/subset_font.py`.
 - Nghĩa CVDICT khớp theo pinyin (满 có mục "dân tộc Mãn Châu"); bỏ thẻ lượng từ `LT:`.
+- Chữ Hán trong nghĩa tiếng Việt chỉ ghi giản thể: cặp phồn|giản của CVDICT (`兩個|两个`) chỉ giữ chữ giản. Bộ kiện như 刂, 亻 giữ nguyên.
 - Unihan `kVietnamese` chỉ là gợi ý (nhiều âm Nôm: 你 "nể"). Hán Việt ghép theo cặp (chữ, pinyin).
 - Hán Việt chỉ hiện khi là từ Hán Việt thật và cùng nghĩa (`data/hanviet/word-verdicts.tsv`); chưa chắc thì ẩn. Muốn hiện một từ đang ẩn thì sửa file đó rồi chạy `pnpm data:build`.
 - Sửa nghĩa ngắn không cần đụng code: `data/gloss-overrides.tsv`. Sửa pinyin HSK: `data/hsk-pinyin-overrides.tsv`.
+- Từ HSK có nhiều cách đọc: pinyin-pro chọn cách đọc. Cách nó đọc không trùng cách nào trong danh sách HSK thì `pnpm data:build` báo lỗi kèm tên từ; thêm cách đọc đúng vào `data/hsk-pinyin-overrides.tsv`.
+- Pinyin từ HSK ghi biến điệu của 一 và 不: 一 thanh 1 và 不 thanh 4 lấy thanh pinyin-pro đọc cho cả từ, nếu đó là biến điệu (不 → bú; 一 → yí, yì). pinyin-pro giữ yī ở số thứ tự và cuối từ (第一, 一月, 统一).
+- Các âm tiết khác giữ đúng danh sách HSK, cả thanh nhẹ (不客气 búkèqi). 一, 不 thanh nhẹ giữ nguyên. Không ghi biến điệu 3-3.
+- Từ có trong `data/hsk-pinyin-overrides.tsv` ghi đúng như dòng đó, không đổi 一, 不. Từ đã đổi được liệt kê trong `.cache/reports/hsk-yi-bu-sandhi.tsv`.
 - Pinyin câu ví dụ được đối chiếu tự động với pinyin-pro; chỗ lệch được báo để duyệt.
 - Chỉ dùng file export của CC-CEDICT, không cào web MDBG.
 - Font chữ Hán là bản cắt của LXGW WenKai Lite, đổi tên thành "TieuMai Kai" theo OFL.
@@ -158,7 +167,7 @@ App không mang sẵn âm thanh. Có 3 loại nhà cung cấp, mỗi loại gán
 |---|---|
 | Phát hành công khai, miễn phí; không nguồn NC hay ND | Quyết định của chủ repo |
 | Không đóng gói giọng; giọng là plugin | App nhẹ; ai cần thì tự cài |
-| Chữ giản thể; pinyin ghi biến điệu của 一/不 như sách HSK | Chuẩn đại lục, đúng thói quen giáo trình |
+| Chữ giản thể, cả chữ Hán trong nghĩa tiếng Việt; pinyin ghi biến điệu của 一/不 như sách HSK, không ghi biến điệu 3-3 | Chuẩn đại lục, đúng thói quen giáo trình |
 | Giữ cả hai bộ HSK, mặc định 2025, bản 2021 là tuỳ chọn; không ghi ngày đổi kỳ thi | Các nguồn chưa thống nhất ngày chuyển |
 | HSK 1–3 mở sẵn; người học tự mở 4 → 5 → 6, không tài khoản, không trả phí | Quyết định của chủ repo |
 | Tab "Ủng hộ tác giả": một câu và mã QR; không popup, không nhắc | Không gây áp lực |

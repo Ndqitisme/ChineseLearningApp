@@ -4,7 +4,7 @@
 
 ## 0. Mục tiêu
 
-**Mục tiêu:** người học đã có trợ lý cho xem từ cả ngày và các chế độ luyện trong app chính. Bước tiếp theo không phải thêm nhiều chế độ, mà làm cho vòng học chính (thấy từ → nhớ lại → ôn đúng lúc) chắc hơn, và nhắm vào chỗ người Việt hay vấp: thanh 2 với thanh 3, từ Hán Việt "giống mà khác nghĩa", lượng từ.
+**Mục tiêu:** người học đã có bảng gợi ý cho xem từ cả ngày và các chế độ luyện trong app chính. Bước tiếp theo không phải thêm nhiều chế độ, mà làm cho vòng học chính (thấy từ → nhớ lại → ôn đúng lúc) chắc hơn, và nhắm vào chỗ người Việt hay vấp: thanh 2 với thanh 3, từ Hán Việt "giống mà khác nghĩa", lượng từ.
 
 **Cách chọn thứ tự:** bằng chứng mạnh và tác động vào vòng học chính đứng trước; dễ làm chỉ là tiêu chí phụ. Mỗi mục chỉ làm khi mục trước đã qua hết các ca kiểm thử của nó.
 
@@ -126,8 +126,8 @@ Bớt trước khi thêm: mỗi chế độ mới là thêm một chỗ có th�
 | Nghe chép chính tả | Không có nguồn nào đã mở; phần lớn máy không có giọng zh-CN sẵn. Xem lại khi giọng đọc ổn định. |
 | Bảng "thanh Việt = thanh Trung" | Chưa có số đo (mục 3) và chưa có người duyệt; gợi ý sai sẽ dạy sai thanh. |
 | Lịch FSRS riêng cho kỹ năng viết | Giữ như PLAN 5.2; viết theo nét chỉ thống kê lỗi. Bằng chứng về viết tay mới ở mức nghiên cứu nhỏ (Cao & Perfetti 2016), không đủ để thêm một hàng thẻ ôn nữa. |
-| Huy hiệu, bảng xếp hạng, thông báo nhắc học, phạt khi mất chuỗi | Trái tinh thần không gây áp lực của app. Trợ lý đã có giờ yên lặng và tự tạm dừng. |
-| Đưa gõ phím, ghi âm lên bong bóng trợ lý | Bong bóng hợp với nhận mặt chữ và "đoán trước"; việc cần tập trung để ở app chính [suy luận]. |
+| Huy hiệu, bảng xếp hạng, thông báo nhắc học, phạt khi mất chuỗi | Trái tinh thần không gây áp lực của app. Bảng gợi ý đã có giờ yên lặng và tự tạm dừng. |
+| Đưa gõ phím, ghi âm lên bảng gợi ý | Bong bóng hợp với nhận mặt chữ và "đoán trước"; việc cần tập trung để ở app chính [suy luận]. |
 | Cho người học tự kéo giãn lịch ôn vì "thấy dễ" | Người làm bài kiểm tra thấy kém tự tin hơn nhưng nhớ lâu hơn (Roediger & Karpicke 2006); để FSRS tự hẹn. |
 | Hình minh hoạ cho từ | Chi phí giấy phép ảnh cao; pinyin tô màu và nét chữ chạy đã là kênh thứ hai ([Dual-coding theory](https://en.wikipedia.org/wiki/Dual-coding_theory)). |
 
@@ -135,9 +135,9 @@ Bớt trước khi thêm: mỗi chế độ mới là thêm một chỗ có th�
 
 1. Chạy trong app thật (`pnpm tauri dev`), không chỉ xem build qua.
 2. `pnpm check`, `pnpm test`, `pnpm data:build` sạch.
-3. Không dùng emoji từ Emoji 13 trở lên (Windows 10 không có); test emoji qua.
+3. UI không có emoji, chỉ dùng `<Icon name=… />`; `src/lib/icons.test.ts` qua.
 4. Cửa sổ chính ở kích thước nhỏ nhất: không cuộn ngang, chữ không bị cắt.
-5. Theme sáng và tối đều đọc được.
+5. Theme sáng và tối đều đọc được; giao diện mới đạt tiêu chí ở `docs/UI-GLASS.md` mục 4.
 6. Người dùng mới hoàn toàn (chưa có `progress.json`) mở trang không lỗi và thấy hướng dẫn thay vì trang trống.
 7. Từ thuộc cấp HSK đã khoá lại không làm trang nào lỗi.
 8. Câu chữ tiếng Việt ngắn, ấm, không ép buộc, không chấm than liên tục.

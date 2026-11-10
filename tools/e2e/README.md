@@ -13,6 +13,10 @@ CHROME_PATH=/path/to/chrome pnpm e2e
 Needs Google Chrome installed (default `C:/Program Files/Google/Chrome/Application/chrome.exe`).
 It uses its own port (1430 or the next free one), so a running `pnpm tauri dev` is fine.
 
+Every script that launches Chrome, here or elsewhere, creates its profile with `freshProfile` and calls
+`saveProfileAnswer` after Chrome closes (`tools/chrome-profile.ts`): each new Chrome profile on Windows tries
+to log on with a blank password, and ten tries in ten minutes lock the user's account.
+
 Puppeteer's `waitFor`/`click` poll on animation frames, which only run in the front tab: call
 `page.bringToFront()` on a window before waiting on it when the other window was used last.
 

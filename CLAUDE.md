@@ -29,10 +29,17 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 
 ## Việc tiếp theo
 
-1. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách ở `docs/PLAN.md` mục 6: CPU trung bình 3,4–3,9% một nhân khi mỗi 16 giây đổi một từ, RAM private 160–171 MB. Số đo và nguyên nhân ở `docs/CHARACTER.md` mục 2. Đã đo 10 phút qua Remote Desktop (`docs/PLAN.md` mục 6); cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
-2. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
-3. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
-4. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
+1. **Hoàn tất giao diện glass** (`docs/UI-GLASS.md`). Làm theo thứ tự, mỗi lần một việc nặng:
+   1. Chạy nốt phần đo của gate: tương phản chữ còn lại, phi văn bản, trạng thái nút, khúc xạ, tải nhàn rỗi. Bộ đo ở `tools/glass` (`docs/UI-GLASS.md` mục 4).
+   2. `pnpm e2e` đầy đủ.
+   3. Build kiểm, rồi xem khúc xạ trong WebView2 của app thật.
+   4. Đo `pnpm perf` trước và sau trên máy yếu.
+   5. Commit theo nhóm.
+   6. Chủ repo xem rồi mới push.
+2. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách. Số đo ở `docs/PLAN.md` mục 6, nguyên nhân ở `docs/CHARACTER.md` mục 2. Cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
+3. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
+4. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
+5. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
 
 ## Luật bắt buộc
 
@@ -93,4 +100,3 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 - Python in tiếng Việt ra console cần `PYTHONIOENCODING=utf-8`.
 - Blender chạy nền trên GPU Intel đời cũ: Workbench render sai góc nhìn, Eevee không chạy; dùng Cycles với đường dẫn Windows tuyệt đối.
 - Toolchain Rust `x86_64-pc-windows-gnu` dùng được thay Visual Studio Build Tools; lib chỉ build `rlib`.
-- Mở Chrome bằng puppeteer thì tạo hồ sơ bằng `freshProfile` và gọi `saveProfileAnswer` sau khi đóng (`tools/chrome-profile.ts`). Mỗi hồ sơ Chrome mới thử đăng nhập Windows bằng mật khẩu rỗng; 10 lần trong 10 phút là tài khoản bị khoá.

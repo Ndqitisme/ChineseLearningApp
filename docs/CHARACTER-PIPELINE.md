@@ -18,7 +18,7 @@ Nhãn: [đo] là đã đo hoặc đã đọc tận nguồn; [suy luận] là suy
 | Đầu, mặt, kính | Rig uốn ảnh; kính dễ lệch khỏi mắt khi đầu xoay | LivePortrait điều khiển xoay, ngẩng, chớp mắt, miệng bằng tham số; kính đi theo đầu vì cả vùng đầu được uốn cùng nhau |
 | Khung tham chiếu tư thế 3D | File `.glb` TRELLIS.2 có sẵn trong `references/`; Blender render bằng Cycles CPU | Không bắt buộc: vẽ khung xương ControlNet thẳng từ toạ độ khớp. Nếu cần 3D thì Blender Cycles chạy GPU |
 | Bộ kiểm nhất quán và đường nối | Khoảng 4 giây mỗi khung, khoảng 1,5 giờ mỗi lượt cho khoảng 1.700 khung [đo] | Gần như chạy CPU; nhanh lên nhờ CPU nhiều nhân, GPU ít tác dụng [suy luận] |
-| Một vòng dựng và kiểm rig | 3–4 giờ [đo]; 71–87% thời gian của agent là chờ lệnh chạy trên máy [đo] | Khoảng 1–1,5 giờ với CPU đời mới 8–16 nhân [suy luận] |
+| Một vòng dựng và kiểm rig | 3–4 giờ [đo]; 71–87% thời gian là chờ lệnh chạy trên máy [đo] | Khoảng 1–1,5 giờ với CPU đời mới 8–16 nhân [suy luận] |
 | Phụ thuộc bên ngoài lúc dựng | Codex (dịch vụ OpenAI) cho mọi ảnh mới | Chỉ tải trọng số model một lần; sau đó chạy không cần mạng |
 
 Máy GPU làm vòng dựng ngắn lại nhưng không tự làm hết lỗi.
