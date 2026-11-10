@@ -2,7 +2,7 @@
   // Shows pinyin for any Chinese character under the pointer, unless the surrounding area
   // already displays pinyin ([data-has-pinyin]) or hides it on purpose ([data-hover-pinyin="off"]).
   import { onMount } from 'svelte';
-  import { MAX_WORD_LEN } from '../data.ts';
+  import { MAX_WORD_LEN, wordByHanzi } from '../data.ts';
   import { openByHanzi } from '../settings.svelte.ts';
   import { isHan, toSyllables, type Syllable } from '../pinyin.ts';
   import { glass } from './glass/glass.ts';
@@ -65,6 +65,13 @@
       for (let start = Math.max(0, i - len + 1); start <= i && start + len <= text.length; start++) {
         const w = openByHanzi(text.slice(start, start + len));
         if (w) return { x: 0, top: 0, bottom: 0, minLeft: 0, start, len, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables, hanviet: w.hanviet, vi: w.vi };
+      }
+    }
+    // A word of a level that is not open: its reading only, as the fallback reader gives, without its meaning.
+    for (let len = Math.min(MAX_WORD_LEN, text.length); len >= 1; len--) {
+      for (let start = Math.max(0, i - len + 1); start <= i && start + len <= text.length; start++) {
+        const w = wordByHanzi.get(text.slice(start, start + len));
+        if (w) return { x: 0, top: 0, bottom: 0, minLeft: 0, start, len, text: w.hanzi, pinyin: w.pinyin, syllables: w.syllables };
       }
     }
     if (dictionaryOnly) return null;
