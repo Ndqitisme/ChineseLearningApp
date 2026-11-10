@@ -12,7 +12,6 @@ export const ICON_NAMES = [
   "quiz-meaning",
   "quiz-hanzi",
   "quiz-listen",
-  "write",
   "build",
   "tones",
   "course",
@@ -72,5 +71,9 @@ export const ICON_NAMES = [
   "topic-office",
   "topic-meetings",
   "topic-business",
+  "write",
+  "cross",
+  "check-disc",
+  "cross-disc",
 ] as const;
 export type IconName = (typeof ICON_NAMES)[number];

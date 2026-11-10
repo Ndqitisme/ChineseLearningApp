@@ -1,10 +1,11 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { glass } from '../../lib/ui/glass/glass.ts';
   import BackButton from '../components/BackButton.svelte';
   import { onMount, tick } from 'svelte';
   import { HSK_HUE, levelOf, loadLevels, topicById, topicHue, wordById } from '../../lib/data.ts';
   import { requestExposurePatch } from '../../lib/exposure.ts';
-  import { isHan } from '../../lib/pinyin.ts';
+  import { isHan, splitWritten, toSyllables } from '../../lib/pinyin.ts';
   import { progress, saveProgress } from '../../lib/progress.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
   import { hskLevel, isOpenAnyEdition, settings } from '../../lib/settings.svelte.ts';
@@ -63,7 +64,7 @@
 <div class="page">
   {#if word}
     <BackButton to="/search" useHistory />
-    <div class="hero card">
+    <div class="hero card glass">
       <div class="strokes">
         {#key strokeKey}
           {#each [...word.hanzi].filter(isHan) as ch, i (i)}
@@ -76,22 +77,22 @@
         <div class="vi">{word.vi}</div>
         {#if word.hanviet}<div class="hv">Hán Việt: <b>{word.hanviet}</b></div>{/if}
         <div class="chips">
-          {#if level}<a class="chip hued" href="#/hsk/{level}" style:--h={hueVar(HSK_HUE)}>HSK {level}</a>{/if}
+          {#if level}<a class="chip glass-soft glass-press hued" href="#/hsk/{level}" style:--h={hueVar(HSK_HUE)}>HSK {level}</a>{/if}
           {#if (level || otherLevel) && otherLevel !== level}
-            <span class="chip other" title="Cấp của từ này trong bộ từ bản {otherEdition}">Bản {otherEdition}: {otherLevel ? `HSK ${otherLevel}` : 'không có'}</span>
+            <span class="chip glass-soft glass-press other" title="Cấp của từ này trong bộ từ bản {otherEdition}">Bản {otherEdition}: {otherLevel ? `HSK ${otherLevel}` : 'không có'}</span>
           {/if}
           {#each word.topics as t (t)}
             {@const topic = topicById.get(t)}
-            {#if topic}<a class="chip hued" href="#/topic/{t}" style:--h={hueVar(topicHue(topic))}><Icon name={topic.icon} /> {topic.title}</a>{/if}
+            {#if topic}<a class="chip glass-soft glass-press hued" href="#/topic/{t}" data-hue={topicHue(topic)} style:--h={hueVar(topicHue(topic))}><Icon name={topic.icon} /> {topic.title}</a>{/if}
           {/each}
         </div>
         <div class="row btns">
-          <button class="btn" onclick={replayStrokes}><Icon name="write" hue={HUE_OF.write} /> Xem lại nét</button>
+          <button use:glass class="btn glass glass-press" onclick={replayStrokes}><Icon name="write" hue={HUE_OF.write} /> Xem lại nét</button>
           {#if speechAvailable()}
-            <button class="btn" onclick={() => say('female', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nữ</button>
-            <button class="btn" onclick={() => say('male', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nam</button>
+            <button use:glass class="btn glass glass-press" onclick={() => say('female', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nữ</button>
+            <button use:glass class="btn glass glass-press" onclick={() => say('male', word.hanzi)}><Icon name="speaker" hue={HUE_OF.listen} /> Giọng nam</button>
           {:else}
-            <a class="btn ghost" href="#/settings/voice"><Icon name="speaker-off" /> Cài giọng đọc…</a>
+            <a use:glass class="btn glass glass-press ghost" href="#/settings/voice"><Icon name="speaker-off" /> Cài giọng đọc…</a>
           {/if}
         </div>
         {#if speakError}<p class="bad small">{speakError}</p>{/if}
@@ -100,28 +101,28 @@
 
     {#if word.ex}
       <h2 class="section-title">Ví dụ</h2>
-      <div class="card ex">
+      <div class="card glass ex">
         <div class="han ex-zh" data-hover-pinyin="on">{word.ex.zh}
-          {#if speechAvailable()}<button class="btn ghost sm" onclick={() => say('female', word.ex!.zh)}><Icon name="speaker" hue={HUE_OF.listen} /></button>{/if}
+          {#if speechAvailable()}<button use:glass class="btn glass glass-press ghost sm" onclick={() => say('female', word.ex!.zh)}><Icon name="speaker" hue={HUE_OF.listen} /></button>{/if}
         </div>
-        <div class="ex-py" data-has-pinyin>{word.ex.py}</div>
+        <div class="ex-py" data-has-pinyin><Pinyin text={word.ex.py} syllables={toSyllables(splitWritten(word.ex.py))} /></div>
         <div class="ex-vi">{word.ex.vi}</div>
       </div>
     {/if}
 
     {#if word.viFull && word.viFull !== word.vi}
       <h2 class="section-title">Nghĩa đầy đủ (CVDICT)</h2>
-      <div class="card full">{word.viFull}</div>
+      <div class="card glass full">{word.viFull}</div>
     {/if}
 
     <h2 class="section-title">Học từ này</h2>
     <div class="row btns">
-      <button class="btn" class:primary={e?.s} onclick={() => requestExposurePatch(word.id, { starred: !e?.s })}>{e?.s ? '★ Đã lưu sổ tay' : '☆ Lưu vào sổ tay'}</button>
-      <button class="btn" class:primary={e?.k} onclick={() => requestExposurePatch(word.id, { known: !e?.k })}>{e?.k ? '✓ Đã biết' : 'Đánh dấu đã biết'}</button>
+      <button use:glass class="btn glass glass-press" class:primary={e?.s} onclick={() => requestExposurePatch(word.id, { starred: !e?.s })}><Icon name="nav-notebook" hue={e?.s ? undefined : HUE_OF.notebook} /> {e?.s ? 'Đã lưu sổ tay' : 'Lưu vào sổ tay'}</button>
+      <button use:glass class="btn glass glass-press" class:primary={e?.k} onclick={() => requestExposurePatch(word.id, { known: !e?.k })}><Icon name="done" hue={e?.k ? undefined : 'green'} /> {e?.k ? 'Đã biết' : 'Đánh dấu đã biết'}</button>
       {#if card}
         <span class="muted">Ôn tiếp: {new Date(card.due).toLocaleDateString('vi-VN')} · lần ôn {card.reps}</span>
       {:else}
-        <button class="btn" onclick={addToReview}><Icon name="nav-review" hue={HUE_OF.review} /> Thêm vào ôn tập</button>
+        <button use:glass class="btn glass glass-press" onclick={addToReview}><Icon name="nav-review" hue={HUE_OF.review} /> Thêm vào ôn tập</button>
         <span class="muted small">Nếu nhớ tốt, lần ôn sau: {previewIntervals(undefined)[3]}</span>
       {/if}
     </div>
@@ -139,12 +140,15 @@
 
 <style>
   .hero { display: flex; gap: 28px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
-  .strokes { display: flex; gap: 10px; flex-wrap: wrap; }
+  /* Nested in the hero card: its radius minus the card's 18px padding, floored at 4px. */
+  .strokes { display: flex; gap: 10px; flex-wrap: wrap; align-self: flex-start; --stroke-r: max(4px, calc(var(--radius) - 18px)); }
   .info { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 6px; }
   .py { font-size: 30px; }
   .vi { font-size: 24px; font-weight: 900; }
   .hv { color: var(--text-2); font-size: 16px; }
   .hv b { color: var(--text); }
+  /* The thin muted label reached 4.3:1 on its rendered ink in light themes. */
+  :global(:root[data-theme='light']) .hv { color: color-mix(in srgb, var(--text-2) 60%, var(--text)); }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .chips a { text-decoration: none; }
   .btns { flex-wrap: wrap; margin-top: 6px; }

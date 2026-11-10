@@ -22,12 +22,23 @@ export default async function (t) {
     t.assert((await main.$$('.syl')).length === w.syllables.length, 'one tone row per syllable');
   });
 
+  // The reference contour is the answer: it may not show before the check, and the plot keeps its size when it does.
+  const plot = () => main.evaluate(() => ({ lines: document.querySelectorAll('.plot .tpl').length, h: document.querySelector('.plot').getBoundingClientRect().height }));
+  let before;
+  await t.step('the reference contour is hidden until Kiểm tra', async () => {
+    before = await plot();
+    t.assert(before.lines === 0, `${before.lines} reference path(s) drawn before the check`);
+  });
+
   // The drill keeps its own score only: picking tones says nothing about recalling the word, so no review card.
   await t.step('right tones are accepted and counted in the drill score, with no review card', async () => {
     const w = await current();
     const rows = await main.$$('.syl');
     for (const [i, s] of w.syllables.entries()) await (await rows[i].$$('.tone'))[s.tone - 1].click();
     await t.click(main, '.drill .btn.primary', 'Kiểm tra');
+    const after = await plot();
+    t.assert(after.lines === w.syllables.length, `${after.lines} reference path(s) after the check, want ${w.syllables.length}`);
+    t.assert(after.h === before.h, `plot height ${before.h} -> ${after.h} when the contour appears`);
     await t.waitFor(main, '.drill .answer', 'Đúng');
     await t.waitFor(main, '.drill .muted', 'đúng 1');
     const card = (await t.store(main, 'progress.json')).srs?.[w.id];
@@ -35,7 +46,7 @@ export default async function (t) {
   });
 
   await t.step('wrong tones show the answer', async () => {
-    await t.click(main, '.speak .btn', 'Từ tiếp');
+    await t.click(main, '.next .btn', 'Tiếp');
     await main.waitForFunction(() => !document.querySelector('.drill .answer'));
     const w = await current();
     const rows = await main.$$('.syl');

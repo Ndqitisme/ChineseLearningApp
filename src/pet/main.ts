@@ -1,6 +1,7 @@
 import { mount } from 'svelte';
 import { initSettings, loadOpenLevels } from '../lib/settings.svelte.ts';
 import '../lib/ui/base.css';
+import '../lib/ui/glass/glass.css';
 import Pet from './Pet.svelte';
 
 // Pages read settings and the open HSK packs synchronously, so both are ready before mount.

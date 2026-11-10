@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor } from './geometry.ts';
+import { BASE_BUBBLE_ROOM, HAND_CLEAR, SHADOW_PAD, TAIL_REACH, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor } from './geometry.ts';
 
 const workArea = { x: 0, y: 0, w: 1920, h: 1040 };
 const spriteCss = { w: 115, h: 210 };
@@ -58,6 +58,13 @@ describe('bubbleInset', () => {
       expect(top, `top, sprite ${sprite.h}, bubble ${bh}`).toBeGreaterThanOrEqual(SHADOW_PAD);
       expect(win.h - (top + bh), `bottom, sprite ${sprite.h}, bubble ${bh}`).toBeGreaterThanOrEqual(SHADOW_PAD);
       expect(win.w - side - 264, `far side, sprite ${sprite.h}`).toBeGreaterThanOrEqual(SHADOW_PAD);
+    }
+  });
+
+  it('keeps the tail tip clear of the sprite frame, which her waving hand reaches, at every size', () => {
+    for (const sprite of sprites) {
+      const { side } = bubbleInset(windowSize(sprite), sprite);
+      expect(side - TAIL_REACH - sprite.w, `sprite ${sprite.h}`).toBeGreaterThanOrEqual(HAND_CLEAR);
     }
   });
 

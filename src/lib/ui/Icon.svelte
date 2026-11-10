@@ -14,7 +14,8 @@
   style:--src="url(/icons/{name}.png)"
   style:width={size}
   style:height={size}
-  style:color={hue ? hueVar(hue) : undefined}
+  style:--hue={hue ? hueVar(hue) : undefined}
+  class:hued={!!hue}
 ></span>
 
 <style>
@@ -26,4 +27,8 @@
     -webkit-mask: var(--src) center / contain no-repeat;
     mask: var(--src) center / contain no-repeat;
   }
+  .hued { color: var(--hue); }
+  /* Light: the hue mixed toward the text colour, further than hued small text: the thin strokes of a mask render
+     lighter than their colour, and over the blue band behind a thin pill the plain violet fell to 2.2:1 (75 %: 2.6:1, 55 %: 2.95:1). */
+  :global(:root[data-theme='light']) .hued { color: color-mix(in srgb, var(--hue) 40%, var(--text)); }
 </style>

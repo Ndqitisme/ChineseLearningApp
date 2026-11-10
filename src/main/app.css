@@ -1,65 +1,309 @@
-/* Main window building blocks. All colours/radii come from theme tokens. */
+/* Main window building blocks. All colours/radii come from theme tokens; glass levels in lib/ui/glass/glass.css. */
 html, body, #app { height: 100%; }
 body { background: var(--bg); overflow: hidden; }
+
+/* Backdrop behind every page: four large soft blobs over --bg, no edge, line or texture. The glass bends the colour
+   gradient; the rim, specular and shadow carry the rest. Every blob takes a hue of the theme itself: a foreign hue at low
+   alpha mixes with the theme colour into grey. Light: two wide blobs in the theme's light tint (--accent; Đêm sao's accent
+   is yellow, so a light lavender instead) give the field chroma without darkening it under muted text, one in the
+   primary sits behind the sidebar, one in the secondary primary in the corner below it. Dark: the light secondary primary
+   takes the accent's place, since a dark or gold accent turns taupe on a dark field. Each blob fades along an eased
+   curve, since a linear fade shows a bright point at its centre. Strengths are the highest at which muted text on the
+   field and in cards stays at 4.5:1. */
+:root {
+  --tint: var(--accent); --ring: var(--accent);
+  --blob-1: color-mix(in srgb, var(--tint) 100%, transparent); --blob-at-1: 62% 72% at 94% 2%;
+  --blob-2: color-mix(in srgb, var(--primary-2) 20%, transparent); --blob-at-2: 50% 60% at 2% 98%;
+  --blob-3: color-mix(in srgb, var(--tint) 85%, transparent); --blob-at-3: 55% 48% at 62% 104%;
+  --blob-4: color-mix(in srgb, var(--primary) 24%, transparent); --blob-at-4: 34% 60% at 0% 42%;
+  --blob-5: color-mix(in srgb, var(--primary) 30%, transparent); --blob-at-5: 30% 26% at 36% 20%;
+  --blob-6: transparent; --blob-at-6: 1px 1px at 0 0;
+}
+:root[data-theme-id='night'][data-theme='light'] { --tint: color-mix(in srgb, var(--primary) 40%, white); }
+/* Hoa anh đào's light pink moves the field little at 30 %: more of it behind the header, so the pills there bend colour. */
+:root[data-theme-id='sakura'][data-theme='light'] { --blob-5: color-mix(in srgb, var(--primary) 44%, transparent); }
+:root[data-theme='dark'] {
+  --ring: var(--primary-2);
+  --blob-1: color-mix(in srgb, var(--primary) 26%, transparent); --blob-at-1: 55% 65% at 90% 6%;
+  --blob-2: color-mix(in srgb, var(--primary-2) 12%, transparent); --blob-at-2: 50% 60% at 4% 94%;
+  --blob-3: color-mix(in srgb, var(--primary-2) 20%, transparent); --blob-at-3: 45% 55% at 98% 96%;
+  --blob-4: color-mix(in srgb, var(--primary) 10%, transparent); --blob-at-4: 40% 50% at 8% 8%;
+  --blob-5: color-mix(in srgb, var(--primary-2) 22%, transparent); --blob-at-5: 30% 26% at 36% 20%;
+  --blob-6: color-mix(in srgb, var(--primary) 14%, transparent); --blob-at-6: 40% 45% at 60% 58%;
+}
+/* Primary as a fill (switch on, slider): Hoa anh đào's light pink is 2.6:1 on the field and under the white knob; a step
+   toward its text colour reaches 3:1. Text on primary keeps --primary. */
+:root { --primary-fill: var(--primary); }
+/* The second colour patch inside cards: weaker in dark, where the light --primary-2 lifts the field under tone colours. */
+:root { --card-patch: 12%; }
+:root[data-theme='dark'] { --card-patch: 8%; }
+:root[data-theme-id='sakura'][data-theme='light'] { --primary-fill: color-mix(in srgb, var(--primary) 72%, var(--text)); }
+/* Dark: a light fill (toward white), so the on track, slider fill and progress fill reach 3:1 against the dark card and
+   the slider's grey track; the knobs on it turn dark (Switch, Range), since a light knob on a light fill was 1.9:1. */
+:root[data-theme='dark'] { --primary-fill: color-mix(in srgb, var(--primary) 55%, white); }
+/* The shell does not scroll (pages scroll inside it), so the field stays put under the glass. */
+.shell {
+  background:
+    radial-gradient(var(--blob-at-1), var(--blob-1), color-mix(in srgb, var(--blob-1) 74%, transparent) 25%, color-mix(in srgb, var(--blob-1) 40%, transparent) 50%, color-mix(in srgb, var(--blob-1) 13%, transparent) 75%, transparent),
+    radial-gradient(var(--blob-at-2), var(--blob-2), color-mix(in srgb, var(--blob-2) 74%, transparent) 25%, color-mix(in srgb, var(--blob-2) 40%, transparent) 50%, color-mix(in srgb, var(--blob-2) 13%, transparent) 75%, transparent),
+    radial-gradient(var(--blob-at-3), var(--blob-3), color-mix(in srgb, var(--blob-3) 74%, transparent) 25%, color-mix(in srgb, var(--blob-3) 40%, transparent) 50%, color-mix(in srgb, var(--blob-3) 13%, transparent) 75%, transparent),
+    radial-gradient(var(--blob-at-4), var(--blob-4), color-mix(in srgb, var(--blob-4) 74%, transparent) 25%, color-mix(in srgb, var(--blob-4) 40%, transparent) 50%, color-mix(in srgb, var(--blob-4) 13%, transparent) 75%, transparent),
+    radial-gradient(var(--blob-at-5), var(--blob-5), color-mix(in srgb, var(--blob-5) 74%, transparent) 25%, color-mix(in srgb, var(--blob-5) 40%, transparent) 50%, color-mix(in srgb, var(--blob-5) 13%, transparent) 75%, transparent),
+    radial-gradient(var(--blob-at-6), var(--blob-6), color-mix(in srgb, var(--blob-6) 74%, transparent) 25%, color-mix(in srgb, var(--blob-6) 40%, transparent) 50%, color-mix(in srgb, var(--blob-6) 13%, transparent) 75%, transparent),
+    var(--bg);
+}
 
 .page { padding: 26px 32px 48px; max-width: 1080px; margin: 0 auto; }
 .page h1 { font-size: 26px; margin: 0 0 4px; font-weight: 900; }
 .page .lead { color: var(--text-2); margin: 0 0 22px; }
 .section-title { font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin: 28px 0 12px; }
 
+/* Muted text directly on the field (not inside a card) can sit on a blob's centre: a stronger ink keeps 4.5:1
+   (plain --text-2 fell to 3.8:1 on the Đêm sao light blob). */
+.page > .lead, .page > .section-title, .page > p.muted, .page > .row > .muted, .page > .row > a.small, .page > .status > .muted, .page > .grade-help {
+  color: var(--text-2-strong);
+}
+.page > .section-title .muted { color: inherit; }
+
+/* Inline links in running text: the sidebar, pills, chips and cards style their own anchors. */
+.page p a, .page a.small, .page .small a, .page li a, .page .empty a, .page .lead a, .page .muted a {
+  color: var(--primary-ink);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.page p a:visited, .page a.small:visited, .page .small a:visited, .page .empty a:visited, .page .muted a:visited { color: var(--primary-ink); }
+.page p a:hover, .page a.small:hover, .page .small a:hover, .page .empty a:hover, .page .muted a:hover { color: var(--text); }
+/* Text links only: links that are glass controls (pills, tabs, cards) keep their own radius under the ring. */
+.page a:not(.glass, .glass-row, .card, .body):focus-visible { outline: 2px solid var(--primary-ink); outline-offset: 2px; border-radius: 4px; }
+
 .card {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
+  border: 0;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   padding: 18px 20px;
+  /* Cards carry most text: denser glass keeps muted text and tone colours at 4.5:1 over the blobs. A soft colour
+     wash inside the surface gives the controls on the card a gradient to bend. */
+  --glass-alpha: 86%;
+  background-image: var(--card-face);
+}
+/* The card's colour wash, shared with the empty-state boxes. */
+.card, .empty {
+  --card-face:
+    radial-gradient(70% 60% at 100% 0%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%),
+    radial-gradient(60% 50% at 0% 0%, color-mix(in srgb, var(--ring) var(--card-patch), transparent), transparent 70%);
 }
 .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
-  border-radius: 999px; padding: 8px 16px; font-weight: 800; font-size: 14px;
-  transition: transform .08s ease, background .15s ease;
+  border: 0; color: var(--text);
+  border-radius: 999px; padding: 9px 17px; font-weight: 800; font-size: 14px;
+  /* Thin glass: the convex bezel has to show the backdrop bending; the label is --text, safe on any field. */
+  --glass-alpha: 30%;
 }
-.btn:hover { background: var(--surface-2); }
-.btn:active { transform: scale(.97); }
-.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
-.btn.primary:hover { background: var(--primary-2); }
-.btn.ghost { border-color: transparent; background: transparent; }
-.btn:disabled { opacity: .5; cursor: default; }
+/* Filled with the primary colour: opaque, so the backdrop cannot lift it under 4.5:1 with its label. The rim
+   stays, plus a top sheen that ends above the label's line box (7px on pills, 4px on chips): a sheen reaching
+   the label took white text to 4.2:1. */
+/* Disabled primary pills take the shared disabled look instead (plain thin glass, muted label). */
+.btn.primary:not(:disabled), .chip.on {
+  --glass-tint: var(--primary); --glass-alpha: 100%; color: var(--on-primary);
+  --glass-rim-hi: .45; --glass-rim-mid: .22; --glass-rim-dark: 16%; --glass-rim-side: 10%; --glass-rim-end: rgb(var(--glass-black));
+  background-image: linear-gradient(to bottom, rgb(var(--glass-white) / .16), transparent 7px);
+}
+.chip.on { background-image: linear-gradient(to bottom, rgb(var(--glass-white) / .16), transparent 4px); }
+.btn.primary:hover:not(:disabled) { --glass-tint: var(--primary-2); --glass-alpha: 100%; }
+/* Plain pills on a near-white card: a denser fill alone changes nothing there, so hover also tints toward the primary. */
+/* Pills that carry a state colour (grade pills) set --btn-hover-tint from it. */
+.btn.glass-press:hover:not(:disabled):not(.primary):not(.ghost), .back-btn.glass-press:hover:not(:disabled),
+.chip.glass-press:hover:not(:disabled):not(.on):not(.hued), .select-trigger.glass:hover:not(:disabled) { --glass-tint: var(--btn-hover-tint, color-mix(in srgb, var(--primary) var(--pill-hover-tint), var(--surface))); }
+:root { --pill-hover-tint: 22%; }
+:root[data-theme='dark'] { --pill-hover-tint: 14%; }
+/* Ghost: a text pill in every mode (also under reduced transparency, where other glass gets a border). */
+:root .btn.ghost { background: transparent; box-shadow: none; backdrop-filter: none; }
+/* The ghost pill sits on a card: the card's own surface colour would not show, so hover takes the primary tint. */
+.btn.ghost:hover:not(:disabled) { background: color-mix(in srgb, var(--primary) 14%, transparent); transform: none; }
+/* Dark, pressed: a thin pill drops back to its resting density, so the press wash takes it below rest; the ghost pill,
+   which has no shadow of its own, gets the wash alone. */
+:root[data-theme='dark'] :is(.btn, .back-btn, .tile, .tone).glass-press:not(.primary):not(.on):active:not(:disabled) { --glass-alpha: 30%; }
+:root[data-theme='dark'] .select-trigger.glass-press:active:not(:disabled) { --glass-alpha: 26%; }
+:root[data-theme='dark'] .btn.ghost:active:not(:disabled) { background: transparent; box-shadow: inset 0 0 0 100vmax rgb(var(--glass-black) / .25); }
+/* Descriptions and subtitles: no lone syllable on the last line. */
+.page .lead, .page p, .card .muted, .section-title { text-wrap: pretty; }
+/* Short descriptions in cards and the recent-word meanings: lines of even length, no lone word under them. */
+.card > .muted, .mini .vi, .card b, .option { text-wrap: balance; }
 
 .chip {
-  display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 3px 10px;
-  font-size: 12.5px; font-weight: 800; background: var(--surface-2); color: var(--text-2);
+  display: inline-flex; align-items: center; gap: 5px; border: 0; border-radius: 999px; padding: 4px 11px;
+  /* Thin glass (30 %) so the bezel bends the card's wash; the label is pulled toward --text to keep 4.5:1 over it. */
+  font-size: 12.5px; font-weight: 800; color: color-mix(in srgb, var(--text-2) 70%, var(--text));
+  --glass-tint: var(--surface-2); --glass-alpha: 30%;
 }
-.chip.on { background: var(--primary); color: var(--on-primary); }
+.chip .icon { width: 16px; height: 16px; }
+.chip.on { --glass-tint: var(--primary); --glass-alpha: 100%; color: var(--on-primary); }
+.chip.on:hover:not(:disabled) { --glass-tint: var(--primary-2); --glass-alpha: 100%; }
+.chip:disabled { cursor: default; --glass-alpha: 40%; }
 
-input[type='text'], input[type='search'], input[type='password'], input[type='url'], input[type='time'], select, textarea {
-  font: inherit; color: var(--text); background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 8px 12px; outline: none;
+/* Fields: a text-coloured boundary of about 3:1 on the page, the theme's muted colour as placeholder. */
+input[type='text'], input[type='search'], input[type='password'], input[type='url'], input[type='time'], .select-trigger, textarea {
+  font: inherit; color: var(--text);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border: 0; border-radius: max(8px, calc(var(--radius) - 4px)); padding: 9.5px 13.5px;
+  outline: 1px solid color-mix(in srgb, var(--text-2) 85%, var(--surface)); outline-offset: -1px;
+  box-shadow: inset 0 1px 0 rgb(var(--glass-white) / calc(var(--glass-sheen) * .6)), inset 0 1px 3px rgb(var(--glass-black) / .06);
 }
-input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-input[type='range'] { accent-color: var(--primary); }
+::placeholder { color: var(--text-2); opacity: 1; }
+/* Light: the regular hint's strokes render lighter than its colour (ink core 3.9:1 on a thin field over Hoa anh đào's
+   pink blob at 1400 px); 60 % of the text colour, as the small muted text, still reads lighter than typed text. */
+:root[data-theme='light'] ::placeholder { color: color-mix(in srgb, var(--text-2) 40%, var(--text)); }
+input:focus-visible, .select-trigger:focus-visible, textarea:focus-visible { outline: 2px solid var(--primary-ink); outline-offset: 0; }
+/* Search fields are refracting glass pills: the shared rim marks them, as on the pills beside them; the ring sits outside on focus. */
+input[type='search'].glass {
+  outline: none; background: color-mix(in srgb, var(--glass-tint) var(--glass-alpha), transparent); --glass-alpha: 30%;
+  box-shadow: var(--glass-rim), var(--glass-shadow, var(--shadow));
+}
+/* Selects and time inputs on cards: thin refracting glass with the directional rim, no flat outline. */
+/* A card holding an open listbox paints above the cards after it, so the list is not covered. */
+.card:has(.select.open) { z-index: 5; }
+/* One height for both, so neighbouring rows line up (the time picker made its field 2px taller). */
+.select-trigger.glass, input[type='time'].glass, textarea.glass {
+  outline: none; background: color-mix(in srgb, var(--glass-tint) var(--glass-alpha), transparent); --glass-alpha: 26%;
+  box-shadow: var(--glass-rim), var(--glass-shadow, var(--shadow));
+}
+.select-trigger.glass, input[type='time'].glass { height: 40px; }
+/* The custom CSS box: the select's close shadow, and no browser resize grip in the rounded corner. */
+textarea.glass { display: block; resize: none; --glass-shadow: 0 1px 2px rgb(var(--glass-black) / .1), 0 2px 6px rgb(var(--glass-black) / .06); }
+.select-trigger.glass:focus-visible, input[type='time'].glass:focus-visible, textarea.glass:focus-visible { outline: 2px solid var(--primary-ink); outline-offset: 2px; }
+/* Hover as on the pills: a thicker lit top edge and a primary tint (on a near-white card a denser fill alone shows nothing). */
+input[type='search'].glass:hover { --glass-alpha: 55%; --glass-tint: color-mix(in srgb, var(--primary) var(--pill-hover-tint), var(--surface)); --glass-rim-top: 2px; --glass-rim-hi: var(--rim-hover); --glass-rim-mid: .7; --glass-shadow: 0 2px 4px rgb(var(--glass-black) / .1), 0 6px 14px rgb(var(--glass-black) / .1); }
+input[type='time'].glass:hover { --glass-alpha: 55%; --glass-tint: color-mix(in srgb, var(--primary) var(--pill-hover-tint), var(--surface)); --glass-rim-top: 2px; --glass-rim-hi: var(--rim-hover); --glass-rim-mid: .7; }
+input[type='search'].glass:focus-visible { outline: 2px solid var(--primary-ink); outline-offset: 2px; }
+/* The search, filter and time fields press as the pills do: dim rim and an inner shadow. Dark: back to the resting fill
+   (the hover fill is lighter), the background-coloured shadow and the black wash. */
+input[type='search'].glass:active, input[type='time'].glass:active { --glass-rim-hi: var(--rim-press); --glass-rim-mid: var(--rim-press-mid); --glass-rim-top: 1px;
+  --glass-shadow: inset 0 2px 5px rgb(var(--glass-black) / .18), 0 1px 1px rgb(var(--glass-black) / .08); }
+:root[data-theme='dark'] input[type='search'].glass:active, :root[data-theme='dark'] input[type='time'].glass:active { --glass-alpha: 30%; --glass-tint: var(--surface);
+  --glass-shadow: inset 0 2px 6px color-mix(in srgb, var(--bg) 60%, transparent), inset 0 0 0 100vmax rgb(var(--glass-black) / .4), 0 1px 1px rgb(var(--glass-black) / .08); }
+/* Chrome shows the clear button only while the field is focused or hovered: an active filter needs it at rest too. */
+input[type='search']:enabled:read-write:not(:placeholder-shown)::-webkit-search-cancel-button { opacity: 1; pointer-events: auto; }
+input[type='search']::-webkit-search-cancel-button {
+  appearance: none; width: 14px; height: 14px; margin-left: 6px; cursor: pointer;
+  background: var(--text-2);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.select-trigger {
+  /* As wide as the time inputs beside it, whatever the chosen label. */
+  min-width: 133px;
+  padding-right: 30px; text-align: left; cursor: pointer; white-space: nowrap;
+}
+/* The chevron is content, so the dark press wash (an inset shadow, painted over backgrounds) dims the face and not it. */
+.select-trigger::after {
+  content: ''; position: absolute; right: 10px; top: calc(50% - 2.5px); width: 10px; height: 5px; pointer-events: none;
+  background: linear-gradient(45deg, transparent 50%, var(--text-2) 50%) left / 5px 5px no-repeat, linear-gradient(135deg, var(--text-2) 50%, transparent 50%) right / 5px 5px no-repeat;
+}
+/* The time picker's clock, drawn in the muted colour instead of the browser's black or white. */
+input[type='time']::-webkit-calendar-picker-indicator {
+  width: 16px; height: 16px; opacity: 1; cursor: pointer;
+  background: var(--text-2);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cpath d='M8 4.5V8l2.5 2' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='none' stroke='%23000' stroke-width='1.8'/%3E%3Cpath d='M8 4.5V8l2.5 2' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* A small glass tile (with .glass-rim .glass-press .glass-focus): the swatch covers the input's own box, so the rim is
+   drawn on the swatch and only the close shadow on the input. */
+input[type='color'] {
+  appearance: none; width: 34px; height: 26px; padding: 0; border: 0; background: none; cursor: pointer;
+  border-radius: max(6px, calc(var(--radius) - 8px));
+  box-shadow: var(--glass-shadow);
+}
+input[type='color']::-webkit-color-swatch-wrapper { padding: 0; }
+/* The text-coloured ring under the rim keeps the tile visible when its colour is the card's (Nền). */
+input[type='color']::-webkit-color-swatch { border: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 32%, transparent), var(--glass-rim); }
 input[type='checkbox'] { accent-color: var(--primary); width: 17px; height: 17px; }
+@media (prefers-reduced-transparency: reduce) {
+  input[type='text'], input[type='search'], input[type='password'], input[type='url'], input[type='time'], .select-trigger, textarea { background-color: var(--surface); }
+  /* The solid .glass rule drops the rim: give the listbox trigger its rim back, as the time inputs keep theirs. Both fields
+     are solid here (their own glass rule outranks the solid one). */
+  :root .select-trigger.glass, :root input[type='time'].glass, :root textarea.glass { background-color: var(--glass-tint); }
+  :root .select-trigger.glass { box-shadow: var(--glass-rim), var(--glass-shadow, var(--shadow)); }
+}
 
 /* Category colour: an element sets --h to a --hue-* token (hueVar in themes.ts); these read it. */
 .disc {
   display: inline-grid; place-items: center; flex: none; width: 1.75em; height: 1.75em; border-radius: 50%;
   color: var(--h); background: color-mix(in srgb, var(--h) 15%, var(--surface));
+  box-shadow: inset 0 1px 0 rgb(var(--glass-white) / calc(var(--glass-sheen) * .8));
 }
 /* Small text in a hue is mixed toward --text so it stays at 4.5:1 on its tint. */
-.chip.hued { background: color-mix(in srgb, var(--h) 15%, var(--surface)); color: color-mix(in srgb, var(--h) 75%, var(--text)); }
+.chip.hued { --glass-tint: color-mix(in srgb, var(--h) 18%, var(--surface)); --glass-alpha: 85%; color: color-mix(in srgb, var(--h) 75%, var(--text)); }
 .chip.hued .icon { color: var(--h); }
+/* Light: the icon in the hue's ink too (the teal topic icon fell to 2.4:1 on its chip over a light band). */
+:root[data-theme='light'] .chip.hued .icon { color: color-mix(in srgb, var(--h) 40%, var(--text)); }
+/* Hover keeps the chip's density (the shared 74 % would thin it and cancel the deeper tint). */
+.chip.hued:hover:not(:disabled) { --glass-tint: color-mix(in srgb, var(--h) 26%, var(--surface)); --glass-alpha: 85%; }
+/* Dark: 26 % moved the face 3 levels on the dark glass; 32 % moves it 9 and keeps the label at 4.7:1. */
+@media not (prefers-reduced-transparency: reduce) {
+  :root[data-theme='dark'] .chip.hued:hover:not(:disabled) { --glass-tint: color-mix(in srgb, var(--h) 32%, var(--surface)); }
+}
+/* Opaque (reduced transparency), a deeper tint took the violet label to 4.2:1: the chip keeps its resting fill and takes a
+   1px ring in its hue. */
+@media (prefers-reduced-transparency: reduce) {
+  .chip.hued:hover:not(:disabled) { --glass-tint: color-mix(in srgb, var(--h) 18%, var(--surface)); box-shadow: 0 0 0 1px var(--h), var(--shadow); }
+}
+/* Light, pressed: back to the resting tint; under the press shadow the deeper hover tint took the label to 4.46:1. */
+:root[data-theme='light'] .chip.hued:active:not(:disabled) { --glass-tint: color-mix(in srgb, var(--h) 18%, var(--surface)); }
+:root[data-theme='dark'] .chip.hued[data-hue='orange'] { --glass-tint: color-mix(in oklab, var(--h) 40%, black); }
+
+/* Progress bar: a sunk track, a filled part in the primary colour (or --h where set). The track is opaque: the quiz bar
+   lies on the page, and 14 % of the text colour over the blob behind the page header took the fill under 3:1 against it. */
+.progress {
+  height: 8px; border-radius: 99px; overflow: hidden;
+  background: color-mix(in srgb, var(--text) 14%, var(--surface));
+  box-shadow: inset 0 1px 2px rgb(var(--glass-black) / .16);
+}
+.progress i {
+  display: block; height: 100%; border-radius: 99px;
+  /* --primary-fill: the light Hoa anh đào pink was 2.1:1 against the track. */
+  background: var(--h, var(--primary-fill, var(--primary)));
+  box-shadow: inset 0 1px 0 rgb(var(--glass-white) / .35);
+  transition: width .3s;
+}
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
 
 .muted { color: var(--text-2); }
+/* Light: muted text at 13px or less renders lighter than its colour, since a stroke about a pixel wide never reaches it:
+   the typical stroke core of --text-2 at 12px was 3.4-3.9:1 on cards (contrast.mjs, rendered ink); 60 % of the text
+   colour and weight 500 bring it over 4.5:1 (half of it left 4.3:1 on tinted cards without refraction). html:root
+   outranks the component rules that tint muted text (selected cards). */
+html:root[data-theme='light'] .muted:is(.small, .count) { color: color-mix(in srgb, var(--text-2) 40%, var(--text)); font-weight: 500; }
+/* Light, at 14-16px too: the stroke core of --text-2 (and of --text-2-strong on the field) was 4.2-4.5:1; a quarter of the
+   text colour brings it to 4.9-5.3:1. Component rules that tint muted text (selected cards) still outrank these. */
+:root[data-theme='light'] .muted { color: color-mix(in srgb, var(--text-2) 75%, var(--text)); }
+:root[data-theme='light'] :is(.page > .lead, .page > .grade-help, :is(.page > p, .page > .row > *, .page > .status > *).muted:not(.small, .count)) { color: color-mix(in srgb, var(--text-2-strong) 75%, var(--text)); }
 .good { color: var(--good); }
+/* Verdict marks (Tones, quiz): a disc in --good or --bad with the mark knocked out, over the surface colour, so the mark
+   reads white in light themes and dark in dark ones. The icon box is larger than its disc (the art has a margin). */
+.verdict-mark { display: grid; place-items: center; border-radius: 50%; line-height: 0; pointer-events: none; background: var(--surface); }
+.verdict-mark.right { color: var(--good); }
+.verdict-mark.wrong { color: var(--bad); }
 .bad { color: var(--bad); }
 .row { display: flex; align-items: center; gap: 10px; }
+/* Controls and app chrome are not text to copy: a triple-click or Ctrl+A must not paint selection over the glass. */
+.side, .page > h1, .section-title, .btn, .chip, .switch, .badge, .flash, .tabs, .stat, .mode, .select-trigger { user-select: none; }
 .spacer { flex: 1; }
-.empty { text-align: center; color: var(--text-2); padding: 40px 0; }
+/* Empty states sit on card glass (fill, wash, blur and rim as .card), not a dashed outline. */
+.empty {
+  text-align: center; color: var(--text-2); padding: 36px 20px; margin: 8px 0;
+  border: 0; border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  background-image: var(--card-face);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--glass-rim), var(--shadow);
+  text-wrap: balance;
+}
+@media (prefers-reduced-transparency: reduce) { .empty { background: var(--surface); } }
 
 /* Scrollbars that match the theme. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--text) 22%, transparent); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { glass } from '../../lib/ui/glass/glass.ts';
   import { progress } from '../../lib/progress.svelte.ts';
   import { openWordAnyEdition } from '../../lib/settings.svelte.ts';
   import { HUE_OF } from '../../lib/theme/themes.ts';
@@ -19,12 +20,12 @@
   <p class="lead">Các từ đã lưu để luyện riêng.</p>
   {#if starred.length}
     <div class="row actions">
-      <a class="btn primary" href="#/quiz/meaning/starred"><Icon name="quiz-meaning" /> Luyện sổ tay</a>
-      <a class="btn" href="#/write/starred"><Icon name="write" hue={HUE_OF.write} /> Viết</a>
+      <a use:glass class="btn glass glass-press primary" href="#/quiz/meaning/starred"><Icon name="quiz-meaning" /> Luyện sổ tay</a>
+      <a use:glass class="btn glass glass-press" href="#/write/starred"><Icon name="write" hue={HUE_OF.write} /> Viết</a>
     </div>
-    <div class="card list">{#each starred as w (w.id)}<WordRow word={w} />{/each}</div>
+    <div class="card glass list">{#each starred as w (w.id)}<WordRow word={w} />{/each}</div>
   {:else}
-    <p class="empty">Chưa có từ nào. Bấm ☆ trên bong bóng của Tiểu Mai hoặc trong trang từ để lưu vào sổ tay.</p>
+    <p class="empty">Chưa có từ nào.<br />Bấm <Icon name="nav-notebook" /> trên bảng gợi ý hoặc trong trang từ để lưu vào sổ tay.</p>
   {/if}
 </div>
 

@@ -25,9 +25,9 @@
 <div class="page">
   <img class="logo" src="/logo/logo.webp" alt="Tiểu Mai — học tiếng Trung" width="180" height="180" />
   <h1><Icon name="nav-about" hue={HUE_OF.about} /> Giới thiệu</h1>
-  <p class="lead">Tiểu Mai (小梅) là ứng dụng mã nguồn mở giúp người Việt học từ vựng tiếng Trung hằng ngày qua một trợ lý trên màn hình.</p>
+  <p class="lead">Tiểu Mai (小梅) là ứng dụng mã nguồn mở giúp người Việt học từ vựng tiếng Trung hằng ngày qua một trợ lý trên&nbsp;màn&nbsp;hình.</p>
 
-  <div class="card stack">
+  <div class="card glass stack">
     <ul class="counts">
       <li><b>{words.filter(isOpen).length}</b> từ</li>
       <li><b>{dataset.topics.length}</b> chủ đề</li>
@@ -45,7 +45,7 @@
   </div>
 
   <h2 class="section-title">Nguồn dữ liệu và thư viện</h2>
-  <div class="card">
+  <div class="card glass glass">
     <table>
       <thead><tr><th>Nguồn</th><th>Dùng cho</th><th>Giấy phép</th></tr></thead>
       <tbody>
@@ -53,7 +53,7 @@
           <tr>
             <td><button class="link" onclick={() => openUrl(s.url)}>{s.name}</button></td>
             <td>{s.what}</td>
-            <td><span class="chip">{s.license}</span></td>
+            <td><span class="chip glass-soft glass-press">{s.license}</span></td>
           </tr>
         {/each}
       </tbody>
@@ -68,5 +68,7 @@
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; color: var(--text-2); font-size: 12.5px; padding: 6px 8px; }
   td { padding: 8px; border-top: 1px solid var(--border); }
-  .link { border: 0; background: none; color: var(--primary); font-weight: 800; padding: 0; text-align: left; }
+  .link { border: 0; background: none; color: var(--primary-ink); font-weight: 800; padding: 0; text-align: left; }
+  .link:hover { text-decoration: underline; }
+  .link:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 </style>

@@ -1,0 +1,197 @@
+/* Glass surfaces for both windows (docs/UI-GLASS.md). Colours come from theme tokens only.
+   Levels:
+   .glass        translucent surface, blur + saturate backdrop, rim lit from the upper left; the glass() action
+                 swaps the backdrop filter for its refraction filter (--glass-filter) in Chromium.
+   .glass-soft   the same without any backdrop filter: dense grids, and the assistant window, where
+                 nothing in the page lies behind the element.
+   .glass-solid  near-opaque frosted glass: the assistant's bubble, which must read on any desktop. */
+
+:root {
+  --glass-blur: 16px;
+  --glass-sat: 1.4;
+  --glass-alpha: 68%;
+  --glass-white: 255 255 255;
+  --glass-black: 0 0 0;
+  /* Rim per edge, from the edge normal under a light at −60° from straight up (upper left):
+     top brightest, left medium, bottom and right a hairline of the darkest token. */
+  --glass-rim-hi: .95;
+  --glass-rim-mid: .55;
+  --glass-rim-dark: 16%;
+  --glass-rim-side: 10%;
+  --glass-rim-end: var(--text);
+  --glass-sheen: .6;
+  /* Rim alpha on hover and when pressed, for every clickable glass element (dark caps the hover at .75, the left edge at .55 of
+     that, and presses dark). */
+  --rim-hover: 1;
+  --rim-hover-mid: .8;
+  --rim-press: .35;
+  --rim-press-mid: .15;
+  /* Light themes: the fill is pulled a little toward the primary colour so a white highlight can show on it. */
+  --glass-tint-mix: 5%;
+  /* The primary colour as text: pulled toward the text colour, since the light pinks and greens alone fall under 4.5:1. */
+  --primary-ink: color-mix(in srgb, var(--primary) 50%, var(--text));
+}
+:root[data-theme='dark'] {
+  --glass-alpha: 62%;
+  --glass-rim-hi: .55;
+  --glass-rim-mid: .28;
+  --glass-rim-dark: 60%;
+  --glass-rim-side: 40%;
+  --glass-rim-end: var(--bg);
+  --glass-sheen: .16;
+  --glass-tint-mix: 0%;
+  --rim-hover: .75;
+  --rim-hover-mid: .41;
+  --rim-press: .05;
+  --rim-press-mid: .03;
+  --lift-tint: 10%;
+}
+
+/* The rim: four inset edges following the corner radius; order decides the corners (top over left, bottom over right).
+   --glass-rim-w is the band's depth: 1px, or 3px under a 2px ring listed above it, so 1px of rim shows inside the ring.
+   --glass-rim-top deepens the lit top edge alone (hover, and the pet surfaces, whose fill is nearly white).
+   .empty: the main window's empty-state boxes carry the same rim. */
+.glass, .glass-soft, .glass-solid, .glass-rim, .empty {
+  --glass-rim:
+    inset 0 var(--glass-rim-top, var(--glass-rim-w, 1px)) 0 rgb(var(--glass-white) / var(--glass-rim-hi)),
+    inset 0 calc(-1 * var(--glass-rim-w, 1px)) 0 color-mix(in srgb, var(--glass-rim-end) var(--glass-rim-dark), transparent),
+    inset var(--glass-rim-w, 1px) 0 0 rgb(var(--glass-white) / var(--glass-rim-mid)),
+    inset calc(-1 * var(--glass-rim-w, 1px)) 0 0 color-mix(in srgb, var(--glass-rim-end) var(--glass-rim-side), transparent);
+}
+.glass, .glass-soft, .glass-solid {
+  --glass-tint: color-mix(in srgb, var(--primary) var(--glass-tint-mix), var(--surface));
+  position: relative;
+  background: color-mix(in srgb, var(--glass-tint) var(--glass-alpha), transparent);
+  box-shadow: var(--glass-rim), var(--glass-shadow, var(--shadow));
+}
+/* Small controls: a tight shadow. The theme's wide card shadow would pool between neighbouring pills. */
+.glass-press { --glass-shadow: 0 1px 2px rgb(var(--glass-black) / .1), 0 2px 6px rgb(var(--glass-black) / .06); }
+.glass {
+  backdrop-filter: var(--glass-filter, blur(var(--glass-blur)) saturate(var(--glass-sat)));
+}
+.glass.glass-hover:not(:hover) {
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+}
+.glass-solid {
+  --glass-alpha: 98%;
+}
+
+/* Interaction. Hover: brighter rim, lift, denser fill (glass() also deepens the bend). Press: the glass sinks. */
+.glass-press, .glass-lift { transition: transform .12s ease, box-shadow .12s ease, background .15s ease; }
+.glass-press:hover:not(:disabled), .glass-lift:hover:not(:disabled), .glass-hover:hover {
+  --glass-rim-hi: var(--rim-hover);
+  --glass-rim-mid: var(--rim-hover-mid);
+  --glass-rim-top: calc(var(--glass-rim-w, 1px) + 1px);
+}
+.glass-press:hover:not(:disabled) {
+  --glass-alpha: 74%;
+  transform: translateY(-1px);
+  --glass-shadow: 0 2px 4px rgb(var(--glass-black) / .1), 0 6px 14px rgb(var(--glass-black) / .1);
+}
+/* Cards that are links or answers: a 2px lift, a wider shadow and a thinner fill so the bend shows through, tinted
+   toward the primary colour as the rows are (a thinner near-white face alone moved 1-3 levels). A selected card keeps its hue. */
+.glass-lift:hover:not(:disabled) {
+  --glass-alpha: 70%;
+  transform: translateY(-2px);
+  --glass-shadow: 0 4px 8px rgb(var(--glass-black) / .08), 0 12px 28px rgb(var(--glass-black) / .14);
+}
+.glass-lift:hover:not(:disabled):not(.on):not(:active) { --glass-tint: color-mix(in srgb, var(--primary) var(--lift-tint, 8%), var(--surface)); }
+/* Press sinks the card as it does a pill (later than hover and more specific, so it wins while the pointer is on it).
+   Pressing a button inside the card (the topic bell) keeps the card lifted: the press belongs to the button. */
+.glass-lift:active:not(:disabled):not(:has(button:active)) {
+  transform: translateY(0) scale(.96);
+  --glass-rim-hi: var(--rim-press);
+  --glass-rim-mid: var(--rim-press-mid);
+  --glass-rim-top: var(--glass-rim-w, 1px);
+  --glass-shadow: inset 0 2px 5px rgb(var(--glass-black) / .18), 0 1px 1px rgb(var(--glass-black) / .08);
+}
+:root[data-theme='dark'] .glass-lift:active:not(:disabled):not(:has(button:active)) {
+  --glass-shadow: inset 0 2px 6px color-mix(in srgb, var(--bg) 60%, transparent), inset 0 0 0 100vmax rgb(var(--glass-black) / .25), 0 1px 1px rgb(var(--glass-black) / .08);
+}
+.glass-press:active:not(:disabled) {
+  transform: translateY(1px) scale(.96);
+  --glass-rim-hi: var(--rim-press);
+  --glass-rim-mid: var(--rim-press-mid);
+  --glass-shadow: inset 0 2px 5px rgb(var(--glass-black) / .18), 0 1px 1px rgb(var(--glass-black) / .08);
+}
+/* Dark (cards above, pills here): the inner shadow in the background colour (black at .18 read as a grey haze on the
+   dark glass), and a black wash over the face, which the hover had made denser and so lighter than at rest; the
+   background colour itself is about as dark as the resting glass, so a wash of it could not sink the face. */
+:root[data-theme='dark'] .glass-press:active:not(:disabled) {
+  --press-wash: .4;
+  --glass-shadow: inset 0 2px 6px color-mix(in srgb, var(--bg) 60%, transparent), inset 0 0 0 100vmax rgb(var(--glass-black) / var(--press-wash)), 0 1px 1px rgb(var(--glass-black) / .08);
+}
+/* Thin pills thicken from 30 % to 74 % on hover, so they need the deeper wash; a filled pill (primary, a selected chip)
+   keeps its dark label at 4.5:1 with a lighter one. */
+:root[data-theme='dark'] .glass-press:is(.primary, .on):not(.theme):active:not(:disabled) { --press-wash: .2; }
+/* .glass-row: clickable rows inside a card (list rows, lesson rows, sidebar items, disclosure lines). Hover is a
+   highlight box, press sinks it (more specific than the components' own hover rules, which must not cancel it), and
+   focus is one ring inset 2px, since rows sit edge to edge. The row's radius is the card's minus the card's padding,
+   so that ring stays concentric with the card corner. */
+.glass-row { transition: transform .12s ease, background .15s ease, box-shadow .12s ease; }
+/* Light: a primary tint, as on the pills; the plain light surface moved the face only a few levels under a white rim. */
+.glass-row:hover { background: color-mix(in srgb, color-mix(in srgb, var(--primary) 8%, var(--surface-2)) 80%, transparent); }
+/* Dark: a primary tint too; plain --surface-2 matched the card's colour washes at both ends of a row (1-3 levels). */
+:where(:root[data-theme='dark']) .glass-row:hover { background: color-mix(in srgb, color-mix(in srgb, var(--primary) 10%, var(--surface-2)) 75%, transparent); }
+:is(.glass-row):active:not(:disabled):not([aria-disabled='true']) { transform: scale(.98); box-shadow: inset 0 2px 4px rgb(var(--glass-black) / .16); }
+/* Dark: the row sinks as the pills do, with a stronger wash (its hover face is lighter than the glass at rest); the wash
+   is a shadow, so it also darkens the filled current item. */
+:root[data-theme='dark'] :is(.glass-row):active:not(:disabled):not([aria-disabled='true']) {
+  box-shadow: inset 0 2px 7px color-mix(in srgb, var(--bg) 65%, transparent), inset 0 0 0 100vmax rgb(var(--glass-black) / var(--press-wash, .45));
+}
+:root[data-theme='dark'] .glass-row:not(.on):active:not(:disabled):not([aria-disabled='true']) { background: transparent; }
+/* The filled current item keeps its dark label at 4.5:1. */
+:root[data-theme='dark'] .glass-row.on:active { --press-wash: .2; }
+.glass-row:focus-visible { outline: 2px solid var(--primary-ink); outline-offset: -2px; }
+/* Hover-only glass that is disabled keeps the plain frost under the pointer. */
+.glass.glass-hover:is(:disabled, [aria-disabled='true']):hover { backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)); }
+@media (prefers-reduced-motion: reduce) { .glass-row:active { transform: none; } }
+
+/* Disabled: a thinner, muted surface, label still readable (no opacity fade). */
+.glass-press:disabled, .glass-press[aria-disabled='true'] {
+  cursor: default;
+  --glass-alpha: 40%;
+  --glass-rim-hi: .5;
+  --glass-rim-mid: .2;
+  color: var(--text-2);
+  /* "none" would void the whole box-shadow list (rim included): an empty shadow instead. */
+  --glass-shadow: 0 0 transparent;
+}
+
+/* Focus ring, the same on every control. */
+.glass:focus-visible, .glass-soft:focus-visible, .glass-solid:focus-visible, .glass-focus:focus-visible, .glass-focus:has(:focus-visible) {
+  outline: 2px solid var(--primary-ink);
+  outline-offset: 2px;
+}
+
+/* .glass-arc, dark themes: a specular ring instead of a flat white top band, which read as a second grey border inside a
+   coloured ring. A 1.5px band just inside the edge (or --arc-inset inside it), clipped by the same radius (--arc-r),
+   brightest on the upper-left arc and fading along the top and down the left side (over --arc-size of the box). */
+:root[data-theme='dark'] :is(.glass-arc, .topic.on, .option.right, .option.wrong, .tile.ok, .tile.off, .tone.right, .tone.wrong) { --glass-rim-hi: .06; --glass-rim-mid: .04; }
+:root[data-theme='dark'] :is(.glass-arc, .topic.on, .option.right, .option.wrong, .tile.ok, .tile.off, .tone.right, .tone.wrong)::before {
+  content: ''; position: absolute; inset: var(--arc-inset, 0px); padding: 1.5px; pointer-events: none;
+  border-radius: calc(var(--arc-r, 12px) - var(--arc-inset, 0px));
+  /* Centred on the corner itself, so the arc there catches the most light and the top and left edges fade from it. */
+  background: radial-gradient(var(--arc-size, 55% 75%) at 0% 0%, color-mix(in srgb, var(--arc-tint, white) 40%, white) 0%, rgb(var(--glass-white) / .35) 45%, transparent 85%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+/* Pressed: the arc dims with the rim. */
+:root[data-theme='dark'] .glass-arc:active:not(:disabled)::before { opacity: .1; }
+/* Nothing in the page lies behind glass in the assistant window: no backdrop filter there. */
+:root[data-glass='none'] .glass { backdrop-filter: none; }
+
+/* OS preferences. */
+@media (prefers-reduced-transparency: reduce) {
+  :root .glass, :root .glass-soft, :root .glass-solid {
+    background: var(--glass-tint);
+    background-image: none;
+    backdrop-filter: none;
+    /* Only the transparency goes: the directional rim stays (a uniform outline lit the bottom and right edges). */
+    box-shadow: var(--glass-rim), var(--glass-shadow, var(--shadow));
+  }
+  :root .glass-press:hover:not(:disabled), :root .glass-lift:hover:not(:disabled) { --glass-tint: var(--surface-2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass-press, .glass-lift, .glass-press:hover:not(:disabled), .glass-lift:hover:not(:disabled), .glass-lift:active:not(:disabled), .glass-press:active:not(:disabled) { transition: none; transform: none; }
+}

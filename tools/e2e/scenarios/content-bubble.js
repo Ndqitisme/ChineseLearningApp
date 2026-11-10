@@ -33,11 +33,15 @@ export default async function (t) {
       seen.add(w.id);
       await t.step(`bubble ${w.hanzi} "${w.vi}"`, async () => {
         await t.waitFor(pet, '.bubble .vi', w.vi);
+        // The window is the size the app last asked for (setSize); the runner copies that onto the viewport only when it
+        // takes a screenshot, so innerHeight still holds the previous word's size. A taller bubble grows the window a
+        // frame or two after its text lands (ResizeObserver, then setSize).
+        await pet.waitForFunction(() => document.querySelector('.bubble').getBoundingClientRect().bottom <= (window.__e2e.windowSize?.height ?? innerHeight), { timeout: 3000 }).catch(() => {});
         const m = await pet.evaluate(() => {
           const r = (s) => document.querySelector(s)?.getBoundingClientRect().toJSON();
           const clipped = [...document.querySelectorAll('.bubble *')].filter((el) => el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).overflowX !== 'visible')
             .map((el) => el.className);
-          return { bubble: r('.bubble'), vi: r('.bubble .vi'), hanzi: r('.bubble .hanzi'), vw: innerWidth, vh: innerHeight, clipped, pos: window.__e2e.windowPos ?? null };
+          return { bubble: r('.bubble'), vi: r('.bubble .vi'), hanzi: r('.bubble .hanzi'), vw: window.__e2e.windowSize?.width ?? innerWidth, vh: window.__e2e.windowSize?.height ?? innerHeight, clipped, pos: window.__e2e.windowPos ?? null };
         });
         const inside = (b) => b && b.left >= 0 && b.top >= 0 && b.right <= m.vw && b.bottom <= m.vh;
         t.assert(inside(m.bubble), `bubble ${JSON.stringify(m.bubble)} outside the ${m.vw}x${m.vh} window`);

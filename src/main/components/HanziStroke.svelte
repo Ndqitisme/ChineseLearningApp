@@ -32,6 +32,26 @@
   let demoing = false;
 
   const css = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  /** `#rrggbb` a mixed p (0–1) toward b in sRGB; non-hex input returns a. */
+  const mix = (a: string, b: string, p: number) => {
+    const hex = /^#([0-9a-f]{6})$/i;
+    if (!hex.test(a) || !hex.test(b)) return a;
+    const ch = (s: string, i: number) => parseInt(s.slice(i, i + 2), 16);
+    return '#' + [1, 3, 5].map((i) => Math.round(ch(a, i) * p + ch(b, i) * (1 - p)).toString(16).padStart(2, '0')).join('');
+  };
+  /** A colour token as rgb(): hanzi-writer reads only hex and rgb(), and --primary-fill is a color-mix. */
+  const rgb = (name: string) => {
+    const probe = document.createElement('i');
+    probe.style.color = `var(${name})`;
+    el.append(probe);
+    const c = getComputedStyle(probe).color;
+    probe.remove();
+    const m = c.match(/^color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/);
+    return m ? `rgb(${m.slice(1, 4).map((v) => Math.round(Number(v) * 255)).join(', ')})` : c;
+  };
+  // Strokes not yet drawn: in the quiz the outline is a faint tracing aid; elsewhere (the word page) it is the headword
+  // itself while the animation runs, so it must read at 3:1.
+  const outline = () => (mode === 'quiz' ? css('--border') : mix(css('--text-2'), css('--surface'), 0.7));
 
   function startQuiz() {
     nextStroke = 0;
@@ -50,10 +70,13 @@
       showOutline,
       showCharacter: mode !== 'sequence',
       strokeColor: css('--text'),
-      outlineColor: css('--border'),
-      radicalColor: css('--primary'),
-      highlightColor: css('--accent'),
-      drawingColor: css('--primary'),
+      outlineColor: outline(),
+      // Drawn radical strokes, the learner's ink and the hint flash carry meaning on the board, so 3:1 against it and
+      // against the outline: --primary-fill (Hoa anh đào's light pink was 2.7:1 and 2.1:1, the light accents under 2.2:1).
+      // The ink is a 4px line whose core renders lighter than its colour, so it takes the deeper --primary-ink.
+      radicalColor: rgb('--primary-fill'),
+      highlightColor: rgb('--primary-fill'),
+      drawingColor: rgb('--primary-ink'),
       strokeAnimationSpeed: 1.2,
       delayBetweenStrokes: 180,
       showHintAfterMisses: 3,
@@ -91,7 +114,7 @@
 </script>
 
 <div
-  class="stroke"
+  class="stroke glass-rim"
   bind:this={el}
   style:width="{size}px"
   style:height="{size}px"
@@ -105,8 +128,11 @@
     background:
       linear-gradient(var(--border), var(--border)) center / 100% 1px no-repeat,
       linear-gradient(var(--border), var(--border)) center / 1px 100% no-repeat,
-      var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
+      color-mix(in srgb, color-mix(in srgb, var(--primary) var(--glass-tint-mix), var(--surface)) 86%, transparent);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+    border-radius: var(--stroke-r, max(8px, calc(var(--radius) - 4px)));
+    /* Card glass in every theme (86 % of the tinted surface, blurred backdrop), with the cards' directional rim and
+       shadow: the white rim shows on the tint. */
+    box-shadow: var(--glass-rim), var(--shadow);
   }
 </style>

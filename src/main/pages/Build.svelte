@@ -1,10 +1,13 @@
 <script lang="ts">
   import Icon from '../../lib/ui/Icon.svelte';
+  import { glass } from '../../lib/ui/glass/glass.ts';
   import { HUE_OF } from '../../lib/theme/themes.ts';
   import BackButton from '../components/BackButton.svelte';
   import { untrack } from 'svelte';
   import { dataset, words } from '../../lib/data.ts';
+  import { splitWritten, toSyllables } from '../../lib/pinyin.ts';
   import { plain, score, tiles, type Score } from '../../lib/sentence.ts';
+  import Pinyin from '../../lib/ui/Pinyin.svelte';
   import { isOpen } from '../../lib/settings.svelte.ts';
   import { speak, speechAvailable } from '../../lib/speech/index.ts';
   import { deckFrom, deckOrigin, shuffle } from '../deck.ts';
@@ -107,8 +110,8 @@
   <BackButton to={deckOrigin(deckParams)} useHistory />
   <h1><Icon name="build" hue={HUE_OF.build} /> Ghép câu</h1>
   <div class="tabs">
-    <a class="chip" class:on={mode === 'order'} href="#/build/order{tail}">Sắp xếp thành câu</a>
-    <a class="chip" class:on={mode === 'qa'} href="#/build/qa{tail}">Trả lời câu hỏi</a>
+    <a class="chip glass glass-press" class:on={mode === 'order'} use:glass={{ when: !(mode === 'order') }} href="#/build/order{tail}">Sắp xếp thành câu</a>
+    <a class="chip glass glass-press" class:on={mode === 'qa'} use:glass={{ when: !(mode === 'qa') }} href="#/build/qa{tail}">Trả lời câu hỏi</a>
   </div>
   <p class="lead">
     {round.source}<br />
@@ -120,7 +123,7 @@
     <p class="empty">{deck.gone.text} <a href={deck.gone.href}>{deck.gone.link}</a></p>
   {:else if item}
     <div class="progress"><i style:width="{(index / round.items.length) * 100}%"></i></div>
-    <div class="card task">
+    <div class="card glass task">
       <span class="muted count">Câu {index + 1}/{round.items.length}</span>
       {#if item.question}
         <div class="question han">{item.question}</div>
@@ -133,7 +136,7 @@
       <div class="answer" class:done={!!result}>
         {#each picked as id, i (id)}
           {@const tile = item.pool.find((p) => p.id === id)!}
-          <button class="tile han" class:ok={result?.inPlace[i]} class:off={result && !result.inPlace[i]} onclick={() => remove(id)} disabled={!!result}>{tile.text}</button>
+          <button class="tile glass glass-press han" use:glass class:ok={result?.inPlace[i]} class:off={result && !result.inPlace[i]} onclick={() => remove(id)} disabled={!!result}>{tile.text}{#if result}<span class="badge verdict-mark"><Icon name={result.inPlace[i] ? 'check-disc' : 'cross-disc'} size="17px" /></span>{/if}</button>
         {:else}
           <span class="muted placeholder">Chọn các từ bên dưới…</span>
         {/each}
@@ -142,12 +145,12 @@
       {#if !result}
         <div class="pool">
           {#each item.pool as tile (tile.id)}
-            <button class="tile han" class:used={picked.includes(tile.id)} disabled={picked.includes(tile.id)} onclick={() => add(tile.id)}>{tile.text}</button>
+            <button class="tile glass glass-press han" use:glass class:used={picked.includes(tile.id)} disabled={picked.includes(tile.id)} onclick={() => add(tile.id)}>{tile.text}</button>
           {/each}
         </div>
         <div class="row actions">
-          <button class="btn" onclick={() => (picked = [])} disabled={!picked.length}>Xoá hết</button>
-          <button class="btn primary" onclick={check} disabled={!complete}>Kiểm tra</button>
+          <button use:glass class="btn glass glass-press" onclick={() => (picked = [])} disabled={!picked.length}>Xoá hết</button>
+          <button use:glass class="btn glass glass-press primary" onclick={check} disabled={!complete}>Kiểm tra</button>
         </div>
       {:else}
         <div class="result">
@@ -155,23 +158,24 @@
           <div class="reference" data-has-pinyin>
             <span class="muted">Câu chuẩn:</span>
             <span class="han ref-zh">{result.target === 0 ? item.sentence : item.accepted[result.target].join('')}</span>
-            {#if speechAvailable()}<button class="btn ghost sm" onclick={() => speak(item.sentence).catch(() => {})}><Icon name="speaker" /></button>{/if}
-            <div class="ref-py">{item.py}</div>
+            {#if speechAvailable()}<button use:glass class="btn glass glass-press ghost sm" onclick={() => speak(item.sentence).catch(() => {})}><Icon name="speaker" /></button>{/if}
+            <div class="ref-py"><Pinyin text={item.py} syllables={toSyllables(splitWritten(item.py))} /></div>
             <div class="ref-vi">{item.vi}</div>
           </div>
-          {#if result.points < 100}<p class="muted small">Từ màu cam là chỗ lệch thứ tự so với câu chuẩn.<br />Một số câu còn có cách sắp xếp khác cũng đúng; câu chuẩn là cách nói thông dụng nhất.</p>{/if}
-          <div class="row actions"><button class="btn primary" onclick={next}>Tiếp →</button></div>
+          {#if result.points < 100}<p class="muted small">Từ mang dấu <span class="legend-mark"><Icon name="cross-disc" size="15px" /></span> đứng lệch thứ tự so với câu chuẩn.<br />Một số câu còn có cách sắp xếp khác cũng đúng; câu chuẩn là cách nói thông dụng nhất.</p>{/if}
         </div>
       {/if}
     </div>
+    <!-- Right-aligned under the exercise, as on the quiz pages. -->
+    {#if result}<div class="row next"><button use:glass class="btn glass glass-press primary" onclick={next} {@attach (el) => el.scrollIntoView({ block: 'nearest' })}>Tiếp →</button></div>{/if}
   {:else if round.items.length}
-    <div class="card summary">
+    <div class="card glass summary">
       <div class="big"><Icon name={average >= 90 ? 'result-great' : average >= 60 ? 'result-good' : 'result-try'} /></div>
       <h2>Điểm trung bình {average}/100</h2>
       <p class="muted">{points.filter((p) => p === 100).length}/{points.length} câu chính xác hoàn toàn.</p>
       <div class="row center">
-        <button class="btn primary" onclick={again}>Làm lượt mới</button>
-        <a class="btn" href="#/practice">Về trang luyện tập</a>
+        <button use:glass class="btn glass glass-press primary" onclick={again}>Làm lượt mới</button>
+        <a use:glass class="btn glass glass-press" href="#/practice">Về trang luyện tập</a>
       </div>
     </div>
   {:else}
@@ -182,21 +186,23 @@
 <style>
   .tabs { display: flex; gap: 8px; margin: 2px 0 6px; }
   .tabs a { text-decoration: none; }
-  .progress { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
-  .progress i { display: block; height: 100%; background: var(--primary); transition: width .3s; }
+  .progress { margin-bottom: 14px; }
   .task { display: flex; flex-direction: column; gap: 10px; }
   .count { font-size: 13px; }
   .question { font-size: 30px; }
   .ask { font-weight: 800; }
   .answer {
-    min-height: 62px;
+    /* One tile row (41px) plus the box padding, so the first tile does not grow the box. */
+    min-height: 70px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
     padding: 10px;
-    border: 2px dashed var(--border);
-    border-radius: 14px;
+    border: 1.5px dashed color-mix(in srgb, var(--border) 90%, var(--text-2));
+    /* Nested in the card's 20px padding: the card radius minus the padding. */
+    border-radius: max(4px, calc(var(--radius) - 20px));
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
   }
   .answer.done { border-style: solid; }
   .placeholder { font-size: 14px; }
@@ -204,18 +210,34 @@
   .tile {
     font-size: 24px;
     padding: 6px 14px;
-    border: 2px solid var(--border);
+    border: 0;
     border-radius: 12px;
-    background: var(--surface);
     color: var(--text);
     cursor: pointer;
+    /* Thin refracting glass, as the plain pills under it. */
+    --glass-alpha: 30%;
   }
-  .tile:hover:not(:disabled) { border-color: var(--primary); }
-  .tile.used { opacity: .3; cursor: default; }
-  .tile.ok { border-color: var(--good); color: var(--good); }
-  .tile.off { border-color: var(--tone2); color: var(--tone2); }
+  .tile:hover:not(:disabled) { outline-color: var(--primary); }
+  /* Pressed, the resting fill comes back under the press wash (the hover tint is lighter than it in dark themes). */
+  .tile:hover:not(:disabled):not(:active) { --glass-tint: color-mix(in srgb, var(--primary) var(--pill-hover-tint), var(--surface)); }
+  /* Used: a thinner surface with no shadow and the glyph in the muted colour (3:1 as large text), not an opacity fade. */
+  .tile.used { cursor: default; color: var(--text-2); --glass-alpha: 12%; --glass-shadow: 0 0 transparent; }
+  /* Scored: the tiles stay glass. The verdict is a tint plus a 2px ring over the edge, with the rim just inside it. */
+  .tile.ok, .tile.off { --glass-alpha: 78%; --glass-rim-w: 3px; --glass-shadow: 0 1px 2px rgb(var(--glass-black) / .1), 0 2px 6px rgb(var(--glass-black) / .06); box-shadow: inset 0 0 0 2px var(--c), var(--glass-rim), var(--glass-shadow); color: var(--c); --glass-tint: color-mix(in srgb, var(--c) 18%, var(--surface)); }
+  /* --good is a light green: a 12 % tint and a glyph pulled toward the text colour keep 4.5:1. */
+  .tile { --arc-inset: 2px; --arc-r: 12px; }
+  .tile.ok { --c: var(--good); --glass-tint: color-mix(in srgb, var(--good) 12%, var(--surface)); color: color-mix(in srgb, var(--good) 70%, var(--text)); }
+  .tile.off { --c: var(--tone2); }
+  /* The ring colour alone clashes with the tone colours of the reference pinyin: a disc with a check or a cross on the
+     ring, as on the tone buttons (Tones.svelte), in the ring's colour. */
+  .badge { position: absolute; top: -6px; right: 1px; width: 14px; height: 14px; box-shadow: 0 0 0 2px var(--surface); color: var(--c); }
+  .badge :global(.icon) { margin: -1.5px; }
+  .legend-mark { display: inline-grid; vertical-align: -2px; color: var(--tone2); }
   .tile:disabled { cursor: default; }
   .actions { gap: 8px; }
+  /* Scrolled into view with room for the card's padding and its shadow under it. */
+  .actions .btn, .next .btn { scroll-margin-bottom: 24px; }
+  .next { justify-content: flex-end; margin-top: 14px; }
   .result { display: flex; flex-direction: column; gap: 8px; }
   .points { font-size: 20px; }
   .points b { font-size: 28px; color: var(--tone2); }

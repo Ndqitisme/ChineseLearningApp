@@ -31,7 +31,9 @@ export default async function (t) {
   await t.step('next question', async () => {
     await t.click(main, 'button', 'Tiếp');
     await t.waitFor(main, '.count', 'Câu 2/');
-    t.assert(!(await main.$('.answer')), 'answer still shown on the next question');
+    // The answer line keeps its height (no jump when answering), so it stays in the page, empty.
+    const shown = await main.$eval('.answer', (el) => el.textContent.trim()).catch(() => '');
+    t.assert(!shown, `answer still shown on the next question: "${shown}"`);
   });
 
   await t.step('answer wrong', async () => {

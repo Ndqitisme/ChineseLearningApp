@@ -21,7 +21,7 @@ export const TONE_NAME: Record<Tone, string> = {
 /**
  * Tones a learner may pick for each syllable: the written one, and the spoken one where tone sandhi changes it.
  * 不 is bú before a 4th tone; 一 is yí before a 4th or neutral tone and yì before the others; a 3rd tone before
- * another 3rd is said as a 2nd. Words list the citation tone (不对 bùduì), sometimes the spoken one (一样 yíyàng).
+ * another 3rd is said as a 2nd. Words write the spoken tone of 一 and 不 (不对 búduì, 一样 yíyàng), so the citation tone counts too.
  */
 export function acceptedTones(hanzi: string, syllables: Syllable[]): Tone[][] {
   const chars = [...hanzi];

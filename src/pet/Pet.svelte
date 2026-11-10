@@ -381,8 +381,9 @@
   let menuHeight = $state(0);
   /** Beside her chest, but never past the window's top: at sizes Vừa and Lớn a 250 px window cut the menu off. */
   const menuBottom = $derived(Math.max(
-    SHADOW_PAD / 2,
-    Math.min(settings.petCharacter ? spriteCss.h * 0.45 : 6, winCss.h - menuHeight - SHADOW_PAD / 2),
+    SHADOW_PAD,
+    // Its top edge stays clear of the bubble's top edge (24px lower), so the two outlines never merge.
+    Math.min(settings.petCharacter ? spriteCss.h * 0.45 : 6, winCss.h - menuHeight - (slotInset.top + 24)),
   ));
 
   async function pauseFor(minutes: number) {
@@ -540,16 +541,16 @@
         onhover={(inside) => { hoveringBubble = inside; if (inside) emit('hoverBubble'); }}
       />
       {:else if !sleeping}
-        <button class="nap" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
+        <button class="nap glass-solid glass-press glass-arc" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
       {:else}
-        <button class="nap" onclick={resume}><Icon name="pet-sleep" /> Đang tạm dừng, bấm để tiếp tục</button>
+        <button class="nap glass-solid glass-press glass-arc" onclick={resume}><Icon name="pet-sleep" /> Đang tạm dừng, bấm để tiếp tục</button>
       {/if}
     </div>
   {/if}
 
   {#if menuOpen}
     <div
-      class="menu"
+      class="menu glass-solid glass-arc"
       bind:this={menuEl}
       onanimationend={reportHitRects}
       role="menu"
@@ -566,8 +567,8 @@
         <button role="menuitem" onclick={() => pauseFor(30)}><Icon name="pet-sleep" /> Tạm dừng 30 phút</button>
       {/if}
       <button role="menuitem" onclick={() => { menuOpen = false; ipc.openMain(); }}><Icon name="pet-open" /> Mở Tiểu Mai</button>
-      <button role="menuitem" onclick={toggleCharacter}><Icon name={settings.petCharacter ? 'pet-hide-character' : 'pet-show-character'} /> {settings.petCharacter ? 'Ẩn Tiểu Mai, giữ bảng từ' : 'Hiện lại Tiểu Mai'}</button>
-      <button role="menuitem" onclick={hidePet}><Icon name="pet-hide" /> Ẩn trợ lý</button>
+      <button role="menuitem" onclick={toggleCharacter}><Icon name={settings.petCharacter ? 'pet-hide-character' : 'pet-show-character'} /> {settings.petCharacter ? 'Ẩn trợ lý' : 'Hiện trợ lý'}</button>
+      <button role="menuitem" onclick={hidePet}><Icon name="pet-hide" /> Ẩn bảng gợi ý</button>
     </div>
   {/if}
 
@@ -608,7 +609,20 @@
     overflow: hidden;
     /* small enough to fit in SHADOW_PAD: past the window edge a shadow is cut off in a hard line */
     --pet-shadow: 0 2px 9px rgba(0, 0, 0, 0.22);
+    /* Primary in the pet fills (bubble, nap pill, menu): on a plain white fill the white top rim cannot show. */
+    /* A white highlight can only rise as far as the fill is below white: at 6 % the fill sat at 245 levels and the top
+       rim at +10. At 15 % it sits near 234 and the rim reaches about +20 (measure-pet.mjs). */
+    --pet-tint: 15%;
+    /* Light pet surfaces: a faint dark lower-right line (it must not outweigh the lit top) and a soft white glow along
+       the top. */
+    --pet-glow: .9;
+    --glass-rim-dark: 5%;
+    --glass-rim-side: 4%;
   }
+  /* Hoa anh đào's pink is so light that 15 % barely lowers the fill: it needs more for the same headroom. */
+  :global(:root[data-theme-id='sakura'][data-theme='light']) .stage { --pet-tint: 20%; }
+  :global(:root[data-theme='dark']) .stage { --pet-tint: 6%; --pet-glow: .1; --glass-rim-dark: 60%; --glass-rim-side: 40%; }
+  .sprite-slot:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 12px; }
   .sprite-slot {
     position: absolute;
     cursor: grab;
@@ -618,28 +632,54 @@
     position: absolute;
   }
   .nap {
-    border: 2px solid var(--bubble-border);
-    border-radius: 99px;
-    background: var(--bubble-bg);
+    border: 0;
+    /* No wider than the bubble, so it stays inside the window; a wrapped label balances its two lines. */
+    max-width: 264px;
+    white-space: normal;
+    text-wrap: balance;
+    line-height: 1.3;
+    border-radius: var(--radius);
+    /* The bubble's tinted fill: on plain white the white rim cannot show. */
+    --glass-tint: color-mix(in srgb, var(--primary) var(--pet-tint), var(--bubble-bg));
     color: var(--bubble-text);
-    box-shadow: var(--pet-shadow);
-    padding: 6px 14px;
+    --glass-rim-w: 3px;
+    --glass-rim-top: 4px;
+    box-shadow: inset 0 0 0 2px var(--bubble-border), var(--glass-rim), inset 0 8px 10px -8px rgb(var(--glass-white) / var(--pet-glow)), var(--pet-shadow);
+    padding: 8px 16px;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
   }
+  /* Hover stays opaque (the shared hover thins the fill, which reads as nothing on a plain desktop): a denser tint and a
+     deeper lit top edge. */
+  .nap:hover:not(:disabled) { --glass-alpha: 100%; --glass-rim-top: 5px; --glass-tint: color-mix(in srgb, var(--primary) calc(var(--pet-tint) + 10%), var(--bubble-bg)); }
+  /* The pet focus colour, inside the pill's own ring: outside it would sit on the bare desktop. */
+  .nap:focus-visible { outline: 2px solid var(--primary); outline-offset: -6px; }
   .menu {
     position: absolute;
     display: flex;
     flex-direction: column;
     min-width: 168px;
     padding: 6px;
-    background: var(--surface);
-    border: 2px solid var(--bubble-border);
+    /* Opaque: the window has no backdrop filter, so a translucent menu would show the bubble's text through it. */
+    --glass-alpha: 100%;
+    --glass-tint: color-mix(in srgb, var(--primary) var(--pet-tint), var(--bubble-bg));
+    z-index: 2;
     border-radius: 14px;
-    box-shadow: var(--pet-shadow);
+    --glass-rim-w: 3px;
+    --glass-rim-top: 4px;
+    box-shadow: inset 0 0 0 2px var(--bubble-border), var(--glass-rim), inset 0 8px 10px -8px rgb(var(--glass-white) / var(--pet-glow)), var(--pet-shadow);
     animation: pop 0.16s ease-out;
   }
+  /* The specular arc (glass-arc, dark themes) inside the 2px ring. */
+  .nap, .menu { --arc-inset: 2px; --arc-tint: var(--bubble-border); }
+  .nap { --arc-r: var(--radius); }
+  .menu { --arc-r: 14px; }
+  /* Press: the shared sunk look, still opaque. */
+  .nap:active:not(:disabled) { --glass-rim-hi: var(--rim-press); --glass-rim-mid: var(--rim-press-mid); --glass-rim-top: var(--glass-rim-w); box-shadow: inset 0 0 0 2px var(--bubble-border), var(--glass-rim), inset 0 2px 5px rgb(var(--glass-black) / .22), var(--pet-shadow); }
+  /* Dark: the hover's denser primary tint is lighter than the rest face; back to it, with the pills' sunk shadow and wash. */
+  :global(:root[data-theme='dark']) .nap:active:not(:disabled) { --glass-tint: color-mix(in srgb, var(--primary) var(--pet-tint), var(--bubble-bg));
+    box-shadow: inset 0 0 0 2px var(--bubble-border), var(--glass-rim), inset 0 2px 7px color-mix(in srgb, var(--bg) 65%, transparent), inset 0 0 0 100vmax rgb(var(--glass-black) / .2), var(--pet-shadow); }
   .menu button {
     border: 0;
     background: none;
@@ -650,8 +690,12 @@
     font-weight: 700;
     color: var(--text);
   }
-  .menu button:hover { background: var(--surface-2); }
+  /* A primary tint with a white top line in light, a text-coloured fill in dark: about 20 levels off the menu fill either way. */
+  .menu button:hover { background: color-mix(in srgb, var(--primary) 14%, transparent); box-shadow: inset 0 1px 0 rgb(var(--glass-white) / .8); }
+  :global(:root[data-theme='dark']) .menu button:hover { background: color-mix(in srgb, var(--text) 12%, transparent); box-shadow: none; }
+  .menu button:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
   @keyframes pop { from { transform: scale(0.85); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .menu { animation: none; } }
   .zzz {
     position: absolute;
     top: 6%;

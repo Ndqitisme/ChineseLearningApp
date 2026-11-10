@@ -16,12 +16,16 @@ const BUBBLE_W = 280;
 const EYES = 0.12;
 /** The tail is a rotated 16 px square. */
 const TAIL = 16;
-/** The bubble starts this far into the sprite frame, whose sides are transparent margin. */
-const BUBBLE_START = 0.85;
+/** The bubble's tail reaches this far past the bubble's side toward her (Bubble.svelte .tail). */
+export const TAIL_REACH = 11;
+/** Clear space between the tail tip and the sprite frame, CSS px. Her raised hand reaches the frame's edge when she
+ * waves; a fraction of the frame width left the tip touching the fingers at some sizes. */
+export const HAND_CLEAR = 6;
+const bubbleSide = (sprite: Size) => Math.round(sprite.w + TAIL_REACH + HAND_CLEAR);
 
 /** Window size in CSS px: the sprite with the bubble beside her, toward the middle of the screen. */
 export function windowSize(sprite: Size, room = BASE_BUBBLE_ROOM): Size {
-  return { w: Math.round(sprite.w * BUBBLE_START + BUBBLE_W), h: Math.round(Math.max(sprite.h, room)) };
+  return { w: bubbleSide(sprite) + BUBBLE_W, h: Math.round(Math.max(sprite.h, room)) };
 }
 
 /** Where the bubble sits (CSS px from the window's anchor side and top): its top level with her head,
@@ -32,7 +36,7 @@ export function bubbleInset(win: Size, sprite: Size, room = BASE_BUBBLE_ROOM) {
   const headTop = spriteTop + sprite.h * 0.03;
   const top = Math.round(Math.max(SHADOW_PAD, Math.min(headTop, win.h - room + SHADOW_PAD)));
   const tail = Math.round(Math.max(12, spriteTop + sprite.h * EYES - TAIL / 2 - top));
-  return { side: Math.round(sprite.w * BUBBLE_START), top, tail };
+  return { side: bubbleSide(sprite), top, tail };
 }
 
 /** Where the sprite sits inside the window (CSS px). */
