@@ -1,11 +1,12 @@
 #!/bin/bash
 # Full glass verification sweep: contrast and non-text in all glass modes, states, prove, idle, svelte-check and vitest,
 # with up to 3 Chrome jobs at once under a memory watchdog, and one PASS/FAIL summary.
-# Usage: bash gate.sh [--resume] [--shoot] [--label NAME] [--pages a,b] [--dry-run]
+# Usage: bash gate.sh [--resume] [--shoot] [--label NAME] [--pages a,b] [--only REGEX] [--dry-run]
 #   --resume     with the same --label, keep jobs that finished with exit 0 and run only the rest
 #   --shoot      archive GLASS/final to GLASS/final-NAME, reshoot all shots into GLASS/final first (alone)
 #   --label      name of the run (default: date and time); results go to GLASS/gate-NAME/
 #   --pages      limit contrast and states to these pages: a hash (#/tones), a route name (tones), or home (#/)
+#   --only       run only the jobs whose name matches this extended regex (names: see --dry-run)
 #   --dry-run    print the job list and commands, run nothing
 set -u
 export MSYS_NO_PATHCONV=1
@@ -13,9 +14,9 @@ T=$(cd "$(dirname "$0")" && pwd -W)
 R=$(cd "$T/../.." && pwd -W)
 G=$R/.cache/glass
 mkdir -p "$G"
-USAGE="usage: bash gate.sh [--resume] [--shoot] [--label NAME] [--pages a,b] [--dry-run]"
+USAGE="usage: bash gate.sh [--resume] [--shoot] [--label NAME] [--pages a,b] [--only REGEX] [--dry-run]"
 
-RESUME=0 SHOOT=0 DRY=0 LABEL=$(date +%Y%m%d-%H%M) PAGES_ARG=''
+RESUME=0 SHOOT=0 DRY=0 LABEL=$(date +%Y%m%d-%H%M) PAGES_ARG='' ONLY_RE=''
 while [ $# -gt 0 ]; do
   case $1 in
     --shoot) SHOOT=1 ;;
@@ -23,6 +24,7 @@ while [ $# -gt 0 ]; do
     --resume) RESUME=1 ;;
     --label) LABEL=${2:?--label needs a name}; shift ;;
     --pages) PAGES_ARG=${2:?--pages needs a list}; shift ;;
+    --only) ONLY_RE=${2:?--only needs a regex}; shift ;;
     -h|--help) echo "$USAGE"; exit 0 ;;
     *) echo "unknown option $1"; echo "$USAGE"; exit 2 ;;
   esac
@@ -64,7 +66,7 @@ fi
 
 # Job table: name | kind (chrome, plain) | time limit s | summary parser | command (run with eval, ends in exec).
 NAMES=() KINDS=() LIMITS=() PARSERS=() CMDS=()
-add() { NAMES+=("$1"); KINDS+=("$2"); LIMITS+=("$3"); PARSERS+=("$4"); CMDS+=("$5"); }
+add() { [ -n "$ONLY_RE" ] && ! [[ $1 =~ $ONLY_RE ]] && return; NAMES+=("$1"); KINDS+=("$2"); LIMITS+=("$3"); PARSERS+=("$4"); CMDS+=("$5"); }
 q() { printf '%q' "$1"; }
 
 # Longest jobs first, so the short ones fill the slots at the end.
