@@ -147,7 +147,7 @@
      its own hue whatever shows through. */
   :global(:root[data-theme-id='sakura'][data-theme='light']) .topic.on[data-hue='teal'] { --glass-tint: color-mix(in oklab, var(--h) 32%, white); --glass-alpha: 86%; }
   /* --text-2 alone drops under 4.5:1 on the tint (sakura light). */
-  .topic.on .muted, .topic.on .zh { color: color-mix(in srgb, var(--text-2) 65%, var(--text)); }
+  .topic.on .muted { color: color-mix(in srgb, var(--text-2) 65%, var(--text)); }
   /* The 12px lines on the tint: their thin strokes render weaker than the colour (stroke core 4.3-4.4:1 on Hoa anh đào's
      teal card in light, and on the solid tint under reduced transparency in dark). */
   .topic.on .muted.small { color: color-mix(in srgb, var(--text-2) 25%, var(--text)); }
@@ -159,9 +159,11 @@
   .locked .disc { --h: var(--text-2); }
   .zh { color: var(--text-2); font-size: 16px; }
   /* Light: the thin Kai strokes reach 3.5-3.7:1 in --text-2 (stroke core). Nearly half the text colour and the hairline
-     stroke the pinyin uses: 5.0-5.3:1. On a selected card three quarters of it: the Hoa anh đào teal card read 3.8:1. */
+     stroke the pinyin uses: 5.0-5.3:1. */
   :global(:root[data-theme='light']) .zh { color: color-mix(in srgb, var(--text-2) 55%, var(--text)); -webkit-text-stroke: 0.25px currentColor; }
-  :global(:root[data-theme='light']) .topic.on .zh { color: color-mix(in srgb, var(--text-2) 25%, var(--text)); }
+  /* On a selected card three quarters of the text colour, in light and dark: the stroke core read 3.8:1 on Hoa anh đào's
+     teal card in light and 4.4:1 on its solid tint under reduced transparency in dark. */
+  :global(:root) .topic.on .zh { color: color-mix(in srgb, var(--text-2) 25%, var(--text)); }
   .status { align-self: stretch; margin-top: auto; padding-top: 8px; }
   /* Its own line box, so the caption under a bar sits on the same baseline as "Chưa học" in the next card. */
   .status .small { display: block; }
