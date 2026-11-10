@@ -152,7 +152,7 @@ try {
   await browser.close();
   srv.close();
   saveProfileAnswer(profile);
-  fs.rmSync(profile, { recursive: true, force: true });
+  fs.rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 }
 const mpath = path.join(OUT, 'manifest.json');
 if (ONLY && fs.existsSync(mpath)) {

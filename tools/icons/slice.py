@@ -34,6 +34,8 @@ def main() -> None:
         ink = ImageOps.invert(Image.open(HERE / 'sheets' / f"sheet-{sheet['id']}.png").convert('L'))
         cell = ink.width / 3
         for i, (name, _) in enumerate(sheet['icons']):
+            if name is None:  # redrawn on a later sheet
+                continue
             col, row = i % 3, i // 3
             box = (round(col * cell), round(row * cell), round((col + 1) * cell), round((row + 1) * cell))
             glyph = ink.crop(box).point(lambda v: 0 if v < 24 else v)

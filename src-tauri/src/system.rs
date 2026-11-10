@@ -88,7 +88,7 @@ fn keep_topmost(app: &AppHandle) {
     }
 }
 
-// Fullscreen and idle detection are Windows-only (see docs/PLAN.md §9).
+// Fullscreen and idle detection are Windows-only (see docs/PLAN.md §10).
 #[cfg(not(windows))]
 fn is_busy() -> bool {
     false

@@ -65,6 +65,9 @@ export class T {
     const page = await this.ctx.newPage();
     this.watch(page, label);
     await page.setViewport(label === 'pet' ? PET_START : MAIN_DEFAULT);
+    // The dev server's modules, icons, fonts and stroke files pass Chrome's default 250 resource-timing
+    // entries; scenarios read that list to see whether a file was fetched.
+    await page.evaluateOnNewDocument('performance.setResourceTimingBufferSize(5000)');
     await page.evaluateOnNewDocument(`(${mockSource})(${JSON.stringify({ label, seed: this.seed ?? null, system: this.system ?? null, monitor: MONITOR })})`);
     await page.goto(`${this.base}/${label === 'pet' ? 'pet' : 'index'}.html${hash}`, { waitUntil: 'domcontentloaded', timeout: loadTimeout });
     await this.waitReady(page, label, loadTimeout);
@@ -250,7 +253,8 @@ async function main() {
   let closing: Promise<void> | undefined;
   const close = () => (closing ??= browser.close().catch(() => {}).then(() => {
     saveProfileAnswer(profile);
-    rmSync(profile, { recursive: true, force: true });
+    // Chrome's child processes release profile files a moment after close() resolves.
+    rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
   }).then(() => server.close()));
   const abort = (why: string) => { console.error(`\n${why}: closing Chrome and the app server`); close().finally(() => process.exit(2)); };
   const deadlineMin = Number(process.env.E2E_DEADLINE_MIN) || 20;

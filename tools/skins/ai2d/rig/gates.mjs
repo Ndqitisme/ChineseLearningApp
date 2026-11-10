@@ -74,7 +74,7 @@ async function withPage(name, fn) {
     await sleep(2000);
     const r = await fn({ page, cdp, profile, browser });
     return { ...r, errors };
-  } finally { await browser.close(); saveProfileAnswer(profile); fs.rmSync(profile, { recursive: true, force: true }); }
+  } finally { await browser.close(); saveProfileAnswer(profile); fs.rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); }
 }
 const task = async (cdp) => (await cdp.send('Performance.getMetrics')).metrics.find((m) => m.name === 'TaskDuration').value;
 async function window_(page, cdp, profile, ms) {

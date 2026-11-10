@@ -6,7 +6,7 @@ use crate::{PET_LABEL, show_main_later};
 
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, "open", "Mở Tiểu Mai", true, None::<&str>)?;
-    let toggle = MenuItem::with_id(app, "toggle-pet", "Hiện / ẩn trợ lý", true, None::<&str>)?;
+    let toggle = MenuItem::with_id(app, "toggle-pet", "Hiện / ẩn bảng gợi ý", true, None::<&str>)?;
     let next = MenuItem::with_id(app, "next", "Từ tiếp theo", true, None::<&str>)?;
     let pause = MenuItem::with_id(app, "pause", "Tạm dừng 30 phút", true, None::<&str>)?;
     let resume = MenuItem::with_id(app, "resume", "Tiếp tục", true, None::<&str>)?;
