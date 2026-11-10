@@ -9,6 +9,7 @@ import {
 } from '../../src/lib/pinyin.ts';
 import type { Dataset, Example, HskLevel, LevelPack, QA, Topic, TopicGroup, Word } from '../../src/lib/types.ts';
 import { fullGloss, parseCedict, referenceOf, shortGloss, type CedictEntry } from './cedict.ts';
+import { writeYiBuSandhi } from './sandhi.ts';
 import { CACHE_DIR } from './sources.ts';
 import { woff2Codepoints } from './woff2.ts';
 
@@ -142,13 +143,18 @@ for (const hw of hskAll) {
     else form = hit;
   } else if (uniqueNumerics.size > 1) {
     const guess = proNumeric(hw.simplified).map(normNum).join(' ');
-    form = pool.find((f) => f.transcriptions.numeric.split(' ').map(normNum).join(' ') === guess) ?? pool[0];
+    const hit = pool.find((f) => f.transcriptions.numeric.split(' ').map(normNum).join(' ') === guess);
+    if (!hit) errors.push(`HSK ${hw.simplified}: pinyin-pro reads "${guess}", which is none of ${[...uniqueNumerics].join(' | ')}; add the right one to data/hsk-pinyin-overrides.tsv`);
+    else form = hit;
     report('hsk-polyphones', `${hw.simplified}\t${form.transcriptions.numeric}\t(options: ${[...uniqueNumerics].join(' | ')})`);
   }
 
+  // Dictionary and Hán Việt lookups use the citation tones; only the written pinyin shows the 一/不 change.
   const numeric = hskNumeric(hw.simplified, form);
   if (!numeric) { errors.push(`HSK ${hw.simplified}: unusable pinyin "${form.transcriptions.pinyin}"`); continue; }
-  const marked = numeric.map(numericToMarked);
+  const citation = numeric.map(numericToMarked);
+  const marked = writeYiBuSandhi(hw.simplified, numeric, hskPinyinOverrides).map(numericToMarked);
+  if (marked.join() !== citation.join()) report('hsk-yi-bu-sandhi', `${hw.simplified}\t${joinWord(citation)}\t${joinWord(marked)}`);
   const entry = cedictEntry(hw.simplified, numeric) ?? erhuaFallback(hw.simplified, numeric);
   const vi = glossOverrides.get(hw.simplified) ?? (entry ? shortGloss(entry.senses) : '');
   if (!vi) errors.push(`HSK ${hw.simplified} [${numeric.join(' ')}]: no Vietnamese meaning (add to data/gloss-overrides.tsv)`);
@@ -313,19 +319,22 @@ const packs: LevelPack[] = ([4, 5, 6] as const).map((level) => ({
   ids2025: hsk2025Levels[level],
 }));
 
+/** Han cross-references inside a Vietnamese meaning ("thời Tống 宋朝"). */
+const glossHan = (w: Word) => [...`${w.vi}${w.viFull ?? ''}`].filter(isHan).join('');
 const charset = new Set<string>();
 for (const w of coreWords) {
-  for (const c of w.hanzi + (w.ex?.zh ?? '')) charset.add(c);
+  for (const c of w.hanzi + (w.ex?.zh ?? '') + glossHan(w)) charset.add(c);
 }
 for (const t of topics) for (const c of t.titleZh) charset.add(c);
 for (const x of qa) for (const c of x.q + x.a) charset.add(c);
 // Glyphs only the packs need go to a separate font file, so HSK 1–3 learners never download them.
 const charsetExt = new Set<string>();
-for (const p of packs) for (const w of p.words) for (const c of w.hanzi) if (isHan(c) && !charset.has(c)) charsetExt.add(c);
+for (const p of packs) for (const w of p.words) for (const c of w.hanzi + glossHan(w)) if (isHan(c) && !charset.has(c)) charsetExt.add(c);
 
 // ---------------------------------------------------------------- font coverage
-// Han text and pinyin render in TieuMai Kai (src/lib/ui/base.css). The committed subset holds only what
-// tools/data/subset_font.py put in it; any other character silently falls back to a system font.
+// Han text and pinyin render in TieuMai Kai (src/lib/ui/base.css); so must the Han inside Vietnamese meanings.
+// The committed subset holds only what tools/data/subset_font.py put in it; any other character silently falls
+// back to a system font.
 const BASE_CSS = 'src/lib/ui/base.css';
 const PINYIN_LETTER = /[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜüÜĀÁǍÀĒÉĚÈĪÍǏÌŌÓǑÒŪÚǓÙǕǗǙǛ]/;
 const kaiGlyphs = woff2Codepoints(readFileSync('public/fonts/TieuMaiKai.woff2'));
@@ -341,8 +350,10 @@ const fontNeeds = new Map<string, string>();
 const needGlyphs = (text: string | undefined, where: string, pick = (c: string) => !/\s/.test(c)) => {
   for (const c of text ?? '') if (pick(c) && !fontNeeds.has(c)) fontNeeds.set(c, where);
 };
-for (const w of words.values())
+for (const w of words.values()) {
   for (const s of [w.hanzi, w.pinyin, w.ex?.zh, w.ex?.py, ...w.syllables.map((y) => y.py)]) needGlyphs(s, `word ${w.id}`);
+  needGlyphs(glossHan(w), `meaning of ${w.id}`);
+}
 for (const t of topics) needGlyphs(t.titleZh, `topic ${t.id}`);
 for (const x of qa) for (const s of [x.q, x.a, x.aPy, ...(x.alt ?? [])]) needGlyphs(s, x.id);
 for (const f of readdirSync('src', { recursive: true, encoding: 'utf8' })) {

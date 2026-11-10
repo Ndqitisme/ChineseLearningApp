@@ -25,11 +25,11 @@ export function parseCedict(text: string): Map<string, CedictEntry[]> {
   return map;
 }
 
-/** Drops cross-reference noise: "個|个[ge4]" → "个", "[Bao1]" → "". */
+/** Drops cross-reference noise: "個|个[ge4]" → "个", "兩個|两个" → "两个", "[Bao1]" → "". The app is simplified-only. */
 function clean(sense: string): string {
   return sense
     // "(" and ":" end the traditional form, so "(LT:張|张[zhang1])" keeps its "(LT:" and is dropped as a classifier.
-    .replace(/([^\s\[\]/|(:]+\|)?([^\s\[\]/|(:]+)\[[^\]]*\]/g, '$2')
+    .replace(/[^\s\[\]/|(:]+\|(?=[^\s\[\]/|(:])/g, '')
     .replace(/\[[^\]]*\]/g, '')
     .replace(/\s+/g, ' ')
     .trim();

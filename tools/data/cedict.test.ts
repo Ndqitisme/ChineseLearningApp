@@ -9,6 +9,11 @@ describe('fullGloss', () => {
     expect(senses.join('; ').startsWith(out + ';')).toBe(true);
   });
 
+  it('keeps only the simplified form of a cross-reference', () => {
+    expect(fullGloss(['hai (cách nói thông tục của 兩個|两个)'])).toBe('hai (cách nói thông tục của 两个)');
+    expect(fullGloss(['cấu trúc 到...為止|到...为止', 'vật (LT:個|个[ge4])'])).toBe('cấu trúc 到...为止; vật');
+  });
+
   it('cuts a single long sense at a word', () => {
     const sense = Array.from({ length: 60 }, (_, i) => `từ${i}`).join(' ');
     const out = fullGloss([sense]);

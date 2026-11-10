@@ -23,6 +23,8 @@
       "ex": { "zh": "不好意思，让你久等了。", "py": "Bù hǎoyìsi, ràng nǐ jiǔ děng le.", "vi": "Ngại quá, để bạn phải đợi lâu." } },
     { "hanzi": "早上好", "pinyin": "zǎoshang hǎo", "vi": "chào buổi sáng",
       "ex": { "zh": "早上好，今天天气真好！", "py": "Zǎoshang hǎo, jīntiān tiānqì zhēn hǎo!", "vi": "Chào buổi sáng, hôm nay trời đẹp thật!" } },
+    { "hanzi": "下午好", "pinyin": "xiàwǔ hǎo", "vi": "chào buổi chiều",
+      "ex": { "zh": "大家下午好！", "py": "Dàjiā xiàwǔ hǎo!", "vi": "Chào buổi chiều mọi người!" } },
     { "hanzi": "晚上好", "pinyin": "wǎnshang hǎo", "vi": "chào buổi tối",
       "ex": { "zh": "大家晚上好！", "py": "Dàjiā wǎnshang hǎo!", "vi": "Chào buổi tối mọi người!" } },
     { "hanzi": "晚安", "pinyin": "wǎn'ān", "vi": "chúc ngủ ngon",
