@@ -247,4 +247,11 @@ Chứng minh trên sản phẩm thật, ở kích thước thật, mỗi con s�
 - Hiệu ứng bật lên (scale 0,6 → 1) không vượt quá 1: vượt quá thì lớp `will-change: transform` giữ tỉ lệ raster của lúc bật lên và cả bong bóng mềm đi.
 - Huy hiệu HSK pha 14 % màu tím vào chính mặt bong bóng, có viền 1 px.
 - Skin viền (cỏ lá, trúc): SVG và gradient tĩnh, không `filter`, không animation; nằm ngoài mép bong bóng tối đa 11 px, trong `SHADOW_PAD`. Màu pha từ `--hue-green`, `--hue-amber`, `--bubble-border` về trắng (theme sáng) hoặc đen (theme tối) thành tông giữa có mép tối, để đọc được trên desktop trắng lẫn đen.
+- Lá chuyển động cho Viền cỏ lá (chưa làm):
+  - Mỗi lá trong `src/pet/frames/leaves.ts` đã là một phần riêng, có điểm cuống (`x`, `y`), góc nghỉ (`angle`) và độ dài (`length`). Chuyển động chỉ đổi góc xoay quanh cuống; `leaves.test.ts` giữ mọi lá trong cửa sổ khi xoay ±25° (`SWAY_MAX`).
+  - Mỗi lá là một lò xo tắt dần. Gió đến theo đợt khi đổi từ, khi rê chuột vào bảng và khi kéo bảng, rồi lá đứng yên sau khoảng 3 giây. Không chạy liên tục: cửa sổ trợ lý đang vượt ngân sách CPU (`docs/PLAN.md` mục 6).
+  - Kéo bảng: gia tốc của cửa sổ đẩy lá ngược hướng kéo (quán tính), dừng kéo thì lá bật lại và tắt dần.
+  - Hình lá tự dựng bằng code trong repo: hình học lá và cỏ sinh bằng script Blender Python, dựng sẵn thành atlas có sáng tối, rồi app tô màu theo theme bằng canvas, một lần mỗi khi đổi theme. Không dùng mô hình bên ngoài (luật giấy phép ở `CLAUDE.md`). Atlas giữ lossless vì có kênh mask.
+  - Lá nhỏ nhất khoảng 22 px: bản thử dưới 20 px bị mềm ở tỉ lệ 1.
+  - Đo `pnpm perf` với skin Viền cỏ lá trước và sau khi thêm chuyển động.
 - Câu ví dụ chữ Hán ở theme tối trông đậm hơn theme sáng: chấp nhận, đó là cách Chrome vẽ chữ sáng trên nền tối.

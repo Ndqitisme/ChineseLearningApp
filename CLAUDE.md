@@ -29,17 +29,15 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 
 ## Việc tiếp theo
 
-1. **Hoàn tất giao diện glass** (`docs/UI-GLASS.md`). Làm theo thứ tự, mỗi lần một việc nặng:
-   1. Chạy nốt phần đo của gate: tương phản chữ còn lại, phi văn bản, trạng thái nút, khúc xạ, tải nhàn rỗi. Bộ đo ở `tools/glass` (`docs/UI-GLASS.md` mục 4).
-   2. `pnpm e2e` đầy đủ.
-   3. Build kiểm, rồi xem khúc xạ trong WebView2 của app thật.
-   4. Đo `pnpm perf` trước và sau trên máy yếu.
-   5. Commit theo nhóm.
-   6. Chủ repo xem rồi mới push.
-2. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách. Số đo ở `docs/PLAN.md` mục 6, nguyên nhân ở `docs/CHARACTER.md` mục 2. Cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
-3. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
-4. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
-5. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
+1. **Đóng đợt glass và Skin.** Code đã commit trên `main`, chưa push. Đã qua: gate kính (`tools/glass`), `pnpm e2e` đầy đủ, build kiểm `com.tieumai.verify` (`tools/glass/verify.cjs` 23/23) và khúc xạ trong WebView2. Còn lại, mỗi lần một việc nặng:
+   1. `pnpm e2e` đầy đủ lại sau các commit Skin.
+   2. `pnpm perf` 600 giây, chỉ bảng gợi ý (`--autostart`), skin Trợ lý rồi skin Viền cỏ lá, so với số ở `docs/PLAN.md` mục 6. Không mở cửa sổ chính trong lúc đo.
+   3. Chủ repo xem rồi mới push.
+2. **Lá cỏ chuyển động cho Viền cỏ lá** (`docs/UI-GLASS.md` mục 5, Cửa sổ trợ lý): lá tự dựng bằng code trong repo, gió theo đợt và quán tính khi kéo bảng.
+3. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách. Số đo ở `docs/PLAN.md` mục 6, nguyên nhân ở `docs/CHARACTER.md` mục 2. Cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
+4. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
+5. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
+6. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
 
 ## Luật bắt buộc
 
@@ -84,6 +82,7 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 - Không nới bộ kiểm để qua.
 - CPU/RAM của app đo trên máy yếu, không đo trên máy GPU.
 - Bản vẽ nhân vật và icon: CC0 1.0.
+- Hình trang trí mới (lá, cỏ của Skin) tự dựng bằng code trong repo và theo giấy phép MIT của repo. Không lấy mô hình hay ảnh bên ngoài, kể cả CC0.
 
 ## Cách làm
 
