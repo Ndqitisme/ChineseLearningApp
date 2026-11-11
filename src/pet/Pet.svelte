@@ -16,7 +16,9 @@
   import { applyTheme } from '../lib/theme/apply.svelte.ts';
   import type { Word } from '../lib/types.ts';
   import Bubble from './Bubble.svelte';
-  import { skinFrame } from './skins.ts';
+  import { PLAIN_PAD, skinFrame, skinPad } from './skins.ts';
+  import { boxHeight, boxWidth } from './frames/meadow.ts';
+  import { frameWind } from './frames/sway.ts';
   import {
     BASE_BUBBLE_ROOM, SHADOW_PAD, bubbleInset, defaultPlacement, snap, spotOf, spriteOffset, windowAt, windowSize, type Anchor, type Rect, type Spot,
   } from './geometry.ts';
@@ -54,6 +56,10 @@
   let hoveringBubble = false;
   let dragging = false;
   let movedSinceDrag = false;
+  /** When a Moved event last arrived, and whether the button has been seen up since the drag began. */
+  let lastMoveAt = 0;
+  let released = false;
+  let dropWatch: ReturnType<typeof setInterval> | undefined;
   let recent: string[] = [];
 
   let spriteEl = $state<HTMLElement>();
@@ -65,9 +71,12 @@
   const spriteScale = $derived(displayScale(settings.petScale));
   // With the character hidden, the window holds only the bubble. The "sprite" then becomes a
   // zero-height strip along the window bottom, so placement and snapping keep working unchanged.
-  const BUBBLE_ONLY_W = 264 + 2 * SHADOW_PAD;
+  /** Margin around the bubble without the character: the shadow's, or more for a border skin that needs it. */
+  const pad = $derived(skinPad(settings.petSkinOn ? settings.petSkin : undefined));
+  const BUBBLE_ONLY_W = $derived(boxWidth(pad));
   /** Grows when a bubble (long meaning, example sentence) needs more height than the default. */
   let bubbleRoom = $state(BASE_BUBBLE_ROOM);
+  let lastMargin = '';
   const spriteCss = $derived(
     !character ? { w: BUBBLE_ONLY_W, h: 0 }
     : { w: Math.round(FRAME.w * spriteScale), h: Math.round(FRAME.h * spriteScale) },
@@ -76,7 +85,7 @@
   const mirror = $derived(anchor.h === 'right');
   const visible = $derived(settings.petEnabled && !(busy && settings.hideOnFullscreen));
   const winCss = $derived(character ? windowSize(spriteCss, bubbleRoom) : { w: BUBBLE_ONLY_W, h: bubbleRoom });
-  const slotInset = $derived(character ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: SHADOW_PAD, top: SHADOW_PAD, tail: 0 });
+  const slotInset = $derived(character ? bubbleInset(winCss, spriteCss, bubbleRoom) : { side: pad.side, top: pad.top, tail: 0 });
   const offset = $derived(spriteOffset(anchor, winCss, spriteCss));
   // Packs load once the shared settings unlock them; the main window does the unlocking.
   let loadedOpen = $state(settings.hskOpen);
@@ -152,6 +161,11 @@
       const r = el.getBoundingClientRect();
       rects.push({ x: r.x - 4, y: r.y - 4, w: r.width + 8, h: r.height + 14 });
     }
+    // A border skin's plants take the pointer too (brush, click for the next word, drag).
+    for (const el of bubbleEl?.querySelectorAll('.frame .hit') ?? []) {
+      const r = el.getBoundingClientRect();
+      rects.push({ x: r.x, y: r.y, w: r.width, h: r.height });
+    }
     await ipc.setHitRects(rects);
   }
   // A new window size reports again once the resize is applied (see resizing below), and the bubble's own size
@@ -166,9 +180,15 @@
     // does not resize on every word.
     const el = bubbleEl;
     if (!el) return;
+    // Read here so a skin change re-runs the effect; a new margin then fits exactly instead of waiting for a clear drop.
+    const margin = character ? PLAIN_PAD : pad;
+    const key = `${margin.top},${margin.bottom}`;
+    let marginChanged = key !== lastMargin;
+    lastMargin = key;
     const ro = new ResizeObserver(() => {
-      const needed = Math.ceil(el.offsetHeight) + 2 * SHADOW_PAD;
-      if (needed > bubbleRoom || needed < bubbleRoom - 60) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
+      const needed = boxHeight(margin, Math.ceil(el.offsetHeight));
+      if (needed > bubbleRoom || needed < bubbleRoom - 60 || marginChanged) bubbleRoom = Math.max(BASE_BUBBLE_ROOM, needed);
+      marginChanged = false;
       reportHitRects();
     });
     ro.observe(el);
@@ -273,6 +293,7 @@
     const seenBefore = (progress.exposure[pick.id]?.n ?? 0) >= 2;
     const revealed = !(settings.guessFirst && seenBefore);
     bubble = { word, revealed };
+    frameWind.gust(10);
 
     // Only showings someone could see count: not while hidden, switched off or with nobody at the computer.
     if (seen && visible && !again) {
@@ -355,11 +376,29 @@
     down = null;
     dragging = true;
     movedSinceDrag = false;
+    released = false;
     emit('dragStart');
-    win.startDragging().finally(() => {
-      // If the OS drag ended without moving the window, no Moved event will clear the flag.
-      setTimeout(() => { if (dragging && !movedSinceDrag) { dragging = false; emit('dragEnd'); } }, 1200);
-    });
+    frameWind.dragStart();
+    watchDrop();
+    win.startDragging();
+  }
+  /** No drag-end event exists, and Windows stops passing Moved events to the page a moment into a drag, while
+   * window.screenX/screenY keep following the window. The drop is when both have been still: briefly once the button
+   * has been seen up, longer otherwise, since the drag may only be paused with the button held. */
+  function watchDrop() {
+    clearInterval(dropWatch);
+    let sx = screenX, sy = screenY, still = performance.now();
+    dropWatch = setInterval(async () => {
+      const now = performance.now();
+      if (screenX !== sx || screenY !== sy) { sx = screenX; sy = screenY; still = now; movedSinceDrag = true; }
+      if (now - Math.max(still, lastMoveAt) < (released ? 300 : 1500)) return;
+      clearInterval(dropWatch);
+      dropWatch = undefined;
+      if (!dragging) return;
+      if (movedSinceDrag) await settle();
+      dragging = false;
+      emit('dragEnd');
+    }, 50);
   }
   function onSpriteUp() {
     if (!down) return;
@@ -479,14 +518,15 @@
 
     let moveTimer: ReturnType<typeof setTimeout> | undefined;
     unlisten.push(win.onMoved(() => {
-      // No drag-end event exists: treat ~250 ms without movement as the drop.
+      lastMoveAt = performance.now();
       movedSinceDrag = true;
+      // During a drag the drop watch decides when to snap; snapping mid-drag would yank the window from the cursor.
+      if (dragging) return;
       clearTimeout(moveTimer);
-      moveTimer = setTimeout(async () => {
-        await settle();
-        if (dragging) { dragging = false; emit('dragEnd'); }
-      }, 250);
+      moveTimer = setTimeout(settle, 250);
     }));
+    const onPointer = (e: PointerEvent) => { if (dragging && !(e.buttons & 1)) released = true; };
+    window.addEventListener('pointermove', onPointer);
     unlisten.push(win.onScaleChanged(() => settle()));
     unlisten.push(listen<string>(EVENTS.trayCommand, ({ payload }) => {
       if (payload === 'toggle-pet') updateSettings({ petEnabled: !settings.petEnabled });
@@ -505,6 +545,8 @@
       unlisten.forEach((u) => u.then((f) => f()));
       unlistenSpeech();
       window.removeEventListener('blur', onBlur);
+      window.removeEventListener('pointermove', onPointer);
+      clearInterval(dropWatch);
       clearTimeout(tickTimer);
       clearTimeout(swapTimer);
     };
@@ -523,6 +565,7 @@
       oncontextmenu={(e) => { e.preventDefault(); menuOpen = !menuOpen; }}
     >
       {#if bubble}
+      {#if Frame}<div class="frame" aria-hidden="true" style:inset="{-pad.top}px {-pad.side}px {-pad.bottom}px"><Frame ondown={onDragDown} onmove={onDragMove} onup={onSpriteUp} /></div>{/if}
       <Bubble
         word={bubble.word}
         revealed={bubble.revealed}
@@ -542,9 +585,8 @@
         onknown={() => { if (bubble) patchExposure(bubble.word.id, { known: true }); emit('known'); nextNow(); }}
         onstar={() => bubble && patchExposure(bubble.word.id, { starred: !starred })}
         onreveal={reveal}
-        onhover={(inside) => { hoveringBubble = inside; if (inside) emit('hoverBubble'); }}
+        onhover={(inside) => { hoveringBubble = inside; if (inside) { emit('hoverBubble'); frameWind.gust(5); } }}
       />
-      {#if Frame}<div class="frame" aria-hidden="true"><Frame /></div>{/if}
       {:else if !sleeping}
         <button class="nap glass-solid glass-press glass-arc" onclick={() => ipc.openMain('/topics')}><Icon name="bell" /> Chưa bật chủ đề nào, bấm để chọn chủ đề</button>
       {:else}
@@ -633,13 +675,15 @@
     cursor: grab;
     outline: none;
   }
+  /* Its own stacking context, so the skin's border below the bubble stays above everything behind the slot. */
   .bubble-slot {
     position: absolute;
+    isolation: isolate;
   }
-  /* A skin's border around the bubble: FRAME_OUT (frames/leaves.ts) on every side, inside the window's SHADOW_PAD. */
+  /* A skin's border: the bubble plus the skin's margin, which is the window once it has fitted the bubble. */
   .frame {
     position: absolute;
-    inset: -11px;
+    z-index: -1;
     pointer-events: none;
   }
   .nap {

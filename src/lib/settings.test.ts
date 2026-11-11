@@ -38,8 +38,11 @@ describe('settings migration', () => {
     expect('petCharacter' in fromSaved({ petCharacter: false })).toBe(false);
   });
 
+  it('reads the removed bamboo skin as the leaf skin', () => {
+    expect(fromSaved({ petSkin: 'bamboo' }).petSkin).toBe('leaf');
+  });
+
   it('reads an unknown skin as the character skin', () => {
-    expect(fromSaved({ petSkin: 'bamboo' }).petSkin).toBe('bamboo');
     expect(fromSaved({ petSkin: 'gold' }).petSkin).toBe('assistant');
   });
 

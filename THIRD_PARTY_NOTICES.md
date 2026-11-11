@@ -2,9 +2,10 @@
 
 | Component | Used for | License | Source |
 |---|---|---|---|
-| Assistant character artwork (Tiểu Mai) | Source drawings in `tools/skins/ai2d/`, rig parts atlas in `public/skins/assistant/` | Generated for this project with the image tool in OpenAI Codex; released under CC0 1.0 | — |
+| Assistant character artwork (Tiểu Mai) | Source drawings in `tools/skins/ai2d/`, rig parts atlas in `public/skins/assistant/` | Made for this project; released under CC0 1.0 | — |
 | MediaPipe Face Landmarker model (`face_landmarker.task`, float16 v1) | Likeness check in the character tools (`tools/skins/ai2d/harness/`); not shipped in the app | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker |
-| App icon and logo artwork | Icon, tray icon, logo | Generated for this project with the image tool in OpenAI Codex; name banner drawn by `tools/logo/compose.py` with Nunito (SIL OFL 1.1) | — |
+| Poly Haven models (celandine_01, dandelion_01, flower_empodium, shrub_sorrel_01, periwinkle_plant, shrub_01) | Rendered into the hint panel's flower border (`src/pet/frames/meadow@*.png`) by `tools/skins/meadow/build.py` | CC0 1.0 | https://polyhaven.com/models |
+| App icon and logo artwork | Icon, tray icon, logo | Made for this project; name banner drawn by `tools/logo/compose.py` with Nunito (SIL OFL 1.1) | — |
 | CVDICT | Vietnamese meanings | CC BY-SA 4.0 | https://github.com/ph0ngp/CVDICT |
 | CC-CEDICT | Basis of CVDICT; pinyin cross-check | CC BY-SA 4.0 | https://cc-cedict.org/wiki/ |
 | complete-hsk-vocabulary | HSK 3.0 word lists (levels new-1..new-6, 2021 standard GF 0025—2021; levels newest-1..newest-6, syllabus finalized November 2025) | MIT (English meanings from CC-CEDICT: CC BY-SA 4.0) | https://github.com/drkameleon/complete-hsk-vocabulary |

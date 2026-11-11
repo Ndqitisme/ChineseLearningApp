@@ -14,7 +14,7 @@ Cửa sổ chính có các bài luyện và lịch ôn tập.
 
 - **Bảng gợi ý và trợ lý chạy nền:**
   - Bảng gợi ý luôn hiện một từ ở cạnh màn hình.
-  - Skin cho bảng: trợ lý là nhân vật đứng cạnh bảng, hoặc viền cỏ lá, viền trúc quanh khung chữ.
+  - Skin cho bảng: trợ lý là nhân vật đứng cạnh bảng, hoặc viền hoa lá dưới khung chữ.
   - Bật, tắt bảng và Skin ngay ở thanh bên của app.
   - Kéo được tới bất kỳ đâu trên màn hình.
   - Ngủ trong giờ yên lặng.

@@ -99,7 +99,9 @@ let stored: Pick<Settings, 'hskOpen' | 'hsk'> = { hskOpen: DEFAULT_SETTINGS.hskO
 export function normalize(s: Settings): Settings {
   const hskOpen = Math.min(6, Math.max(3, Math.trunc(Number(s.hskOpen)) || 3));
   const hskEdition = s.hskEdition === 2021 || s.hskEdition === 2025 ? s.hskEdition : DEFAULT_SETTINGS.hskEdition;
-  const petSkin = PET_SKINS.some((k) => k.id === s.petSkin) ? s.petSkin : DEFAULT_SETTINGS.petSkin;
+  // A saved 'bamboo' is read as a border skin, so the user keeps a border.
+  const saved = (s.petSkin as string) === 'bamboo' ? 'leaf' : s.petSkin;
+  const petSkin = PET_SKINS.some((k) => k.id === saved) ? saved : DEFAULT_SETTINGS.petSkin;
   return { ...s, hskOpen, hskEdition, petSkin, hsk: s.hsk.filter((l) => l >= 1 && l <= hskOpen) };
 }
 

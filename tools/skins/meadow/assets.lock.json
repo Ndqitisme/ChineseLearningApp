@@ -1,0 +1,243 @@
+{
+ "source": "https://polyhaven.com (CC0)",
+ "files": [
+  {
+   "asset": "celandine_01",
+   "path": "celandine_01.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/celandine_01/celandine_01_2k.blend",
+   "size": 421267,
+   "sha256": "c32c802e5b70fcbfed775832bbb957d64540fcb4e30ad157a5e57514b3485179"
+  },
+  {
+   "asset": "celandine_01",
+   "path": "textures/celandine_01_alpha_2k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/celandine_01/celandine_01_alpha_2k.png",
+   "size": 631611,
+   "sha256": "432b365cb400044ccfd51965084f68b67b05e64f5a4ee3722d16111c946865b5"
+  },
+  {
+   "asset": "celandine_01",
+   "path": "textures/celandine_01_diff_2k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/celandine_01/celandine_01_diff_2k.jpg",
+   "size": 1245607,
+   "sha256": "2f602608fcc2d00da1ba65043c6c125f93db226b952db22add1e9396fde3c60e"
+  },
+  {
+   "asset": "celandine_01",
+   "path": "textures/celandine_01_nor_gl_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/celandine_01/celandine_01_nor_gl_2k.exr",
+   "size": 2762821,
+   "sha256": "1b429d535bd1e34653cd8429e986469f6d204a752368c4ce2139470feca1560f"
+  },
+  {
+   "asset": "celandine_01",
+   "path": "textures/celandine_01_rough_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/celandine_01/celandine_01_rough_2k.exr",
+   "size": 2058006,
+   "sha256": "e096117e3e816396fde5dc26f6754865cebd25a3c197df47b0fed2108be4e6d5"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "dandelion_01.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/dandelion_01/dandelion_01_2k.blend",
+   "size": 1416013,
+   "sha256": "73465cc57f6ab116beef77b003842a8bd4b82eafa4e73564533a24077ec67e36"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "textures/dandelion_01_rough_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/dandelion_01/dandelion_01_rough_2k.exr",
+   "size": 1344648,
+   "sha256": "8550f55713ecf756ece5009e3aba10e2b0a39a92839d196c59973d985fe150c5"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "textures/dandelion_01_nor_gl_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/dandelion_01/dandelion_01_nor_gl_2k.exr",
+   "size": 3626042,
+   "sha256": "0df95b986c786d9a3483179a52df0272b7f9f418a838688cd97d5b97e45e51f0"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "textures/dandelion_01_diff_2k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/dandelion_01/dandelion_01_diff_2k.jpg",
+   "size": 1466191,
+   "sha256": "565a926562a7a2e7b4af99b85da2a7aabff70d7e2238511245a601901fab182f"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "textures/dandelion_01_mask_2k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/dandelion_01/dandelion_01_mask_2k.png",
+   "size": 29725,
+   "sha256": "0ca834bd00bec2ca34d88d5221777e28371d6f81349ce063c39ec2a73540b44b"
+  },
+  {
+   "asset": "dandelion_01",
+   "path": "textures/dandelion_01_alpha_2k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/dandelion_01/dandelion_01_alpha_2k.png",
+   "size": 295015,
+   "sha256": "e38b2012cf9ab473ccbafb23fbc7a2667ecb0aa1cbc7b5de4b85f721a3ec0c2e"
+  },
+  {
+   "asset": "flower_empodium",
+   "path": "flower_empodium.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/flower_empodium/flower_empodium_2k.blend",
+   "size": 235618,
+   "sha256": "89eb7922dca1f3c49cc5da3af9ab0bcfe91af81ce3ba0716855fe6844d118f9a"
+  },
+  {
+   "asset": "flower_empodium",
+   "path": "textures/flower_empodium_diff_2k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/flower_empodium/flower_empodium_diff_2k.jpg",
+   "size": 498381,
+   "sha256": "0467caf5e4e5bffc04e439fed2c1426aa2aaab62c6c47bedb4266a8bebde8ca7"
+  },
+  {
+   "asset": "flower_empodium",
+   "path": "textures/flower_empodium_nor_gl_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/flower_empodium/flower_empodium_nor_gl_2k.exr",
+   "size": 2160623,
+   "sha256": "2160d7f22f177e69712d818ed64111dfc8035ff81c809defb8e55b31b5738c3a"
+  },
+  {
+   "asset": "flower_empodium",
+   "path": "textures/flower_empodium_rough_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/flower_empodium/flower_empodium_rough_2k.exr",
+   "size": 10845,
+   "sha256": "37ac5b1e4d9724a585a3780065093ad76734ac073584f8002205f0ee56d1aab3"
+  },
+  {
+   "asset": "flower_empodium",
+   "path": "textures/flower_empodium_alpha_2k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/flower_empodium/flower_empodium_alpha_2k.png",
+   "size": 357257,
+   "sha256": "c91f596b1953b27bf95a7cfdc77acfede050e9fc0dba1dc186029cfb7d4f1f18"
+  },
+  {
+   "asset": "shrub_sorrel_01",
+   "path": "shrub_sorrel_01.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/shrub_sorrel_01/shrub_sorrel_01_2k.blend",
+   "size": 197583,
+   "sha256": "2d9b34f0d7104d2809801d9f4e7f2677561cb0567a4d5cfb45127558a50deecb"
+  },
+  {
+   "asset": "shrub_sorrel_01",
+   "path": "textures/shrub_sorrel_01_alpha_2k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/shrub_sorrel_01/shrub_sorrel_01_alpha_2k.png",
+   "size": 152339,
+   "sha256": "41780f20a9721ad58ed30381a80845408c331c31c293d5987c7c782de618ac0f"
+  },
+  {
+   "asset": "shrub_sorrel_01",
+   "path": "textures/shrub_sorrel_01_rough_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/shrub_sorrel_01/shrub_sorrel_01_rough_2k.exr",
+   "size": 1521621,
+   "sha256": "9a2ca60cc7d6da3b7edd6fe0daeae7097e214ab339c304ae9b22094c4aa9aed1"
+  },
+  {
+   "asset": "shrub_sorrel_01",
+   "path": "textures/shrub_sorrel_01_diff_2k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/shrub_sorrel_01/shrub_sorrel_01_diff_2k.jpg",
+   "size": 1208902,
+   "sha256": "956ea2f96f3d8a1156233b773293fdef8d255ff0e076e69ddb05ff66695e7d4c"
+  },
+  {
+   "asset": "shrub_sorrel_01",
+   "path": "textures/shrub_sorrel_01_nor_gl_2k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/shrub_sorrel_01/shrub_sorrel_01_nor_gl_2k.exr",
+   "size": 3640028,
+   "sha256": "766c46d9c67dca24dec5c7038926658262dc75cc18bdde2c0fcb5c0ea360ee64"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "periwinkle_plant.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/periwinkle_plant/periwinkle_plant_1k.blend",
+   "size": 1680482,
+   "sha256": "91dc069a8824244c3e16f0fd207295946a4d7e17e8efccfa34a1a5c5c94d987f"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_diff_1k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/periwinkle_plant/periwinkle_plant_diff_1k.jpg",
+   "size": 349879,
+   "sha256": "32d61084e6c07fa3ca8e03b35b347a12717f971efc90e8fe1185931ee2298c56"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_disp_1k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/periwinkle_plant/periwinkle_plant_disp_1k.png",
+   "size": 1468054,
+   "sha256": "e10995a785e25c05d0f72d9656226e7a9838b7e47a48a3842ad90e7a89fb3fa6"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_nor_gl_1k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/periwinkle_plant/periwinkle_plant_nor_gl_1k.exr",
+   "size": 948959,
+   "sha256": "3f6bb8092a62ee228c9e10f17f51a1aed216995a66b0d14230ee0ee77706dc1e"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_opacity_1k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/periwinkle_plant/periwinkle_plant_opacity_1k.png",
+   "size": 86094,
+   "sha256": "e1dc2746b641606ae2772667c719e2b593b548759a51d86ce093322c22e903de"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_rough_1k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/periwinkle_plant/periwinkle_plant_rough_1k.exr",
+   "size": 188102,
+   "sha256": "6bcdbe28a574317c8414b8e0609a49c93778be9da8b7fba011cc8ef14d9c01fc"
+  },
+  {
+   "asset": "periwinkle_plant",
+   "path": "textures/periwinkle_plant_translucency_1k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/periwinkle_plant/periwinkle_plant_translucency_1k.png",
+   "size": 5292609,
+   "sha256": "724b25103570267079a4baa22047dac7257cf1e8dc734319f914b8f8d3489b3b"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "shrub_01.blend",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/shrub_01/shrub_01_1k.blend",
+   "size": 6535174,
+   "sha256": "a6ba7e56937853891eae84dc875fcc653d1ac38d50364b32a250025d7d4a80b0"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "textures/shrub_01_rough_1k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/shrub_01/shrub_01_rough_1k.exr",
+   "size": 343569,
+   "sha256": "138f5fb22a95bf443e21dbfdc62714ad9f21986f3cdd35eba1e45293d74ca63d"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "textures/shrub_01_nor_gl_1k.exr",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/shrub_01/shrub_01_nor_gl_1k.exr",
+   "size": 1651867,
+   "sha256": "b940c0e6e7f52c3b40562a190286efb6941d5f22e39d9f07728c313cb019d5bb"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "textures/shrub_01_alpha_1k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_01/shrub_01_alpha_1k.png",
+   "size": 132597,
+   "sha256": "eb693835205913dfc705a08fb45f3e8d1c338332bd0097e9837773765b421603"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "textures/shrub_01_diff_1k.jpg",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/shrub_01/shrub_01_diff_1k.jpg",
+   "size": 502162,
+   "sha256": "fe60e639d694e1807c0a3ae97dd1d5a7e7b3f84e5fc32d0610b868ce48f36331"
+  },
+  {
+   "asset": "shrub_01",
+   "path": "textures/shrub_01_disp_1k.png",
+   "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/shrub_01/shrub_01_disp_1k.png",
+   "size": 970478,
+   "sha256": "14860a84281cc4cc28bf4cadcba6cd68110c6a6558f288090a83ab40dab83199"
+  }
+ ]
+}

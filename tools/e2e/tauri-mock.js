@@ -69,6 +69,11 @@ function installTauriMock({ label, seed, system, monitor }) {
 
   // ---------------------------------------------------------------- windows
   const win = { position: { x: 0, y: 0 }, size: { width: innerWidth, height: innerHeight }, visible: false };
+  /** The OS moving the window during a drag (physical px): position changes and the move event fires. */
+  e2e.moveWindow = (x, y) => {
+    win.position = { x: Math.round(x), y: Math.round(y) };
+    deliver('tauri://move', { ...win.position });
+  };
   const physical = (v, key) => (v.Physical ?? v.Logical ?? v)[key];
   const inMonitor = (x, y) =>
     x >= monitor.position.x && y >= monitor.position.y &&
@@ -164,6 +169,9 @@ function installTauriMock({ label, seed, system, monitor }) {
     // Tauri sends args as JSON; dpi classes (LogicalSize, PhysicalPosition…) serialize via toJSON.
     const args = JSON.parse(JSON.stringify(rawArgs));
     e2e.calls.push({ cmd, args });
+    // A real Tauri call crosses processes; a scenario can set this (ms) to reproduce races the instant mock hides.
+    const lag = window.__e2eLatency;
+    if (lag) await new Promise((r) => setTimeout(r, lag * (0.5 + Math.random())));
     const handler = handlers[cmd];
     if (!handler) {
       e2e.unknown.push(cmd);

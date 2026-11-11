@@ -36,14 +36,17 @@ __pycache__/
 # Character reference images (not for a public repo)
 /references/
 
-# Character lever (tools/skins/ai2d): Python venv, outputs, raw Codex runs, rebuilt checker fixtures
+# Hand-over archives between machines (private references, repo bundles, notes) and what they unpack
+/*.zip
+/*.bundle
+/extras/
+
+# Character lever (tools/skins/ai2d): Python venv, outputs, rebuilt checker fixtures
 /tools/skins/ai2d/.venv/
 /tools/skins/ai2d/**/out/*
 !/tools/skins/ai2d/art/keyposes/guide/out/joints3d.json
 /tools/skins/ai2d/**/work/
 /tools/skins/ai2d/**/gen/*/*
-!/tools/skins/ai2d/**/gen/*/prompt.txt
-!/tools/skins/ai2d/art/generations.log
 /tools/skins/ai2d/rig/inbetween/crop/
 /tools/skins/ai2d/consistency/runs/
 /tools/skins/ai2d/consistency/fixtures/b_r1/

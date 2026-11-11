@@ -246,12 +246,30 @@ Chứng minh trên sản phẩm thật, ở kích thước thật, mỗi con s�
 - Bong bóng có lớp riêng từ lúc nghỉ (`will-change: transform`), để chữ không đổi kiểu khử răng cưa khi nút trong đó có lớp riêng.
 - Hiệu ứng bật lên (scale 0,6 → 1) không vượt quá 1: vượt quá thì lớp `will-change: transform` giữ tỉ lệ raster của lúc bật lên và cả bong bóng mềm đi.
 - Huy hiệu HSK pha 14 % màu tím vào chính mặt bong bóng, có viền 1 px.
-- Skin viền (cỏ lá, trúc): SVG và gradient tĩnh, không `filter`, không animation; nằm ngoài mép bong bóng tối đa 11 px, trong `SHADOW_PAD`. Màu pha từ `--hue-green`, `--hue-amber`, `--bubble-border` về trắng (theme sáng) hoặc đen (theme tối) thành tông giữa có mép tối, để đọc được trên desktop trắng lẫn đen.
-- Lá chuyển động cho Viền cỏ lá (chưa làm):
-  - Mỗi lá trong `src/pet/frames/leaves.ts` đã là một phần riêng, có điểm cuống (`x`, `y`), góc nghỉ (`angle`) và độ dài (`length`). Chuyển động chỉ đổi góc xoay quanh cuống; `leaves.test.ts` giữ mọi lá trong cửa sổ khi xoay ±25° (`SWAY_MAX`).
-  - Mỗi lá là một lò xo tắt dần. Gió đến theo đợt khi đổi từ, khi rê chuột vào bảng và khi kéo bảng, rồi lá đứng yên sau khoảng 3 giây. Không chạy liên tục: cửa sổ trợ lý đang vượt ngân sách CPU (`docs/PLAN.md` mục 6).
-  - Kéo bảng: gia tốc của cửa sổ đẩy lá ngược hướng kéo (quán tính), dừng kéo thì lá bật lại và tắt dần.
-  - Hình lá tự dựng bằng code trong repo: hình học lá và cỏ sinh bằng script Blender Python, dựng sẵn thành atlas có sáng tối, rồi app tô màu theo theme bằng canvas, một lần mỗi khi đổi theme. Không dùng mô hình bên ngoài (luật giấy phép ở `CLAUDE.md`). Atlas giữ lossless vì có kênh mask.
-  - Lá nhỏ nhất khoảng 22 px: bản thử dưới 20 px bị mềm ở tỉ lệ 1.
-  - Đo `pnpm perf` với skin Viền cỏ lá trước và sau khi thêm chuyển động.
+- Viền hoa lá (id `leaf`):
+  - Một luống hoa lá thấp dọc đáy bong bóng: celandine, bồ công anh, empodium, sorrel.
+  - Dừa cạn và cành lá mọc men lên hai góc dưới.
+  - Lớp hoa lá nằm sau bong bóng: phần chạm mép bong bóng bị mặt kính che.
+  - Mỗi cây nhận chuột trên phần nhìn thấy của nó (khung bao đường bao trong `meadow.json`); các khung này được báo thêm vào vùng nhận chuột, ngoài đó chuột vẫn xuyên qua cửa sổ.
+  - Bấm vào hoa lá: sang từ tiếp theo, như bấm vào nhân vật Trợ lý; nhấn rồi kéo: kéo bảng; chuột phải: menu.
+  - Rê chuột qua: cây dưới chuột bị gạt theo hướng chuột đi, mạnh theo tốc độ ngang của chuột, rồi về chậm.
+- Hình của Viền hoa lá:
+  - Render bằng Blender từ mô hình CC0 của Poly Haven (`tools/skins/meadow/`), ghim sha256, thành atlas `src/pet/frames/meadow@1x.png`, `@2x`, `@3x`.
+  - Render ở 6 lần cỡ hiển thị rồi lọc xuống từng cỡ, để nét ở mọi tỉ lệ màn hình.
+  - Giữ màu tự nhiên của cây, không pha theo theme.
+  - App chọn atlas theo `devicePixelRatio` (làm tròn lên, từ 1 đến 3) và chọn lại khi cửa sổ sang màn hình khác.
+  - `meadow.json` ghi lề cửa sổ (trên, hai bên, dưới) và từng hình: góc neo, vị trí, cỡ, điểm gốc, ô trong atlas, mức lay, đường bao phần nhìn thấy.
+  - Cửa sổ rộng 264 px cộng hai lề bên, cao bằng bong bóng cộng lề trên và dưới.
+  - Bộ dựng đẩy cây sát mép cửa sổ vào trong và giới hạn mức lay của từng hình, để không hình nào bị mép cửa sổ cắt kể cả khi ngả hết mức; `meadow.test.ts` kiểm điều đó trên đường bao.
+- Hoa lá lay (`src/pet/frames/sway.ts`):
+  - Chậm và mượt: mỗi hình là một lò xo khoảng 0,45 Hz, tắt dần 0,7; ngả một nhịp rồi về, không lắc qua lại.
+  - Gió đến theo đợt khi đổi từ và khi rê chuột vào bảng, lên xuống mượt (sin²), trôi từ trái sang phải; hình đứng yên sau vài giây.
+  - Hình nghiêng bằng phép xô (skew) quanh điểm gốc, không xoay: gốc đứng yên, ngọn ngả.
+  - Mức lay của từng hình nhân với góc của lò xo (tối đa ±25°, `SWAY_MAX`): hoa lay nhiều, lá thấp ít.
+  - Kéo bảng: hoa lá ngả ngược hướng kéo suốt lúc cửa sổ di chuyển (lực cản gió theo vận tốc: kéo đều 600 px/s nghiêng khoảng 20°), cộng thêm cú hích quán tính lúc bắt đầu và dừng; lực bão hoà mềm ở 22°.
+  - Vị trí cửa sổ lúc kéo đọc từ `window.screenX/screenY` mỗi khung hình: Windows ngừng chuyển sự kiện Moved vào trang sau khoảng 0,3 giây kéo.
+  - Bảng coi là đã thả khi vị trí và sự kiện Moved cùng đứng yên (300 ms nếu đã thấy chuột nhả, 1,5 giây nếu chưa); chỉ khi đó mới hít mép.
+  - Vòng vẽ chỉ chạy khi có hình đang động, có đồng hồ dự phòng khi Windows giữ lại khung hình lúc kéo cửa sổ; không chạy liên tục vì cửa sổ trợ lý đang vượt ngân sách CPU (`docs/PLAN.md` mục 6).
+  - `prefers-reduced-motion` tắt chuyển động.
+  - Còn phải đo `pnpm perf` với skin Viền hoa lá trên máy yếu.
 - Câu ví dụ chữ Hán ở theme tối trông đậm hơn theme sáng: chấp nhận, đó là cách Chrome vẽ chữ sáng trên nền tối.

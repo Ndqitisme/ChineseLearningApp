@@ -17,7 +17,7 @@
 // rendered-ink check: a muted regular hint at 15-16px read 3.9:1 on its ink while its declared colour passed.
 // Each page (and each bubble window) is measured in a window of its own and stored by a hash of its inputs (deps.mjs):
 // a page whose files did not change is read back, not measured again. NOCACHE=1 measures everything.
-// Usage: GLASS=refract|fallback|reduced [NOCACHE=1] [ONLY=ocean-dark,...] [PAGES_ONLY=#/a,#/b] [SIZES=1400x900,...] [PET_ONLY=1] [PET_SKIN=leaf|bamboo|off] node contrast.mjs [out.json]
+// Usage: GLASS=refract|fallback|reduced [NOCACHE=1] [ONLY=ocean-dark,...] [PAGES_ONLY=#/a,#/b] [SIZES=1400x900,...] [PET_ONLY=1] [PET_SKIN=leaf|off] node contrast.mjs [out.json]
 import { writeFileSync } from 'node:fs';
 import { WORK, seedFor, sleep, start } from './harness.mjs';
 import { data } from './harness.mjs';

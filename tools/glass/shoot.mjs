@@ -539,8 +539,7 @@ try {
       ['guess', { guessFirst: true }, [], 'guess state (meaning hidden) when a seen word comes up', 'dark'],
       ['guess', { guessFirst: true }, [], 'guess state (meaning hidden) when a seen word comes up'],
       ['bubble-only', { petSkinOn: false, guessFirst: false }, [], 'Skin off: plain bubble without tail'],
-      ['skin-leaf', { petSkin: 'leaf', guessFirst: false }, [], 'skin Viền cỏ lá: no character, vine border'],
-      ['skin-bamboo', { petSkin: 'bamboo', guessFirst: false }, [], 'skin Viền trúc: no character, bamboo border'],
+      ['skin-leaf', { petSkin: 'leaf', guessFirst: false }, [], 'skin Viền hoa lá: no character, flower border'],
       ['reduced-transparency', { guessFirst: false }, [{ name: 'prefers-reduced-transparency', value: 'reduce' }], 'solid bubble'],
       ['large', { guessFirst: false, petScale: 4 }, [], 'size Lớn'],
     ]) {

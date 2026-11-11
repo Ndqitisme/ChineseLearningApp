@@ -29,13 +29,10 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 
 ## Việc tiếp theo
 
-1. **Đóng đợt glass và Skin.** Code đã commit trên `main`, chưa push. Đã qua: gate kính (`tools/glass`), `pnpm e2e` đầy đủ, build kiểm `com.tieumai.verify` (`tools/glass/verify.cjs` 23/23) và khúc xạ trong WebView2. Còn lại, mỗi lần một việc nặng:
-   1. `pnpm e2e` đầy đủ lại sau các commit Skin.
-   2. `pnpm perf` 600 giây, chỉ bảng gợi ý (`--autostart`), skin Trợ lý rồi skin Viền cỏ lá, so với số ở `docs/PLAN.md` mục 6. Không mở cửa sổ chính trong lúc đo.
-   3. Chủ repo xem rồi mới push.
-2. **Lá cỏ chuyển động cho Viền cỏ lá** (`docs/UI-GLASS.md` mục 5, Cửa sổ trợ lý): lá tự dựng bằng code trong repo, gió theo đợt và quán tính khi kéo bảng.
+1. **Đóng đợt glass và Skin.** Đã push lên `main`; `pnpm e2e` đầy đủ đã qua sau các commit Skin. Còn lại: `pnpm perf` 600 giây trên máy yếu, chỉ bảng gợi ý (`--autostart`), skin Trợ lý rồi skin Viền hoa lá, so với số ở `docs/PLAN.md` mục 6. Không mở cửa sổ chính trong lúc đo.
+2. **Viền hoa lá:** luống hoa lá render từ mô hình CC0, lay chậm theo gió (`docs/UI-GLASS.md` mục 5, Cửa sổ trợ lý). Dựng lại: `python tools/skins/meadow/fetch.py` rồi `blender -b --factory-startup --python tools/skins/meadow/build.py`. Còn đo CPU khi hoa lá lay, trong lần đo ở mục 1.
 3. **CPU và RAM của nhân vật mới trong app thật** vượt ngân sách. Số đo ở `docs/PLAN.md` mục 6, nguyên nhân ở `docs/CHARACTER.md` mục 2. Cần đo lại khi ngồi tại máy, rồi giảm (ví dụ clip nói chạy ít khung hơn) và đo lại trên máy yếu.
-4. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2). Trên máy có GPU: chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
+4. **Sửa các lỗi nhân vật đang chấp nhận** (`docs/CHARACTER.md` mục 2) bằng Blender và model mở chạy trên máy, không dùng agent hay dịch vụ ngoài. Chạy các bài thử ở `docs/CHARACTER-PIPELINE.md` mục 4 trước khi đổi cách dựng. Bổ sung luật cho các chỗ bộ kiểm còn hở trước khi sửa.
 5. **Phát hành:** trang Releases trên GitHub chưa có bộ cài nào; README đang trỏ tới đó. Đẩy tag `v*` thì workflow `build.yml` tạo bản Release nháp; chạy tay workflow thì bản build nằm ở artifact.
 6. **Tính năng:** theo thứ tự ở `docs/ROADMAP.md`.
 
@@ -57,7 +54,7 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 - Không giọng văn quảng cáo hay "vibe".
 - README chỉ chứa thứ người dùng và người đóng góp cần; không quy trình, agent, đợt chạy.
 - Comment chỉ ghi lý do không hiển nhiên. Không lịch sử, không giai đoạn dự án.
-- UI dùng `<Icon name=… />` (`src/lib/ui/Icon.svelte`), không dùng emoji. Thêm icon: thêm vào `tools/icons/sheets.json`, tạo sheet cùng kiểu prompt, chạy `python tools/icons/slice.py`.
+- UI dùng `<Icon name=… />` (`src/lib/ui/Icon.svelte`), không dùng emoji. Thêm icon: vẽ bằng code trong repo (SVG hoặc script Blender), xuất mask 128 px vào `public/icons/` và thêm tên vào `src/lib/ui/icon-names.ts`; không dùng agent hay dịch vụ ngoài.
 - Vùng mà pinyin là đáp án gắn `data-hover-pinyin="off"`.
 
 ### Dữ liệu
@@ -70,7 +67,7 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 
 - Việc xong thì không process nào nó tạo còn chạy. Trên Windows tiến trình con sống sau khi cha bị dừng: dừng cả cây bằng `taskkill /T /F /PID <pid>`.
 - Mỗi khi một việc nền xong: liệt kê `node|chrome|python` kèm tiến trình cha, giờ tạo, dòng lệnh; dọn cái của mình.
-- Không giết Chrome của người dùng, daemon của Codex, MCP server, hay việc của agent khác.
+- Không giết Chrome của người dùng, tiến trình nền của công cụ khác, MCP server, hay việc của agent khác.
 - Vòng chờ phải thoát cả khi gặp lỗi và có giới hạn thời gian. Git Bash không có `pgrep`.
 - Kiểm không có bản nào đang chạy trước khi chạy e2e, bộ đo hay server.
 - Việc nặng (`tauri build`, `cargo`, `pnpm e2e` đầy đủ, `skin:rig`, `pnpm perf`) chỉ chạy khi các việc khác đã xong, mỗi lần một việc. Agent chạy song song chỉ được kiểm nhẹ (`pnpm check`, vitest từng file) và báo lại phần còn cần build hay e2e.
@@ -78,11 +75,11 @@ Chạy test của file liên quan trước; cả bộ khi xong một đợt.
 ### Nhân vật
 
 - Yêu cầu trong `docs/CHARACTER.md` là bắt buộc: tư thế nghỉ, tay chân liền, kính theo đầu, đứng yên giữ một khung.
-- `references/` là file riêng, không có trong repo. Ảnh dáng người là ảnh người thật: không đưa vào Codex, web hay bất kỳ model nào.
+- `references/` là file riêng, không có trong repo. Ảnh dáng người là ảnh người thật: không đưa vào web hay bất kỳ model nào, kể cả model chạy trên máy.
 - Không nới bộ kiểm để qua.
 - CPU/RAM của app đo trên máy yếu, không đo trên máy GPU.
 - Bản vẽ nhân vật và icon: CC0 1.0.
-- Hình trang trí mới (lá, cỏ của Skin) tự dựng bằng code trong repo và theo giấy phép MIT của repo. Không lấy mô hình hay ảnh bên ngoài, kể cả CC0.
+- Hình trang trí của Skin (cỏ, hoa, lá) render bằng Blender từ mô hình CC0 có sẵn (Poly Haven), tải bằng script ghim sha256 (`tools/skins/meadow/assets.lock.json`) và ghi nguồn trong `tools/skins/meadow/CREDITS.md`. Không dùng nguồn giới hạn phân phối lại hay bắt ghi nguồn (pngtree, Freepik, ảnh stock).
 
 ## Cách làm
 
