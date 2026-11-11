@@ -12,6 +12,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
     "tauri": "tauri",
+    "build:offline": "tauri build --bundles nsis --config src-tauri/tauri.offline.conf.json && node -e \"const fs=require('fs'),d='src-tauri/target/release/bundle/nsis/';for(const f of fs.readdirSync(d))if(f.endsWith('_x64-setup.exe'))fs.renameSync(d+f,d+f.replace('-setup.exe','-offline-setup.exe'))\"",
     "data:fetch": "node tools/data/fetch-sources.ts",
     "data:build": "node tools/data/build.ts",
     "data:fonts": "python tools/data/subset_font.py",
