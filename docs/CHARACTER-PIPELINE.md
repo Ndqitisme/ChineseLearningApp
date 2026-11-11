@@ -3,23 +3,25 @@
 Tài liệu này dùng khi cần vẽ thêm tư thế, sửa lỗi nối khớp hoặc làm lại bộ chuyển động.
 Yêu cầu về nhân vật và bản đang phát hành nằm ở [CHARACTER.md](CHARACTER.md).
 
+Không dùng agent hay dịch vụ ngoài để vẽ. Hình mới làm trên máy bằng Blender, script trong repo và model mở chạy cục bộ (mục 3). Ảnh nguồn đã duyệt nằm ở `tools/skins/ai2d/`.
+
 App phát hành không cần GPU. GPU chỉ thay đổi khâu sản xuất hình.
 CPU và RAM của app luôn đo trên máy yếu cỡ i5-4570 / Intel HD 4600, vì đó là máy người dùng.
 
 Nhãn: [đo] là đã đo hoặc đã đọc tận nguồn; [suy luận] là suy ra, chưa kiểm; [chưa kiểm] là con số hay khẳng định của bên thứ ba chưa thử ở đây.
 
-## 1. So sánh nhanh
+## 1. Các khâu
 
-| Khâu | Không có GPU (quy trình hiện tại) | Có GPU NVIDIA 12–16 GB VRAM trở lên |
-|---|---|---|
-| Vẽ tư thế mới | Codex vẽ từng ảnh: cần tài khoản OpenAI, có quota, kết quả không lặp lại được, có lúc bị từ chối | Model ảnh chạy trên máy: SDXL / Animagine XL 4.0 kèm ControlNet (khung xương, depth) và IP-Adapter hoặc LoRA học từ ảnh gốc. Seed cố định, không giới hạn số lần |
-| Tách bức vẽ thành part | Script tự cắt rồi sửa qua nhiều vòng; đây là gốc của lỗi đường nối và lỗ hổng | See-through tự tách tối đa 23 lớp, vẽ bù phần bị che, xuất PSD kèm depth và mask |
-| Khung chuyển tiếp khi tay đổi tư thế | Codex vẽ thêm bản trung gian, rig nội suy phần còn lại | Wan2.1-VACE tạo chuyển động giữa hai khung khoá theo khung xương hoặc depth; RIFE chỉ cho phần chênh nhỏ |
-| Đầu, mặt, kính | Rig uốn ảnh; kính dễ lệch khỏi mắt khi đầu xoay | LivePortrait điều khiển xoay, ngẩng, chớp mắt, miệng bằng tham số; kính đi theo đầu vì cả vùng đầu được uốn cùng nhau |
-| Khung tham chiếu tư thế 3D | File `.glb` TRELLIS.2 có sẵn trong `references/`; Blender render bằng Cycles CPU | Không bắt buộc: vẽ khung xương ControlNet thẳng từ toạ độ khớp. Nếu cần 3D thì Blender Cycles chạy GPU |
-| Bộ kiểm nhất quán và đường nối | Khoảng 4 giây mỗi khung, khoảng 1,5 giờ mỗi lượt cho khoảng 1.700 khung [đo] | Gần như chạy CPU; nhanh lên nhờ CPU nhiều nhân, GPU ít tác dụng [suy luận] |
-| Một vòng dựng và kiểm rig | 3–4 giờ [đo]; 71–87% thời gian là chờ lệnh chạy trên máy [đo] | Khoảng 1–1,5 giờ với CPU đời mới 8–16 nhân [suy luận] |
-| Phụ thuộc bên ngoài lúc dựng | Codex (dịch vụ OpenAI) cho mọi ảnh mới | Chỉ tải trọng số model một lần; sau đó chạy không cần mạng |
+| Khâu | Cách làm (GPU NVIDIA trên máy) |
+|---|---|
+| Vẽ tư thế mới | Model ảnh chạy trên máy: SDXL / Animagine XL 4.0 kèm ControlNet (khung xương, depth) và IP-Adapter hoặc LoRA học từ ảnh gốc. Seed cố định, không giới hạn số lần |
+| Tách bức vẽ thành part | See-through tự tách tối đa 23 lớp, vẽ bù phần bị che, xuất PSD kèm depth và mask |
+| Khung chuyển tiếp khi tay đổi tư thế | Wan2.1-VACE tạo chuyển động giữa hai khung khoá theo khung xương hoặc depth; RIFE chỉ cho phần chênh nhỏ |
+| Đầu, mặt, kính | LivePortrait điều khiển xoay, ngẩng, chớp mắt, miệng bằng tham số; kính đi theo đầu vì cả vùng đầu được uốn cùng nhau |
+| Khung tham chiếu tư thế 3D | Không bắt buộc: vẽ khung xương ControlNet thẳng từ toạ độ khớp. Nếu cần 3D thì Blender Cycles chạy GPU |
+| Bộ kiểm nhất quán và đường nối | Gần như chạy CPU; nhanh lên nhờ CPU nhiều nhân, GPU ít tác dụng [suy luận] |
+| Một vòng dựng và kiểm rig | Khoảng 1–1,5 giờ với CPU đời mới 8–16 nhân [suy luận] |
+| Phụ thuộc bên ngoài lúc dựng | Chỉ tải trọng số model một lần; sau đó chạy không cần mạng |
 
 Máy GPU làm vòng dựng ngắn lại nhưng không tự làm hết lỗi.
 Lỗi khuỷu tay và giật một khung khi đổi tư thế là giới hạn của cách làm rig sống từ part cắt tay, không phải của tốc độ máy.
@@ -28,14 +30,13 @@ Lỗi khuỷu tay và giật một khung khi đổi tư thế là giới hạn c
 
 ### Dùng được ngay
 
-- Dựng lại bản đang phát hành từ nguồn trong repo không cần Codex. Ảnh Codex đã duyệt được lưu thành PNG nguồn trong `tools/skins/ai2d/`.
-- Codex chỉ cần khi vẽ thứ chưa có: tư thế tay mới, kiểu bàn tay mới, sửa nét vẽ.
+- Dựng lại bản đang phát hành từ nguồn trong repo.
+- Sửa lỗi ở tầng rig và chuyển động bằng part có sẵn: thời gian clip, khung trung gian nội suy, trọng số skinning, lịch sự kiện.
 - Đo CPU và RAM trực tiếp trên máy giống máy người dùng.
 
 ### Giới hạn
 
-- Mỗi tư thế tay mới cần một ảnh Codex. Đợt dựng gần nhất dùng 28/30 lượt, tính cả lượt thử lại [đo, `generations.log`].
-- Codex từng từ chối một lượt sửa vùng chân; phần chân phải dựng lại từ chân sẵn có trong ảnh gốc.
+- Không vẽ được thứ chưa có (tư thế tay mới, kiểu bàn tay mới, sửa nét vẽ): việc đó cần model ảnh cục bộ ở mục 3, tức cần GPU.
 - Part cắt từ một bức vẽ phẳng không có phần bị che (vai sau tay, eo sau tay chống hông), nên khớp nối phải vá.
 - Blender ở chế độ nền: Workbench render sai góc nhìn trên Intel HD 4600, nên dùng Cycles CPU với đường dẫn Windows tuyệt đối. Eevee không chạy trên GPU này.
 
@@ -52,7 +53,7 @@ Các model ở mục 3 đều chạy được trên CPU, nhưng rất chậm:
 
 | Bỏ | Thay bằng | Ghi chú |
 |---|---|---|
-| Codex và quota | Model ảnh cục bộ (mục 1) | Có thể train LoRA nhỏ từ các PNG nguồn đã có để giữ đúng nét |
+| Vẽ tay bằng dịch vụ ngoài | Model ảnh cục bộ (mục 1) | Có thể train LoRA nhỏ từ các PNG nguồn đã có để giữ đúng nét; cần nhiều VRAM (mục 7) |
 | Vòng cắt part bằng script | See-through | Phần bị che được vẽ bù nên khớp nối liền từ gốc |
 | Ảnh trung gian cho tay | Wan2.1-VACE | Khung đầu và cuối là hai tư thế đã có |
 | Sửa kính lệch | LivePortrait | Bỏ bộ dò mặt InsightFace (giấy phép phi thương mại), dùng vùng cắt cố định từ toạ độ khớp hoặc MediaPipe |
@@ -149,6 +150,7 @@ Pillow giải mã AVIF ra màu hơi tối hơn; chưa kiểm trong Chrome.
 
 ## 7. Phần cứng
 
+- Máy dựng hiện tại: RTX 5060 8 GB VRAM, i7-14700 28 luồng, 32 GB RAM [đo]. Đủ hay không cho từng khâu do các bài thử ở mục 4 quyết định.
 - GPU NVIDIA 16 GB VRAM là thoải mái cho See-through, LivePortrait, VACE 1.3B và SDXL [suy luận].
 - 8 GB chạy được See-through nếu nén model NF4 [chưa kiểm].
 - 24 GB trở lên mới nên chạy VACE 14B hoặc train LoRA thoải mái [suy luận].
@@ -165,7 +167,6 @@ Pillow giải mã AVIF ra màu hơi tối hơn; chưa kiểm trong Chrome.
 | Sprite sheet giải mã toàn bộ | Khoảng 51 MB, gấp 5,4 lần ngân sách 9,45 MB; phát từng khung thì không vướng (mục 5) |
 | Video VP9 có alpha | Khó nối clip chính xác từng khung; `ImageDecoder` tốt hơn |
 | RIFE hay FILM giữa hai tư thế xa nhau | Bóng mờ khi tay di chuyển lớn |
-| Codex vẽ mọi khung | Hết quota và các khung không đồng nhất |
 | GPU đám mây miễn phí | Phải tải ảnh gốc lên dịch vụ ngoài; chỉ làm khi chủ repo đồng ý |
 
 ## 9. Nguồn

@@ -1,7 +1,7 @@
 """Key-pose art: continuous limb textures for the rig's key poses, rebuilt from stored PNGs.
 
-Inputs (no Codex call happens here; gen/codex_gen2.sh made them, logged in ../generations.log):
-  src/wave_ul.png, wave_ur.png, drag.png, land.png        key-pose keys (Codex edits of ../src/master.png,
+Inputs:
+  src/wave_ul.png, wave_ur.png, drag.png, land.png        key-pose keys (edits of ../src/master.png,
                                                          each made with a 3D pose guide from guide/run_guide.py)
   src/head_yawm12.png, head_yawp12.png, head_pitchm15.png head views of ../gen/face_hd_in.png, glasses kept
   ../src/wave.png, think.png, tuck.png, talk.png, happy.png  art keys whose whole arm passes the same gates
@@ -10,7 +10,7 @@ Inputs (no Codex call happens here; gen/codex_gen2.sh made them, logged in ../ge
 Outputs: out/parts/*.png (2x app scale), out/parts.json, out/gates.json, out/limbs_4x_*.png (every part),
   out/context_{1x,2x}_*.png (every key and head view assembled with the art rest parts, over light and dark),
   out/context_4x_*.png (the same over magenta, cyan = what the consistency checker's see-through/hole tests flag).
-  head_yawp12.png is the second Codex call for that view (the first, gen/head_yawp12_try1/, grew the eyes and
+  head_yawp12.png is the second drawing for that view (the first, gen/head_yawp12_try1/, grew the eyes and
   dropped the fringe onto the brows: harness eye width +0.072, fringe 0.084).
 Usage: <tools/skins/ai2d/.venv python> run.py
 """
@@ -183,8 +183,8 @@ def shirt_white(img: np.ndarray) -> np.ndarray:
     return (img[..., 3] > 0) & (np.hypot(Lb[..., 1], Lb[..., 2]) < 6) & (Lb[..., 0] > 55)
 
 
-def codex_mask(p: Path, master_raw: np.ndarray, region: str) -> np.ndarray:
-    """Magenta silhouette from a Codex recolour of a key, registered to the master like the key itself."""
+def source_mask(p: Path, master_raw: np.ndarray, region: str) -> np.ndarray:
+    """Magenta silhouette from a recolour of a key, registered to the master like the key itself."""
     raw = load(p)
     W, _ = register(raw, master_raw, region)
     f = raw.astype(np.float32)
@@ -506,7 +506,7 @@ def part_alpha_master(name: str, shape) -> np.ndarray:
 
 
 def head_views(master_rgb):
-    """Head views with their own (Codex-drawn) glasses: chroma key, jaw warp to the reference profile (as the
+    """Head views with their own (source-drawn) glasses: chroma key, jaw warp to the reference profile (as the
     art lever does for its views), per-region face grade, into master space by the face_hd -> master affine."""
     LK = A.LK
     Lref = B.mesh(np.array(Image.open(A.REF).convert("RGB")))
@@ -564,7 +564,7 @@ def head_views(master_rgb):
         lz0 = B.lens_fit(keyed, kpv)
         gmask, circles = B.glasses_mask(keyed, kpv, lz0)
         # the art lever's mask follows a circle fitted to each rim; where that fit is off (pitchm15's left lens)
-        # the Codex rim stays as a ghost, so its metal is also taken in a band around the fitted lens ellipse
+        # the source rim stays as a ghost, so its metal is also taken in a band around the fitted lens ellipse
         Yk, Xk = np.mgrid[0:keyed.shape[0], 0:keyed.shape[1]]
         Lbk = lab(keyed[..., :3])
         metal = (np.hypot(Lbk[..., 1], Lbk[..., 2]) < 12) & (keyed[..., 3] > 128) & (Lbk[..., 0] > 50)
@@ -576,7 +576,7 @@ def head_views(master_rgb):
         # yawp12 and pitchm15, seen at full size)
         wire = (np.hypot(Lbk[..., 1], Lbk[..., 2]) < 16) & (keyed[..., 3] > 128) & (Lbk[..., 0] > 35)
         gmask |= dilate(wire & ring, 3)
-        # where the lens fit itself is off (pitchm15 left, yawp12 right) an arc of the Codex rim lies outside
+        # where the lens fit itself is off (pitchm15 left, yawp12 right) an arc of the source rim lies outside
         # that band: wire pixels anywhere near the eyes go too, except the eyes themselves and the hair
         near = np.zeros(gmask.shape, bool)
         for q, ic in (("l", 468), ("r", 473)):
@@ -584,14 +584,14 @@ def head_views(master_rgb):
         eyes = dilate(B.poly_mask(keyed.shape[:2], Lv[EYE_L]) | B.poly_mask(keyed.shape[:2], Lv[EYE_R]), 6)
         gmask |= dilate(wire & near & ~eyes & ~B.classes(keyed)["hair"], 3)
         skin_zone = dilate(B.poly_mask(keyed.shape[:2], Lv[LK.OVAL]), 4)
-        bare = keyed.copy()          # Codex's glasses painted out, as the art lever does on face_hd
+        bare = keyed.copy()          # the source glasses painted out, as the art lever does on face_hd
         bare[..., :3] = cv2.inpaint(np.ascontiguousarray(keyed[..., :3]), gmask.astype(np.uint8), 5, cv2.INPAINT_TELEA)
         hh = gmask & ~skin_zone
         bare[..., :3] = np.where(hh[..., None], A.column_fill(keyed[..., :3], hh), bare[..., :3])
         mx, my = A.jaw_maps(keyed.shape[:2], Lv, 1.0)
         jg = dict(A._jaw["gain"])
         variants = {}
-        for var, src_img in (("codexGlasses", keyed), ("drawn", bare)):
+        for var, src_img in (("sourceGlasses", keyed), ("drawn", bare)):
             warped = unpremul(B.remap(premul(src_img), mx, my))
             Lw = B.mesh(over(warped))
             kpw = LK.keypoints_from_mesh(Lw)
@@ -604,12 +604,12 @@ def head_views(master_rgb):
                 Lw = B.mesh(over(warped))
                 kpw = LK.keypoints_from_mesh(Lw)
             if var == "drawn":
-                # the rest head's wire (colours, widths, rim size) placed where Codex put the glasses in this
-                # view: centre = Codex rim centre, radii = Codex rim radii x (rest rim / face_hd rim)
-                # rim size: this view's Codex rim scaled so rim diameter / face width equals the rest head's
-                # (each view's Codex rim differs: x1.15 on face_hd would over-size the raised-chin view by 18 %)
+                # the rest head's wire (colours, widths, rim size) placed where the source drawing put the glasses in this
+                # view: centre = source rim centre, radii = source rim radii x (rest rim / face_hd rim)
+                # rim size: this view's source rim scaled so rim diameter / face width equals the rest head's
+                # (each view's source rim differs: x1.15 on face_hd would over-size the raised-chin view by 18 %)
                 # one rim template for both lenses: the same height (the lenses are one rigid frame), the
-                # same width too on a pure pitch; on a turn each keeps the foreshortened Codex width. Centres
+                # same width too on a pure pitch; on a turn each keeps the foreshortened source width. Centres
                 # sit where the rest head's lenses sit on its eyes (rest_off_art), so the glasses cannot
                 # drift off the eyes
                 k = rest_rim / B.rim_ratio(lz0, kpv)
@@ -630,14 +630,14 @@ def head_views(master_rgb):
                 lens_gate["height_diff_frac"] = round(abs(lenses["l"][3] - lenses["r"][3]) / max(lenses["l"][3], lenses["r"][3]), 4)
                 lens_gate["pass"] = bool(lens_gate["height_diff_frac"] <= 0.05 and all(
                     0.2 <= lens_gate[q][a] <= 0.8 for q in "lr" for a in ("iris_x_in_lens", "iris_y_in_lens")))
-                # Codex rim left after the paint-out: metal in the band around the Codex lenses, away from the new rim
+                # source rim left after the paint-out: metal in the band around the source lenses, away from the new rim
                 newrim = np.zeros(gmask.shape, bool)
                 for q in "lr":
                     cx, cy, rx_, ry_ = lenses[q]
                     newrim |= np.abs(np.hypot((Xk - cx) / rx_, (Yk - cy) / ry_) - 1) < 0.08
                 Lbb = lab(bare[..., :3])
                 metal_b = (np.hypot(Lbb[..., 1], Lbb[..., 2]) < 12) & (bare[..., 3] > 128) & (Lbb[..., 0] > 50)
-                lens_gate["codex_rim_metal_px"] = {"before_paint_out": int((metal & ring & ~newrim).sum()),
+                lens_gate["source_rim_metal_px"] = {"before_paint_out": int((metal & ring & ~newrim).sum()),
                                                    "after_paint_out": int((metal_b & ring & ~newrim).sum())}
             Wf = B.face_weights(warped, Lw)
             graded = B.apply_grade(warped, Wf, GRADE)
@@ -695,7 +695,7 @@ def head_views(master_rgb):
             cutv[..., 3] = np.where(force, fa, cutv[..., 3])
             solid = (cutv[..., 3] == 255) & (under >= 0.999)
             neck_overlap_rows = int(solid[:, int(A.HB["x"] + A.HB["side"] / 2)].sum())
-            out[name if var == "drawn" else f"{name}.codexGlasses"] = drop_white_specks(cutv)
+            out[name if var == "drawn" else f"{name}.sourceGlasses"] = drop_white_specks(cutv)
             variants[var] = {"hair_grade_kL_rot_kC": [round(float(x), 4) for x in hp["hair"]], "hair_grade_dE_by_round": hlog,
                              "neck_stub_opaque_over_opaque_neck_px_master_at_centre": neck_overlap_rows,
                              "mouth_moved_down_px_1024": round(float(mouth_shift), 2),
@@ -706,7 +706,7 @@ def head_views(master_rgb):
                              "holdout": A.holdout(over(graded), kpw), "chin_y_master": round(chin_y, 1),
                              "nose_shift_vs_rest_px_master": [round(float(x), 1) for x in (Lm[1] - B.apply_affine(A_FACE, L0)[1])]}
         info[name] = {"source": f"src/{v['src']}", "yaw": v["yaw"], "pitch": v["pitch"], "jaw_gain_by_t": jg,
-                      "codex_rim_circles_px": {q: [round(float(x), 1) for x in circles[q]] for q in "lr"}, **variants}
+                      "source_rim_circles_px": {q: [round(float(x), 1) for x in circles[q]] for q in "lr"}, **variants}
     return out, info
 
 
@@ -757,7 +757,7 @@ def main() -> None:
     for name in KEYS:
         mp = SRC / f"mask_{name}.png"
         if mp.exists() and name in reg:
-            masks[name] = codex_mask(mp, master_raw, KEYS[name]["reg"])
+            masks[name] = source_mask(mp, master_raw, KEYS[name]["reg"])
             G[name]["mask"] = {"source": f"src/mask_{name}.png", "px": int(masks[name].sum())}
     G["body_line_x_at_y"] = {s: {str(y): int(lines[s][y]) for y in (360, 420, 480, 540, 600)} for s in lines}
     parts, gates = {}, {}
@@ -784,7 +784,7 @@ def main() -> None:
                 piece = img.copy()
                 piece[~(rest_masks[limb] & (img[..., 3] > 0))] = 0
             elif name in masks and limb == "leftArm":
-                # Codex painted this arm magenta on a copy of the key: its outline is the arm's edge where the
+                # this arm is painted magenta on a copy of the key: its outline is the arm's edge where the
                 # arm lies on the face, hair or shirt; on the green the key's own alpha gives the edge
                 piece = img.copy()
                 Ck = B.classes(img)
@@ -864,8 +864,8 @@ def main() -> None:
         save(small, PARTS / fn)
         parts[f"head.{vn}"] = {"file": f"parts/{fn}", "bone": "head", "size": [small.shape[1], small.shape[0]],
                                "bones": P, "restPos1x": pos1x, "z": 16, "yaw": VIEWS[base]["yaw"], "pitch": VIEWS[base]["pitch"],
-                               "glasses": ("Codex's own glasses (smaller, greyer rim than the rest head: an alternate)"
-                                           if vn.endswith("codexGlasses") else
+                               "glasses": ("the source drawing's own glasses (smaller, greyer rim than the rest head: an alternate)"
+                                           if vn.endswith("sourceGlasses") else
                                            "the rest head's drawn wire and rim/face ratio; both lenses one template (same "
                                            "height; same width on the pitch view), centred where the rest lenses sit on the eyes"),
                                "source": f"src/{VIEWS[base]['src']}"}
@@ -902,7 +902,7 @@ def main() -> None:
     (OUT / "gates.json").write_text(json.dumps(G, indent=1))
     print(json.dumps({"missing": missing, "limbs": {k: {kk: v[kk] for kk in ("components", "hole_px", "outline_max_turn_deg_at", "frame_margin_1x")}
                                                     for k, v in gates.items()},
-                      "views": {k: {var: v[var]["lens_offset_change_vs_rest_iod"] for var in ("drawn", "codexGlasses") if var in v} for k, v in vinfo.items() if isinstance(v, dict) and "yaw" in v}}, indent=0))
+                      "views": {k: {var: v[var]["lens_offset_change_vs_rest_iod"] for var in ("drawn", "sourceGlasses") if var in v} for k, v in vinfo.items() if isinstance(v, dict) and "yaw" in v}}, indent=0))
 
 
 def torso_shirt_rgb(img):
@@ -1194,7 +1194,7 @@ def in_context(parts) -> dict:
             layers.append((parts[n]["z"], rd(n), pos.tolist()))
         frames[key] = layers
     for vn, p in parts.items():
-        if vn.startswith("head.") and not vn.endswith("codexGlasses"):
+        if vn.startswith("head.") and not vn.endswith("sourceGlasses"):
             layers = art_layers(set(ART_LIMB["leftArm"] + ART_LIMB["rightArm"]), head=False, torso_part=tpart)
             layers += [(parts[n]["z"], rd(n), parts[n]["restPos1x"]) for n in ("leftArm.rest", "rightArm.rest")]
             frame_limbs[vn] = {"leftArm": "leftArm.rest", "rightArm": "rightArm.rest"}

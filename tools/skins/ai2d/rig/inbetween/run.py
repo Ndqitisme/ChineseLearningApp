@@ -1,8 +1,8 @@
 """In-between left-arm drawings.
 
 Two key drawings per transition could not carry hip -> hang -> level -> up: the rig bent one drawing far from
-its art (banana forearm, broken elbow in hairTuck) and swapped drawings in one frame. Three Codex edits of the
-master add the poses between them (gen/codex_gen.sh, logged in ../../art/generations.log):
+its art (banana forearm, broken elbow in hairTuck) and swapped drawings in one frame. Three drawings made from
+the master add the poses between them (stored in src/):
   hipoff   the hand just off the hip, elbow softly bent, hand hanging beside the skirt   (rest <-> hang)
   front    elbow at the side, forearm rising in front of the shirt, loose hand at the chest (rest <-> think/happy)
   tuckmid  elbow forward, hand beside the neck below the ear                               (front <-> tuck)

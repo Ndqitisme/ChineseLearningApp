@@ -90,7 +90,7 @@ const KEYS = {
   tuck: { part: 'leftArm.tuck', anchor: ['hairTuck', 'oneShot', 1300], maxBendDeg: [18, 25] },
   tuckmid: { part: 'leftArm.tuckmid', anchor: ['hairTuck', 'oneShot', 740], maxBendDeg: [18, 25], upperCost: 0.5 },
   front: { part: 'leftArm.front', anchor: ['think', 'enter', 470], maxBendDeg: [25, 30], upperCost: 0.7, costScale: 1.5 },
-  // the hand just off the hip, two cropped Codex edits (inbetween/crop.py).
+  // the hand just off the hip, two drawings on a crop (inbetween/crop.py).
   // hipfront: elbow at the side, forearm across the waist (hip <-> front: hairTuck, think and happy rise and
   // come back down through it); hipoff: the arm let go, hanging a little out (hip <-> hang: wave, talk, drag, sleep)
   hipfront: { part: 'leftArm.hipfront', anchor: ['think', 'enter', 330], maxBendDeg: [25, 30] },

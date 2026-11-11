@@ -1,5 +1,5 @@
 {
- "_about": "Joint sites per key and limb in each source image's own pixels (1024x1536), read by eye off grid.py zooms (work/g_*.png), +-5 px. Arms: S shoulder, E elbow, W wrist, T middle fingertip (or fist knuckles). Legs: H hip, K knee, A ankle, T shoe tip. Left-arm keys are then shifted so S equals the rest shoulder (run.py). Existing keys (wave_up = ../src/wave.png, think, tuck, talk, happy) copy ../gen/joints.json. land has no rightArm: Codex swung it out past the rest silhouette and the frame (wrist x 227), against the agreed rule that the right arm stays inside the rest silhouette; the rig keeps the rest right arm for land.",
+ "_about": "Joint sites per key and limb in each source image's own pixels (1024x1536), read by eye off grid.py zooms (work/g_*.png), +-5 px. Arms: S shoulder, E elbow, W wrist, T middle fingertip (or fist knuckles). Legs: H hip, K knee, A ankle, T shoe tip. Left-arm keys are then shifted so S equals the rest shoulder (run.py). Existing keys (wave_up = ../src/wave.png, think, tuck, talk, happy) copy ../gen/joints.json. land has no rightArm: the drawing swings it out past the rest silhouette and the frame (wrist x 227), against the agreed rule that the right arm stays inside the rest silhouette; the rig keeps the rest right arm for land.",
  "wave_ul": {
   "leftArm": {
    "S": [

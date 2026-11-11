@@ -1,7 +1,7 @@
 """Packs the parts the rig draws into one 1024x1024 atlas: the body, head, face and leg parts (art/out) and
 the whole-arm key drawings and sleeveless torso (art/keyposes/out), all at 2x app scale. The arms are whole
 drawings (upper arm, sleeve, forearm and hand in one piece). There is one head drawing (no turned head views,
-no codexGlasses alternates); out/atlas-id.png is the checker's ID atlas.
+no sourceGlasses alternates); out/atlas-id.png is the checker's ID atlas.
 
 Writes out/atlas.png (lossless), out/atlas.webp (lossless WebP, what ships) and out/atlas-rects.json
 (name -> [x, y, w, h] in atlas px). Deterministic: parts are placed largest-height first by a skyline

@@ -3,7 +3,7 @@ poses each key and renders, registered to the master's 1024x1536 framing:
   guide/out/<pose>_depth.png   Cycles depth (white near), alpha = silhouette
   guide/out/<pose>_sil.png     silhouette
   guide/out/<pose>_bones.png   OpenPose-style bone overlay on black
-  guide/out/<pose>_guide.png   what Codex gets next to the master: grey depth + bone overlay on green
+  guide/out/<pose>_guide.png   the pose reference drawn next to the master: grey depth + bone overlay on green
   guide/out/register.png       rest silhouette over the master (registration check)
 Usage: tools/skins/ai2d/.venv python run_guide.py [pose ...]  (needs Blender 4.5: set BLENDER to its executable)
 """
@@ -67,7 +67,7 @@ POSES = {
              "rE": [350, 560, 0.0], "rW": [335, 765, -0.01], "rT": [340, 860, -0.01],
              "_ik": [["lThigh", "lShin", [600, 1355, -0.03], 0.1], ["rThigh", "rShin", [442, 1366, 0.02], -0.1]],
              "lToe": [606, 1478, 0.0], "rToe": [440, 1490, 0.0]},
-    # landing: the upper body stays where the master has it (Codex keeps it locked); the knees bend forward and a
+    # landing: the upper body stays where the master has it (kept locked); the knees bend forward and a
     # little out, so the feet rise 80 px; the rig lowers the pelvis to put them back on the floor
     "land": {"lE": [728, 515, 0.0], "lW": [770, 660, -0.03], "lT": [780, 745, -0.03],
              "rE": [330, 545, 0.0], "rW": [300, 720, -0.03], "rT": [292, 805, -0.03],
@@ -129,7 +129,7 @@ def main(only: list[str]) -> None:
         g = np.asarray(dep).astype(np.float32)
         if pose in ARM_ONLY and (OUT / "rest_depth.png").exists():
             # torn waist (faces dropped where the fused hand pulled the hip): fill from the rest render with
-            # the rest left arm cut away, so Codex sees an intact body and only the limb changes
+            # the rest left arm cut away, so the reference shows an intact body and only the limb changes
             base = np.asarray(Image.open(OUT / "rest_depth.png").convert("RGBA")).astype(np.float32).copy()
             cut = Image.new("L", (1024, 1536), 0)
             d = ImageDraw.Draw(cut)

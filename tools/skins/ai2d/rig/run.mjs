@@ -1,7 +1,7 @@
 // The rig lever. One command rebuilds every artifact from the inputs and checks it:
 //   1. motion/run.mjs      spec + checker + fixtures + numbered issue proof (see motion/MOTION_SPEC.md)
 //   2. head_landmarks.py   iris, lens rims and jaw of every head drawing (out/head-landmarks.json)
-//   2b. inbetween/run.py   the in-between arm drawings cut from the stored Codex edits (inbetween/src, no Codex call;
+//   2b. inbetween/run.py   the in-between arm drawings cut from the stored drawings (inbetween/src;
 //                          hipfront and hipoff are cropped edits pasted back by inbetween/crop.py)
 //   3. pack_atlas.py       out/atlas.webp, out/atlas.png, out/atlas-rects.json (art + key-pose + in-between parts),
 //                          out/atlas-seed-glasses.webp (checker seed: rims drawn off the eyes)

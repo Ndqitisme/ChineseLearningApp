@@ -171,12 +171,11 @@ cp tools/skins/ai2d/rig/out/rig.json tools/skins/ai2d/rig/out/atlas.webp tools/s
   - bước 1 khoảng 18 phút;
   - `skin:rig` khoảng 95 phút: render 6 phút, chứng minh bộ kiểm đường nối trên mẫu lỗi 17 phút, kiểm đường nối mọi khung 34 phút, đo cổng 16 phút.
 - **Bộ đo giống mặt:** cần `references/character/face-reference.png`. Thiếu file này thì bước dựng part không chạy.
-- Dựng lại từ nguồn trong repo không cần Codex.
-- **Vẽ thêm bằng Codex:** dùng `art/gen/codex_gen.sh`, `art/keyposes/gen/codex_gen2.sh` hoặc `rig/inbetween/gen/codex_gen.sh`.
-  - Mỗi lượt gọi ghi prompt, ảnh vào và ảnh ra vào `art/generations.log`.
-  - Script dừng khi log đã có `CODEX_BUDGET` lượt (mặc định 30); đặt biến này khi bắt đầu một đợt mới.
-  - Script từ chối file trùng ảnh dáng người.
-- **Khung tham chiếu 3D:** `art/keyposes/guide/run_guide.py`, cần Blender 4.5 (biến `BLENDER`) và file `.glb` trong `references/`.
+- Dựng lại từ nguồn trong repo chỉ cần máy này, không cần dịch vụ ngoài.
+- **Vẽ thêm** (tư thế tay mới, bàn tay mới, sửa nét): không dùng agent hay dịch vụ ngoài. Dùng model mở chạy cục bộ và Blender theo [CHARACTER-PIPELINE.md](CHARACTER-PIPELINE.md) mục 3, sau khi bài thử ở mục 4 của tài liệu đó đạt.
+  - Mỗi ảnh sinh ra ghi model, sha256 trọng số, seed, prompt, ảnh vào và ảnh ra vào `art/generations.log`, để chạy lại ra đúng ảnh đó.
+  - Ảnh dáng người không bao giờ là input, kể cả với model chạy trên máy.
+- **Khung tham chiếu 3D:** `art/keyposes/guide/run_guide.py`, cần Blender (biến `BLENDER`, máy này có Blender 5.2, render Cycles bằng GPU) và file `.glb` trong `references/`.
 - **Bộ kiểm nhất quán:**
   - Chia khung bằng `rig/cons_split.py`, rồi chạy `tools/skins/ai2d/.venv/Scripts/python -I tools/skins/ai2d/consistency/consistency.py --frames <dir> --out <dir> --spec tools/skins/ai2d/rig/motion/motion-spec.json`.
   - Mất khoảng 4 giây mỗi khung.
@@ -186,7 +185,7 @@ cp tools/skins/ai2d/rig/out/rig.json tools/skins/ai2d/rig/out/atlas.webp tools/s
 
 | Thư mục | Nội dung |
 |---|---|
-| `art/` | Ảnh nguồn Codex đã duyệt (`src/`), prompt (`gen/`), nhật ký sinh ảnh, bộ dựng part |
+| `art/` | Ảnh nguồn đã duyệt (`src/`), nhật ký sinh ảnh, bộ dựng part |
 | `art/keyposes/` | Tư thế khoá: tay vẫy, kéo, tiếp đất, đầu quay và ngẩng; khung tham chiếu 3D (`guide/`) |
 | `rig/` | Dựng atlas và `rig.json`, render, bộ kiểm đường nối, cổng CPU/RAM (`gates.mjs`, so với sprite cũ trong `fixtures/sprite-baseline/`) |
 | `rig/inbetween/` | Bản vẽ tay trung gian (tay rời hông, đưa ra trước, vén tóc nửa chừng) |
@@ -214,7 +213,7 @@ cp tools/skins/ai2d/rig/out/rig.json tools/skins/ai2d/rig/out/atlas.webp tools/s
 ## 5. Ảnh mẫu và giấy phép
 
 - `references/` nằm ngoài repo (trong `.gitignore`). Bản sao chép bằng tay giữa các máy.
-- Ảnh dáng người là ảnh người thật. Chỉ đọc trên máy để lấy hình dáng và trang phục, mô tả bằng chữ. Không đưa vào Codex, dịch vụ web hay bất kỳ model nào, kể cả model chạy trên máy. Script gọi Codex từ chối file có sha256 trùng ảnh này.
+- Ảnh dáng người là ảnh người thật. Chỉ đọc trên máy để lấy hình dáng và trang phục, mô tả bằng chữ. Không đưa vào dịch vụ web hay bất kỳ model nào, kể cả model chạy trên máy. Mọi script sinh ảnh cục bộ phải từ chối file có sha256 trùng ảnh này.
 - Ảnh mặt do AI tạo; được làm input cho model ảnh.
 - Mô hình 3D TRELLIS.2 (`references/character/*.glb`) chỉ dùng làm khung tham chiếu tư thế, không phát hành. Bản `…051444.292.glb` là bản dùng; bản `…051807.330.glb` hỏng (hai tay chống hông, tóc thủng).
-- Bản vẽ của nhân vật (ảnh nguồn Codex và mọi thứ dựng ra từ đó): CC0 1.0.
+- Bản vẽ của nhân vật (ảnh nguồn và mọi thứ dựng ra từ đó): CC0 1.0.

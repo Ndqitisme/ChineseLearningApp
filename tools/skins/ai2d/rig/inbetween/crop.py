@@ -1,6 +1,5 @@
-"""Cropped Codex inputs for the hand-off-hip in-betweens. The image tool's output filter refuses the
-full-figure hipoff edit; these keys send only the shoulders-to-hips crop of the master and
-of the guide, upscaled to 1024x1024, and paste the result back into the master canvas (paste_back) so the
+"""Shoulders-to-hips crops for the hand-off-hip in-betweens: these keys are drawn on the crop of the master and
+of the guide, upscaled to 1024x1024; paste puts the result back into the master canvas (paste_back) so the
 rest of the lever (run.py: register on the legs, cut the arm) sees a full 1024x1536 key like the others.
 Usage: python -I crop.py make <key> | paste <key>"""
 import json

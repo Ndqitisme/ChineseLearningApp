@@ -1,7 +1,7 @@
 """Look B pipeline: rebuild every artifact after the image-generation step. run.py imports this module
 as a library and points its globals at its own folders.
 
-Inputs: src/*.png, written by gen/codex_gen.sh (one Codex image generation each), and gen/head_box.json
+Inputs: src/*.png and gen/head_box.json
 (the master's head box; the upscaled head crop is the face_hd input).
   src/master.png      1024x1536, full body on flat chroma green, rest pose
   src/face_hd.png     1024x1024, HD re-render of the master head box

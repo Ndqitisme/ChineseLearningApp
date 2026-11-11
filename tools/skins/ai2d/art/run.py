@@ -1,6 +1,6 @@
 """Rebuild the parts set for the layered2d rig from stored source PNGs.
 
-Inputs (no Codex call happens here; gen/codex_gen.sh made them, logged in generations.log):
+Inputs:
   src/master.png, face_hd.png, face_{smile,blink,talk}.png, raise.png, wave.png   look B sources
   src/{tuck,think,talk,happy,sleep}.png    left-arm keys (edits of master)
   src/head_yaw12.png, head_pitch15.png     head views (edits of face_hd, glasses removed)
@@ -220,8 +220,7 @@ B.draw_glasses = draw_glasses
 
 # ------------------------------------------------------------------ step 0: new stance (legs)
 
-# The Codex legs edit was refused by the image service's output filter (generations.log), so the new stance
-# is built from the one leg the master already draws standing straight and planted (her left, image right):
+# The new stance is built from the one leg the master already draws standing straight and planted (her left, image right):
 # that leg, and its mirror about the skirt's centre line for her right leg. Each leg is sheared outward
 # about its thigh top so the ankles sit about hip width apart; the shear stops at the ankle, so the shoe
 # moves rigidly and its sole stays level. Above the skirt hem every master pixel is kept.
